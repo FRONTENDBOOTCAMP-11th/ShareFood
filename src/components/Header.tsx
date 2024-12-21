@@ -1,5 +1,5 @@
 export interface HeaderProps {
-  title?: string; // 제목
+  title?: string;
 }
 
 export default function Header({
