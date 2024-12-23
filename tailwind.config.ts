@@ -3,7 +3,7 @@ export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     fontFamily: {
-      pretendard: ['Pretendard-Regular', 'sans-serif'],
+      sans: ['Pretendard', 'Arial', 'sans-serif'],
       BMJUA: ['BMJUA', 'sans-serif'],
     },
     extend: {
