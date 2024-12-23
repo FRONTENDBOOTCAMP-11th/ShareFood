@@ -24,10 +24,10 @@ const List = ({
   const defaultImage = image;
 
   return (
-    <div className="text-mainText flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px]">
+    <div className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px]">
       <div className="flex justify-between mb-[15px]">
-        <p className="text-mainText font-semibold text-[14px]">{title}</p>
-        <p className="text-subText text-[13px]">{date}</p>
+        <p className="text-font1 font-semibold text-[14px]">{title}</p>
+        <p className="text-font2 text-[13px]">{date}</p>
       </div>
 
       <div className="flex">
@@ -65,20 +65,20 @@ const List = ({
           )}
         </div>
         {type === 'together' ? (
-          <p className="rounded-[4px] bg-sub py-[4px] px-[10px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
+          <p className="rounded-[4px] bg-back2 py-[4px] px-[10px] text-sub h-[24px] flex justify-center items-center text-[12px] ml-auto">
             같이사요
           </p>
         ) : (
-          <p className="rounded-[4px] bg-sub py-[4px] px-[10px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
+          <p className="rounded-[4px] bg-back2 py-[4px] px-[10px] text-sub h-[24px] flex justify-center items-center text-[12px] ml-auto">
             팔아요
           </p>
         )}
       </div>
 
-      <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-subText">
+      <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-font1">
         <img src={bookmark} />
-        <p className="text-subText text-[13px]">관심 {like}</p>
-        <p className="text-subText text-[13px]">댓글 {comments}</p>
+        <p className="text-font1 text-[13px]">관심 {like}</p>
+        <p className="text-font1 text-[13px]">댓글 {comments}</p>
       </div>
     </div>
   );

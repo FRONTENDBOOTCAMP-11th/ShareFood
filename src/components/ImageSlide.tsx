@@ -85,7 +85,7 @@ export const ImageSlide = () => {
             <div
               key={index}
               className={`w-[10px] h-[10px] rounded-full ${
-                index === currentIndex ? 'bg-white' : 'bg-gray100'
+                index === currentIndex ? 'bg-white' : 'bg-line1'
               }`}
             ></div>
           ))}

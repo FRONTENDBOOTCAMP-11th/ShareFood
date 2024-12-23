@@ -5,15 +5,15 @@ export default {
     extend: {
       colors: {
         main: '#4CAF50',
-        second: '#F2AB58',
-        sub: '#FEF7EC',
+        sub: '#F2AB58',
+        back1: '#F6F6F6',
+        back2: '#FEF7EC',
         white: '#FFFFFF',
-        gray100: '#BBBBBB',
-        mainText: '#2F2E36',
-        subText: '#B8B8B8',
-        broccoli: '#4CAF50',
-        inactive: '#B8B8B8',
-        pumpkin: '#F2AB58',
+        error: '#FF4B4B',
+        line1: '#BDBDBD',
+        line2: '#CCCCCC',
+        font1: '#2F2E36',
+        font2: '#B8B8B8'
       },
       backgroundImage: {
         'prev-icon': "url('/images/icons/prev.svg')",
@@ -27,7 +27,7 @@ export default {
         revealDown: {
           '0%': {
             // 어디서부터 등장하는지?
-            transform: 'translate(-50%, 50%)',
+            transform: 'translate(-50%, 50%)', 
           },
         },
       },
