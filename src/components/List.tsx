@@ -24,9 +24,9 @@ const List = ({
   const defaultImage = image;
 
   return (
-    <div className="text-text flex flex-col rounded-custom px-[19px] py-[13px] shadow-md">
+    <div className="text-mainText flex flex-col rounded-custom px-[19px] py-[13px] shadow-md">
       <div className="flex justify-between mb-[15px]">
-        <p className="text-text font-semibold text-[14px]">{title}</p>
+        <p className="text-mainText font-semibold text-[14px]">{title}</p>
         <p className="text-subText text-[13px]">{date}</p>
       </div>
 
