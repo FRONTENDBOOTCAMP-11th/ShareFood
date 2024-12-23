@@ -32,8 +32,8 @@ export default function Footer() {
         <button
           key={index}
           onClick={() => {
-            setActiveIndex(index); // 버튼 클릭 시 활성화 상태 변경
-            navigate(item.route); // 경로 이동
+            setActiveIndex(index); // 버튼 클릭 시 활성화 상태로로 변경
+            navigate(item.route);
           }}
           className="flex flex-col items-center text-sm"
         >
@@ -41,13 +41,14 @@ export default function Footer() {
             src={activeIndex === index ? item.activeIconSrc : item.iconSrc} // 활성화된 아이콘과 기본 아이콘 구분
             alt={item.label}
             className="w-6 h-6 mb-1"
-            style={{ width: "24px", height: "24px" }} // 아이콘 크기 24px
+            style={{ width: "24px", height: "24px" }} // 아이콘 크기 24px 설정
           />
           <span
-            className={`${
-              activeIndex === index ? "text-green-500" : "text-gray-400"
-            }`}
-            style={{ fontFamily: "Pretendard, sans-serif", fontWeight: "400" }} // Pretendard Regular 적용
+            style={{
+              color: activeIndex === index ? "#4CAF50" : "#B8B8B8",
+              fontFamily: "Pretendard, sans-serif",
+              fontWeight: "400",
+            }}
           >
             {item.label}
           </span>
