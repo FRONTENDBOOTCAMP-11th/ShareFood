@@ -32,14 +32,14 @@ const Select: React.FC = () => {
   const list = location.map((item, index) => (
     <li
       key={item}
-      className={`flex flex-col items-center text-broccoli ${
+      className={`flex flex-col items-center text-main ${
         index !== 0
-          ? 'before:content-[""] before:w-[120px] before:h-[1px] before:bg-[#D9D9D9]'
+          ? 'before:content-[""] before:w-[60px] before:h-[1px] before:bg-[#D9D9D9]'
           : ''
       }`}
     >
       <button
-        className="py-6 w-full text-xl"
+        className="py-[8px] text-[15px]"
         onClick={() => handleSelectLocation(item)}
       >
         {item}
@@ -48,24 +48,21 @@ const Select: React.FC = () => {
   ));
 
   return (
-    <>
-      <section className="mx-2 w-[180px] flex flex-col items-center">
-        <h2 className="hidden">selectbox</h2>
-        <button
-          type="button"
-          onClick={handleToggle}
-          className="flex items-center justify-center gap-1 border-broccoli border-[1px] w-[150px] h-[46px] rounded-full font-sans text-broccoli"
-        >
-          {title}
-          <img className="size-2" src="images/arrowDown.svg" />
-        </button>
-        {isVisible && (
-          <ul className="selectbox-option hide w-[180px] border border-[#D9D9D9] rounded-[10px] mt-[14px] py-8 text-center font-sans">
-            {list}
-          </ul>
-        )}
-      </section>
-    </>
+    <div className="relative w-[84px]">
+      <button
+        onClick={handleToggle}
+        className="flex gap-[3px] items-center justify-center border-main border-[1px] rounded-full text-main text-[13px] px-[13px] py-[4px] bg-white ml-auto"
+      >
+        {title}
+        <img className="size-2" src="images/arrowDown.svg" />
+      </button>
+
+      {isVisible && (
+        <ul className="absolute right-[1px] selectbox-option hide border border-[#D9D9D9] rounded-[10px] mt-[5px] text-center shadow-custom px-[10px] z-11 bg-white">
+          {list}
+        </ul>
+      )}
+    </div>
   );
 };
 
