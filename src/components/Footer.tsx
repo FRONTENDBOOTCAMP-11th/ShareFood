@@ -26,12 +26,13 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full bg-white h-[86px] flex justify-around items-center px-4 z-10 rounded-tl-[10px] rounded-tr-[10px] shadow-custom">
+    <footer className="fixed bottom-0 left-0 w-full bg-white h-[86px] flex items-center px-4 z-10 rounded-tl-[10px] rounded-tr-[10px] shadow-md">
+      <div className="flex justify-between w-full">
       {footerItems.map((item, index) => (
         <button
           key={index}
-          onClick={() => navigate(item.route)} // 경로 이동
-          className="flex flex-col items-center text-sm"
+          onClick={() => navigate(item.route)} // 설정해놓은 경로 이동
+          className="flex flex-col items-center text-sm flex-1"
         >
           <img
             src={
@@ -54,6 +55,7 @@ export default function Footer() {
           </span>
         </button>
       ))}
+      </div>
     </footer>
   );
 }
