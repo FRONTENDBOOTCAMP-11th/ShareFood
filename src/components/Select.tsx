@@ -54,13 +54,13 @@ const Select: React.FC = () => {
         <button
           type="button"
           onClick={handleToggle}
-          className="flex items-center justify-center gap-1 border-broccoli border-[1px] w-[150px] h-[46px] rounded-full font-pretendard text-broccoli"
+          className="flex items-center justify-center gap-1 border-broccoli border-[1px] w-[150px] h-[46px] rounded-full font-sans text-broccoli"
         >
           {title}
-          <img className="size-2" src="src/public/buttonImg/arrowDown.svg" />
+          <img className="size-2" src="images/arrowDown.svg" />
         </button>
         {isVisible && (
-          <ul className="selectbox-option hide w-[180px] border border-[#D9D9D9] rounded-[10px] mt-[14px] py-8 text-center font-pretendard">
+          <ul className="selectbox-option hide w-[180px] border border-[#D9D9D9] rounded-[10px] mt-[14px] py-8 text-center font-sans">
             {list}
           </ul>
         )}
