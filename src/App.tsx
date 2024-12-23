@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className='max-w-[400px] m-auto'>
+    <div className="max-w-[400px] m-auto">
       <Main />
     </div>
   );
