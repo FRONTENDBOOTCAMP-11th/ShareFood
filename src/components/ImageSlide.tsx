@@ -5,7 +5,7 @@ import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
 
 export const ImageSlide = () => {
-  const images = [banner1, banner2];
+  const images = [banner1, banner2, banner1, banner2];
   // 현재 슬라이드 인덱스
   const [currentIndex, setCurrentIndex] = useState(0);
   // 애니메이션 진행상황
@@ -84,7 +84,7 @@ export const ImageSlide = () => {
           {images.map((_, index) => (
             <div
               key={index}
-              className={`w-3 h-3 rounded-full ${
+              className={`w-[10px] h-[10px] rounded-full ${
                 index === currentIndex ? 'bg-white' : 'bg-gray100'
               }`}
             ></div>
