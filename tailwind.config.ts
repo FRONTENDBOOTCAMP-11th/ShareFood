@@ -19,6 +19,9 @@ export default {
         'prev-icon': "url('/images/icons/prev.svg')",
         'next-icon': "url('/images/icons/next.svg')",
       },
+      boxShadow: {
+        custom: "0px 2px 4px 0px rgba(0, 0, 0, 0.25)",
+      },
       keyframes: {
         // 모달 창 등장 애니메이션
         revealDown: {
