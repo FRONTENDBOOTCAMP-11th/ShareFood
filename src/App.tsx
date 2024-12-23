@@ -6,7 +6,6 @@ function App() {
   return (
     <BrowserRouter>
       <div>
-        {/* Footer 컴포넌트 */}
         <Footer />
       </div>
     </BrowserRouter>
