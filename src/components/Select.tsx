@@ -39,7 +39,7 @@ const Select: React.FC = () => {
       }`}
     >
       <button
-        className="py-3 text-[15px]"
+        className="py-[8px] text-[15px]"
         onClick={() => handleSelectLocation(item)}
       >
         {item}
@@ -58,7 +58,7 @@ const Select: React.FC = () => {
       </button>
 
       {isVisible && (
-        <ul className="absolute right-[1px] selectbox-option hide border border-[#D9D9D9] rounded-[10px] mt-[10px] text-center shadow-md px-[10px]">
+        <ul className="absolute right-[1px] selectbox-option hide border border-[#D9D9D9] rounded-[10px] mt-[5px] text-center shadow-custom px-[10px] z-11 bg-white">
           {list}
         </ul>
       )}

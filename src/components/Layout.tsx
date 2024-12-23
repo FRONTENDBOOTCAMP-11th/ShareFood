@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -6,8 +6,6 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg">
-      {children}
-    </div>
+    <div className="bg-white p-4 shadow-custom rounded-lg">{children}</div>
   );
 }
