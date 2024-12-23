@@ -1,9 +1,15 @@
+import { BrowserRouter } from 'react-router-dom'; // BrowserRouter로 변경
 import './App.css';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className='max-w-[400px] m-auto'>
-    </div>
+    <BrowserRouter>
+      <div>
+        {/* Footer 컴포넌트 */}
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
