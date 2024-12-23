@@ -1,11 +1,14 @@
-import Main from './pages/main/main';
+import { BrowserRouter } from 'react-router-dom'; // BrowserRouter로 변경
 import './App.css';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="max-w-[400px] m-auto">
-      <Main />
-    </div>
+    <BrowserRouter>
+      <div>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
