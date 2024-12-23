@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Footer() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null); // 초기값을 null로 설정
   const navigate = useNavigate();
+  const location = useLocation();
 
   const footerItems = [
     {
@@ -31,24 +30,19 @@ export default function Footer() {
       {footerItems.map((item, index) => (
         <button
           key={index}
-          onClick={() => {
-            setActiveIndex(index); // 버튼 클릭 시 활성화 상태 변경
-            navigate(item.route); // 경로 이동
-          }}
+          onClick={() => navigate(item.route)} // 경로 이동
           className="flex flex-col items-center text-sm"
         >
           <img
-            src={activeIndex === index ? item.activeIconSrc : item.iconSrc} // 활성화된 아이콘과 기본 아이콘 구분
+            src={location.pathname === item.route ? item.activeIconSrc : item.iconSrc} // 현재 경로랑 비교해서 아이콘 변경
             alt={item.label}
             className="w-6 h-6 mb-1"
             style={{ width: "24px", height: "24px" }}
           />
           <span
-            style={{
-              color: activeIndex === index ? "#4CAF50" : "#B8B8B8",
-              fontFamily: "Pretendard, sans-serif",
-              fontWeight: "400",
-            }}
+            className={`${
+              location.pathname === item.route ? "text-[#4CAF50]" : "text-[#B8B8B8]"
+            } font-pretendard font-normal`}
           >
             {item.label}
           </span>
