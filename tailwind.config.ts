@@ -19,6 +19,18 @@ export default {
         'prev-icon': "url('/images/icons/prev.svg')",
         'next-icon': "url('/images/icons/next.svg')",
       },
+      keyframes: {
+        // 모달 창 등장 애니메이션
+        revealDown: {
+          '0%': {
+            // 어디서부터 등장하는지?
+            transform: 'translate(-50%, 50%)',
+          },
+        },
+      },
+      animation: {
+        revealDown: 'revealDown 1s ease-in-out',
+      },
     },
     fontFamily: {
       sans: ['Pretendard', 'Arial', 'sans-serif'],
