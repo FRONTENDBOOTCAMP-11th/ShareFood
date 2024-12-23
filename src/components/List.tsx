@@ -24,7 +24,7 @@ const List = ({
   const defaultImage = image;
 
   return (
-    <div className="text-mainText flex flex-col rounded-custom px-[19px] py-[13px] shadow-md">
+    <div className="text-mainText flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px]">
       <div className="flex justify-between mb-[15px]">
         <p className="text-mainText font-semibold text-[14px]">{title}</p>
         <p className="text-subText text-[13px]">{date}</p>
@@ -65,11 +65,11 @@ const List = ({
           )}
         </div>
         {type === 'together' ? (
-          <p className="rounded-[4px] bg-sub py-[4px] px-[12px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
+          <p className="rounded-[4px] bg-sub py-[4px] px-[10px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
             같이사요
           </p>
         ) : (
-          <p className="rounded-[4px] bg-sub py-[4px] px-[12px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
+          <p className="rounded-[4px] bg-sub py-[4px] px-[10px] text-second h-[24px] flex justify-center items-center text-[12px] ml-auto">
             팔아요
           </p>
         )}
