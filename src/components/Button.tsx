@@ -25,13 +25,28 @@ const Button: React.FC<Props> = ({
     height,
   };
 
+  // 버튼 배경색
+  const bgColor: { [key: string]: string } = {
+    broccoli: 'bg-broccoli',
+    pumpkin: 'bg-pumpkin',
+    white: 'bg-white',
+  };
+
+  // 버튼 글자색
+  const textColor: { [key: string]: string } = {
+    white: 'text-white',
+    black: 'text-black',
+    broccoli: 'text-broccoli',
+    inactive: 'text-inactive',
+  };
+
   return (
     <>
       <button
         type="button"
         style={styles}
         className={`m-4 rounded-[10px] font-sans shadow-button font-semibold 
-          ${text} ${border} bg-${bg} text-${color}`}
+          ${text} ${border} ${bgColor[bg]} ${textColor[color]}`}
         onClick={onClick}
       >
         {children}
