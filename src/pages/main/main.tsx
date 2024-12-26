@@ -15,12 +15,12 @@ const Main = () => {
   const [isActive, setIsActive] = useState(false);
 
   return (
-    <div className="pt-14 pb-[100px] bg-[#F6F6F6]">
+    <div className="pt-14 pb-[100px] bg-back1">
       {/* 헤더 */}
       <Header>
         <div className="flex items-center">
           <img src={greenchef} alt="Chef Icon" className="w-6 h-6" />
-          <h1 className="text-5 font-bold ml-2 text-mainText">Share Food</h1>
+          <h1 className="text-5 font-bold ml-2 text-font1">Share Food</h1>
         </div>
 
         <button className="fixed right-[17px]">
@@ -34,7 +34,7 @@ const Main = () => {
       {/* 게시글 목록 */}
       <div className="px-[17px] mt-[10px] flex flex-col gap-[10px]">
         <div className="flex flex-col gap-[10px]">
-          <h2 className="text-[15px] font-bold text-mainText">
+          <h2 className="text-[15px] font-bold text-font1">
             우리 동네 셰푸들
           </h2>
           <div className="flex items-center justify-between">

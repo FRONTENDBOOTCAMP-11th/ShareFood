@@ -8,7 +8,7 @@ const TypeSelector = () => {
       <button
         onClick={() => setType("together")}
         className={`text-[14px] w-[50%] py-3 rounded-[5px] font-medium ${
-          type === "together" ? "bg-main text-white" : "bg-white text-mainText"
+          type === "together" ? "bg-main text-white" : "bg-white text-font1"
         }`}
       >
         같이 사요
@@ -17,7 +17,7 @@ const TypeSelector = () => {
       <button
         onClick={() => setType("sell")}
         className={`text-[14px] w-[50%] py-3 rounded-[5px] font-medium ${
-          type === "sell" ? "bg-main text-white" : "bg-white text-mainText"
+          type === "sell" ? "bg-main text-white" : "bg-white text-font1"
         }`}
       >
         팔아요
