@@ -4,8 +4,10 @@ import Error from '../../components/Error';
 import LoginSignupTitle from '../../components/LoginSignupTitle';
 
 const Login: React.FC = () => {
+  // 로그인 상태 유지
   const [active, setActive] = useState<string>('Inactive');
 
+  // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
     setActive((active) => (active === 'Inactive' ? 'Active' : 'Inactive'));
   };
