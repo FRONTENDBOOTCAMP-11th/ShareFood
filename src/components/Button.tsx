@@ -27,17 +27,19 @@ const Button: React.FC<Props> = ({
 
   // 버튼 배경색
   const bgColor: { [key: string]: string } = {
-    broccoli: 'bg-broccoli',
-    pumpkin: 'bg-pumpkin',
+    main: 'bg-main',
+    second: 'bg-second',
     white: 'bg-white',
+    kakao: 'bg-[#FFE500]',
   };
 
   // 버튼 글자색
   const textColor: { [key: string]: string } = {
     white: 'text-white',
     black: 'text-black',
-    broccoli: 'text-broccoli',
-    inactive: 'text-inactive',
+    kakao: 'text-[#33333]',
+    main: 'text-main',
+    subText: 'text-subText',
   };
 
   return (
@@ -45,7 +47,7 @@ const Button: React.FC<Props> = ({
       <button
         type="button"
         style={styles}
-        className={`m-4 rounded-[10px] font-sans shadow-button font-semibold 
+        className={`rounded-[10px] font-sans shadow-button font-semibold 
           ${text} ${border} ${bgColor[bg]} ${textColor[color]}`}
         onClick={onClick}
       >
