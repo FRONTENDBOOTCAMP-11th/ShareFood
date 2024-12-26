@@ -64,13 +64,7 @@ const SignUp: React.FC = () => {
           <Error text="text-[10px]">휴대전화 번호 형식으로 입력해주세요</Error>
         </section>
       </div>
-      <Button
-        bg="white"
-        color="main"
-        width="w-full"
-        height="40px"
-        text="text-sm"
-      >
+      <Button bg="white" color="main" height="40px" text="text-sm">
         회원가입
       </Button>
     </div>
