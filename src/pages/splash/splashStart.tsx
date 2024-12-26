@@ -26,12 +26,12 @@ const SplashStart: React.FC = () => {
       </div>
     </div>
     <Button
-        text="text-lg"
-        width="270px"
-        height="40px"
-        bg="white"
-        color="black"
-        border="border-none"
+        text='text-lg'
+        width='270px'
+        height='40px'
+        bg='white'
+        color='black'
+        border='border-none'
         onClick={handleClick}
       >
         시작하기
