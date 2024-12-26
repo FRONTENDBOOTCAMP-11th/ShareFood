@@ -1,14 +1,17 @@
-import { BrowserRouter } from 'react-router-dom'; // BrowserRouter로 변경
+import { Outlet } from 'react-router-dom';
 import './App.css';
-import Main from './pages/main/main';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div>
-        <Main />
-      </div>
-    </BrowserRouter>
+    <>
+      <main>
+        <Outlet />
+      </main>
+      <footer>
+        <Footer/>
+      </footer>
+    </>
   );
 }
 
