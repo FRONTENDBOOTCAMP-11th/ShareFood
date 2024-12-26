@@ -4,6 +4,7 @@ import icon from '/images/greenchef.svg';
 import check from '/images/icons/check.svg';
 import checkActive from '/images/icons/check-active.svg';
 import List from '../../components/List';
+import Button from '../../components/Button';
 
 const MyPage = () => {
   const [isActive, setIsActive] = useState(false);
@@ -15,7 +16,7 @@ const MyPage = () => {
   ];
 
   return (
-    <div className="py-[24px] px-[17px] bg-back1 flex flex-col gap-[13px]">
+    <div className="py-[24px] px-[17px] bg-back1 flex flex-col gap-[13px] h-screen pb-[100px]">
       <Layout>
         <div className="flex items-center">
           <img
@@ -107,6 +108,17 @@ const MyPage = () => {
           )}
         </div>
       </Layout>
+
+      <div className='mt-auto'>
+        <Button
+          height="40px"
+          text="text-sm"
+          bg="white"
+          color="main"
+        >
+          로그아웃
+        </Button>
+      </div>
     </div>
   );
 };
