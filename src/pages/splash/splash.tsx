@@ -3,7 +3,9 @@ import whitechef from '/images/logos/logo1.svg';
 
 const Splash: React.FC = () => {
   return (
-    <div className="flex items-center justify-center px-4 h-screen bg-main">
+    <div className="flex items-center justify-center px-4 bg-main" style={{
+      height: 'calc(100vh - 86px - 56px)', // 86px(푸터) + 56px(헤더) 제외
+    }}>
       <div className="text-center">
         <img
           src = { whitechef } // 이미지 경로
