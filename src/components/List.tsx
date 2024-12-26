@@ -7,6 +7,7 @@ import map from '/images/map.svg';
 import pack from '/images/pack.svg';
 import bookmark from '/images/like0.svg';
 import time from '/images/time.svg';
+import PostType from './PostType';
 
 const List = ({
   title,
@@ -50,7 +51,7 @@ const List = ({
             <p className="text-[13px]">{location}</p>
           </div>
 
-          {type === 'together' ? (
+          {type === 'buy' ? (
             <div className="flex gap-[10px] border-l-2 px-[10px]">
               <img src={time} />
               <p className="text-[13px]">
@@ -64,15 +65,9 @@ const List = ({
             </div>
           )}
         </div>
-        {type === 'together' ? (
-          <p className="rounded-[4px] bg-back2 py-[4px] px-[10px] text-sub h-[24px] flex justify-center items-center text-[12px] ml-auto">
-            같이사요
-          </p>
-        ) : (
-          <p className="rounded-[4px] bg-back2 py-[4px] px-[10px] text-sub h-[24px] flex justify-center items-center text-[12px] ml-auto">
-            팔아요
-          </p>
-        )}
+        <div className='ml-auto'>
+          <PostType type={type} />
+        </div>
       </div>
 
       <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-font1">
