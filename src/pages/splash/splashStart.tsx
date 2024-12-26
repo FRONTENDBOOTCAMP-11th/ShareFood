@@ -13,11 +13,8 @@ const SplashStart: React.FC = () => {
 
 
   return (
-    <>
-    <div className="flex items-center justify-center px-4 bg-main" style={{
-      height: 'calc(100vh - 86px - 56px)', // 86px(푸터) + 56px(헤더) 제외
-    }}>
-      <div className = 'text-center'>
+    <div className="flex flex-col justify-between px-4 bg-main" h-screen>
+      <div className = 'flex flex-col items-center justify-center flex-grow'>
         <img
           src = { whitechef } // 이미지 경로
           alt = '셰푸 아이콘'
@@ -26,19 +23,21 @@ const SplashStart: React.FC = () => {
         <h2 className = 'text-white text-lg font-normal font-BMJUA'>우리동네 Share Food</h2>
         <h1 className = 'text-white text-3xl font-BMJUA mt-2'>셰푸</h1>
       </div>
+      <div className='flex justify-center mt-[60px]'>
+        <Button
+          text='text-lg'
+          width='270px'
+          height='40px'
+          bg='white'
+          color='black'
+          border='border-none'
+          onClick={handleClick}
+        >
+          시작하기
+        </Button>
+      </div>
     </div>
-    <Button
-        text='text-lg'
-        width='270px'
-        height='40px'
-        bg='white'
-        color='black'
-        border='border-none'
-        onClick={handleClick}
-      >
-        시작하기
-      </Button>
-    </>
+
   );
 };
 
