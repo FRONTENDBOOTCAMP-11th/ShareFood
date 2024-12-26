@@ -49,7 +49,7 @@ const Main = () => {
               />
               <p
                 className={`text-[13px] ${
-                  isActive ? 'text-main' : 'text-subText'
+                  isActive ? 'text-main' : 'text-font2'
                 }`}
               >
                 거래 완료 글 숨기기
@@ -75,7 +75,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}
@@ -99,7 +99,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}
@@ -123,7 +123,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}

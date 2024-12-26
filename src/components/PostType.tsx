@@ -16,7 +16,7 @@ function PostType({ type }: props) {
 
   return (
     <>
-      <p className="border w-fit bg-amber-50 text-amber-500 border-transparent text-xs py-1 px-3 text-center rounded">
+      <p className="border h-fit bg-back2 text-sub border-transparent text-[12px] py-1 px-2 text-center rounded-[4px]">
         {buttonValue}
       </p>
     </>
