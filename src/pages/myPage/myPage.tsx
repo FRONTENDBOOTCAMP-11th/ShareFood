@@ -5,6 +5,7 @@ import check from '/images/icons/check.svg';
 import checkActive from '/images/icons/check-active.svg';
 import List from '../../components/List';
 import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const MyPage = () => {
   const [isActive, setIsActive] = useState(false);
@@ -14,6 +15,8 @@ const MyPage = () => {
     { label: '좋아요한글', key: 'like' },
     { label: '거래신청글', key: 'trade' },
   ];
+
+  const navigate = useNavigate();
 
   return (
     <div className="py-[24px] px-[17px] bg-back1 flex flex-col gap-[13px] h-screen pb-[100px]">
@@ -27,7 +30,10 @@ const MyPage = () => {
             <p className="text-[14px] text-font1 font-semibold">닉네임</p>
             <p className="text-[13px] text-font1">asdfas@gmail.com</p>
           </div>
-          <button className="text-line1 rounded-[6px] border border-line1 ml-auto px-2 py-1 h-fit text-[15px]">
+          <button
+            onClick={() => navigate('/userinfo')}
+            className="text-line1 rounded-[6px] border border-line1 ml-auto px-2 py-1 h-fit text-[15px]"
+          >
             수정
           </button>
         </div>
@@ -109,13 +115,8 @@ const MyPage = () => {
         </div>
       </Layout>
 
-      <div className='mt-auto'>
-        <Button
-          height="40px"
-          text="text-sm"
-          bg="white"
-          color="main"
-        >
+      <div className="mt-auto">
+        <Button height="40px" text="text-sm" bg="white" color="main">
           로그아웃
         </Button>
       </div>
