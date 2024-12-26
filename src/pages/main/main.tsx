@@ -49,7 +49,7 @@ const Main = () => {
               />
               <p
                 className={`text-[13px] ${
-                  isActive ? 'text-main' : 'text-subText'
+                  isActive ? 'text-main' : 'text-font2'
                 }`}
               >
                 거래 완료 글 숨기기

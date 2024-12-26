@@ -1,7 +1,7 @@
 interface Props {
   children: React.ReactNode; // 버튼 내용
   text: string; // 버튼 글자 크기
-  width: string; // 버튼 가로 길이
+  width?: string; // 버튼 가로 길이
   height: string; // 버튼 높이
   bg?: string; // 버튼 배경색
   color?: string; // 버튼 글자색
@@ -12,7 +12,7 @@ interface Props {
 const Button: React.FC<Props> = ({
   children,
   text,
-  width,
+  width = '100%',
   height,
   bg = 'white', // 버튼 기본 배경색 - 흰색
   color = 'black', // 버튼 기본 글자색 - 검정색
@@ -39,7 +39,7 @@ const Button: React.FC<Props> = ({
     black: 'text-black',
     kakao: 'text-[#33333]',
     main: 'text-main',
-    subText: 'text-subText',
+    subText: 'text-font2',
   };
 
   return (

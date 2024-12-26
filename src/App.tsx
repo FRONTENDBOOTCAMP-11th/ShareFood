@@ -4,14 +4,12 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <>
+    <div className="max-w-md m-auto relative">
       <main>
         <Outlet />
       </main>
-      <footer>
-        <Footer/>
-      </footer>
-    </>
+      <Footer />
+    </div>
   );
 }
 
