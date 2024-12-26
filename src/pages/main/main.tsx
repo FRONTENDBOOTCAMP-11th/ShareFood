@@ -75,7 +75,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}
@@ -99,7 +99,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}
@@ -123,7 +123,7 @@ const Main = () => {
           />
           <List
             title={'겨울엔 딸기도 맛있다'}
-            type={'together'}
+            type={'buy'}
             total={7}
             remain={3}
             location={'이마트 부천시청점'}
