@@ -26,7 +26,11 @@ const Login: React.FC = () => {
                   src={`images/btnImg/check${active}.svg`}
                 />
               </button>
-              <p>로그인 상태 유지</p>
+              <p
+                className={`${active === 'Inactive' ? 'text-font2' : 'text-black'}`}
+              >
+                로그인 상태 유지
+              </p>
             </div>
           </section>
           <section className="flex flex-col justify-center items-center gap-4 mt-9">
