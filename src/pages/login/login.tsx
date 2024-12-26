@@ -1,4 +1,5 @@
 import Button from '../../components/Button';
+import Error from '../../components/Error';
 import LoginSignupTitle from '../../components/LoginSignupTitle';
 
 const Login: React.FC = () => {
@@ -9,8 +10,8 @@ const Login: React.FC = () => {
         <main className="bg-white mt-6 px-4 py-[27px] h-[372px] rounded-[10px] font-sans text-xs">
           <section className="[&_input]:w-full [&_input]:h-[26px] [&_input]:border-b-[1px] [&_input]:border-line2 [&_input]:py-1 [&_input:focus]:outline-none">
             <input className="mb-4" type="email" placeholder="아이디(이메일)" />
-            <input type="password" placeholder="비밀번호" />
-            <p className="text-red-500 h-[21px] leading-[21px]">* 에러메세지</p>
+            <input className="mb-2" type="password" placeholder="비밀번호" />
+            <Error>* 아이디(이메일), 비밀번호를 확인해 주십시오</Error>
             <div className="mt-6 text-subText flex items-center gap-2">
               <img className="size-5" src="images/btnImg/checkInactive.svg" />
               <p>로그인 상태 유지</p>
