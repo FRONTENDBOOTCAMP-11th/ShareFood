@@ -18,22 +18,10 @@ const Login: React.FC = () => {
             </div>
           </section>
           <section className="flex flex-col justify-center items-center gap-4 mt-9">
-            <Button
-              width="332px"
-              height="40px"
-              text="text-sm"
-              bg="main"
-              color="white"
-            >
+            <Button height="40px" text="text-sm" bg="main" color="white">
               로그인
             </Button>
-            <Button
-              width="332px"
-              height="40px"
-              text="text-sm"
-              bg="kakao"
-              color="kakao"
-            >
+            <Button height="40px" text="text-sm" bg="kakao" color="kakao">
               <div className="flex justify-center items-center gap-2">
                 <img src="/images/kakao.svg" />
                 <p>카카오계정으로 로그인</p>
