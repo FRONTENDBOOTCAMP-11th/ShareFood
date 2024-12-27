@@ -4,13 +4,16 @@ import Layout from '../../components/Layout';
 import arrow from '/images/icons/arrow.svg';
 import profile from '/images/logos/default_image.svg';
 import gallery from '/images/icons/gallery.svg';
+import { useNavigate } from 'react-router-dom';
 
 const UserInfo = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-back1 pt-[70px] px-[16px]">
+    <div className="bg-back1 pt-[70px] px-[16px] min-h-screen">
       <Header>
         <div className="flex w-[100%]">
-          <button className="mr-auto">
+          <button onClick={() => navigate(-1)} className="mr-auto">
             <img src={arrow} />
           </button>
 
@@ -51,7 +54,7 @@ const UserInfo = () => {
               placeholder="닉네임"
               className="border-b text-[13px] py-[3px]"
             />
-            <div className='absolute right-0 top-[60%] transform -translate-y-1/2'>
+            <div className="absolute right-0 top-[60%] transform -translate-y-1/2">
               <Button
                 bg="main"
                 color="white"

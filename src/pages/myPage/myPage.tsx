@@ -19,7 +19,7 @@ const MyPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="py-[24px] px-[17px] bg-back1 flex flex-col gap-[13px] h-screen pb-[100px]">
+    <div className="pt-[24px] pb-[100px] px-[17px] bg-back1 flex flex-col gap-[13px] min-h-screen">
       <Layout>
         <div className="flex items-center">
           <img
@@ -69,8 +69,8 @@ const MyPage = () => {
           </p>
         </button>
 
-        <div className="flex flex-col gap-[10px]">
-          {activeTab === '작성글' && (
+        {activeTab === '작성글' && (
+          <div className="flex flex-col gap-[10px]">
             <List
               title={'귤은 겨울에 먹어야 해요1'}
               type={'sell'}
@@ -83,8 +83,34 @@ const MyPage = () => {
               like={5}
               comments={7}
             />
-          )}
-          {activeTab === '좋아요한글' && (
+            <List
+              title={'귤은 겨울에 먹어야 해요1'}
+              type={'sell'}
+              total={10}
+              remain={2}
+              location={'제주도 제주시'}
+              due={'12/31'}
+              price={3000}
+              date={'12/31'}
+              like={5}
+              comments={7}
+            />
+            <List
+              title={'귤은 겨울에 먹어야 해요1'}
+              type={'sell'}
+              total={10}
+              remain={2}
+              location={'제주도 제주시'}
+              due={'12/31'}
+              price={3000}
+              date={'12/31'}
+              like={5}
+              comments={7}
+            />
+          </div>
+        )}
+        {activeTab === '좋아요한글' && (
+          <div className="flex flex-col gap-[10px]">
             <List
               title={'귤은 겨울에 먹어야 해요2'}
               type={'sell'}
@@ -97,8 +123,10 @@ const MyPage = () => {
               like={5}
               comments={7}
             />
-          )}
-          {activeTab === '거래신청글' && (
+          </div>
+        )}
+        {activeTab === '거래신청글' && (
+          <div className="flex flex-col gap-[10px]">
             <List
               title={'귤은 겨울에 먹어야 해요3'}
               type={'sell'}
@@ -111,8 +139,8 @@ const MyPage = () => {
               like={5}
               comments={7}
             />
-          )}
-        </div>
+          </div>
+        )}
       </Layout>
 
       <div className="mt-auto">
