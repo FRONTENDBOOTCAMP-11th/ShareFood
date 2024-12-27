@@ -41,7 +41,7 @@ const Login: React.FC = () => {
             </Button>
             <Button height="40px" text="text-sm" bg="kakao" color="kakao">
               <div className="flex justify-center items-center gap-2">
-                <img src="/images/kakao.svg" />
+                <img src="/images/icons/kakao.svg" />
                 <p>카카오계정으로 로그인</p>
               </div>
             </Button>
