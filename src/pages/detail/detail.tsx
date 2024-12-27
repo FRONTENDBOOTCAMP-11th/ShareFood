@@ -15,6 +15,8 @@ import basicImage from '/images/chef/drawingChef.svg';
 import map from '/images/tag/location.svg';
 import time from '/images/tag/time.svg';
 import member from '/images/tag/member.svg';
+import Modal from '../../components/Modal';
+import Tag from '../../components/Tag';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
@@ -74,7 +76,11 @@ const Detail = () => {
           </div>
           <div className="board-transinfo mt-[26px] ml-[28px] flex flex-col gap-y-3">
             <div className="location flex border-l-2">
-              <img src={map} alt="장소" className="ml-[7px] mr-[9.5px] w-[16px] h-[20px]" />
+              <img
+                src={map}
+                alt="장소"
+                className="ml-[7px] mr-[9.5px] w-[16px] h-[20px]"
+              />
               <p>공릉2동 주공아파트 3단지 놀이터 앞</p>
             </div>
             <div className="time flex border-l-2">
