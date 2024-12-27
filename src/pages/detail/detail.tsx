@@ -172,22 +172,22 @@ const Detail = () => {
                   <Tag tagName="member">2/10</Tag>
                   <ul className="mr-7 flex flex-col gap-3">
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">장유진</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">이선재</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">이현종</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">김건우</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
