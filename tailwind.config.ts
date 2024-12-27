@@ -3,6 +3,9 @@ export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      fontSize: {
+        s: '10px',
+      },
       colors: {
         main: '#4CAF50',
         sub: '#F2AB58',
@@ -13,21 +16,21 @@ export default {
         line1: '#BDBDBD',
         line2: '#CCCCCC',
         font1: '#2F2E36',
-        font2: '#B8B8B8'
+        font2: '#B8B8B8',
       },
       backgroundImage: {
         'prev-icon': "url('/images/arrow/prev.svg')",
         'next-icon': "url('/images/arrow/next.svg')",
       },
       boxShadow: {
-        custom: "0px 2px 4px 0px rgba(0, 0, 0, 0.25)",
+        custom: '0px 2px 4px 0px rgba(0, 0, 0, 0.25)',
       },
       keyframes: {
         // 모달 창 등장 애니메이션
         revealDown: {
           '0%': {
             // 어디서부터 등장하는지?
-            transform: 'translate(-50%, 50%)', 
+            transform: 'translate(-50%, 50%)',
           },
         },
       },
