@@ -15,7 +15,7 @@ function Modal({ setViewPayment, children }: props) {
     <div className="fixed justify-normal top-0 left-50 w-[448px] h-full bg-black bg-opacity-20 overflow-hidden">
       <div className="absolute bottom-1/3 left-1/2 w-[400px] p-5 bg-white rounded shadow transform -translate-x-1/2 animate-revealDown ">
         <button
-          className="fixed top-4 right-2 size-6 text-3xl text-neutral-50 cursor-pointer"
+          className="fixed top-4 right-4 size-6 text-3xl text-neutral-50 cursor-pointer"
           onClick={() => closeModal()}
         >
           <img src="images/icons/close.svg" />
