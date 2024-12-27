@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Header from '../../components/Header';
-import PrevIcon from '/images/icons/prevArrow.svg';
+
+import PrevIcon from '/images/arrow/prevArrow.svg';
 import SearchIcon from '/images/icons/search.svg';
 
 const Search: React.FC = () => {
@@ -32,7 +34,7 @@ const Search: React.FC = () => {
             <img
               src={PrevIcon}
               alt='뒤로가기'
-              className='h-6 w-6'
+              className='h-5 w-5'
             />
           </button>
           <span className='text-line1 text-lg font-medium'>검색어를 입력하세요</span>
@@ -45,7 +47,7 @@ const Search: React.FC = () => {
             <img
               src={SearchIcon}
               alt='검색'
-              className='h-6 w-6'
+              className='w-5 h-5'
             />
           </button>
         </div>
@@ -74,7 +76,7 @@ const Search: React.FC = () => {
           {keywords.map((keyword) => (
             <div
               key={keyword}
-              className='flex items-center px-4 rounded-[20px] text-black text-sm border line1'
+              className='flex items-center px-[10px] rounded-[20px] text-black text-sm border line1'
               style={{
                 height: '26px', // 키워드 박스 고정 높이
                 lineHeight: '1.5',

@@ -1,5 +1,5 @@
 import React from 'react';
-import whitechef from '/images/logos/logo1.svg';
+import whitechef from '/images/chef/whiteChef.svg';
 
 const Splash: React.FC = () => {
   return (

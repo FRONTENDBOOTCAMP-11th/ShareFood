@@ -1,7 +1,9 @@
 import React from 'react';
-import whitechef from '/images/logos/logo1.svg';
-import Button from '../../components/Button.tsx';
 import { useNavigate } from 'react-router-dom';
+
+import Button from '../../components/Button.tsx';
+
+import whitechef from '/images/chef/whiteChef.svg';
 
 const SplashStart: React.FC = () => {
 

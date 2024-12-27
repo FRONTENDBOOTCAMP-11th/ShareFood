@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import emptyHeart from '/images/icons/empty_heart.svg';
+import emptyHeart from '/images/icons/heart.svg';
 import fullHeart from '/images/icons/full_heart.svg';
 
 interface TotalProps {
@@ -29,7 +29,7 @@ function Total({ interest, setInterest, commentNum }: TotalProps) {
     <div className="mx-[24px]">
       <div className="flex text-xs leading-6">
         <button onClick={handleClick}>
-          <img src={imageSrc} alt="" />
+          <img src={imageSrc} alt="" className="w-[12px]"/>
         </button>
         <p className="ml-1.5 text-font2">
           관심 <span className="text-main">{interest}</span>

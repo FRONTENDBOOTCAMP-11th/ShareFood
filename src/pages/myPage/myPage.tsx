@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
-import icon from '/images/greenchef.svg';
-import check from '/images/icons/check.svg';
-import checkActive from '/images/icons/check-active.svg';
 import List from '../../components/List';
 import Button from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+
+import icon from '/images/chef/greenChef.svg';
+import check from '/images/check/check.svg';
+import checkActive from '/images/check/check-active.svg';
 
 const MyPage = () => {
   const [isActive, setIsActive] = useState(false);

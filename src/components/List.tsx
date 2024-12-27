@@ -1,12 +1,12 @@
 import { ListProps } from '../types/listComponentTypes';
 
 // images
-import image from '/images/char.svg';
-import priceTag from '/images/price.svg';
-import map from '/images/map.svg';
-import pack from '/images/pack.svg';
-import bookmark from '/images/like0.svg';
-import time from '/images/time.svg';
+import image from '/images/chef/forkChef_back.svg';
+import priceTag from '/images/tag/price.svg';
+import map from '/images/tag/location.svg';
+import pack from '/images/tag/item.svg';
+import bookmark from '/images/icons/heart.svg';
+import time from '/images/tag/time.svg';
 import PostType from './PostType';
 
 const List = ({
@@ -40,40 +40,40 @@ const List = ({
 
         <div className="flex flex-col gap-[12px]">
           <div className="flex gap-[10px] border-l-2 px-[10px]">
-            <img src={pack} />
+            <img src={pack} className="w-[18px] h-[18px]" />
             <p className="text-[13px]">
-              <strong className="text-main">{remain}</strong> / {total}
+              {remain} / <strong className="text-main">{total}</strong>
             </p>
           </div>
 
           <div className="flex gap-[10px] border-l-2 px-[10px]">
-            <img src={map} />
+            <img src={map} className="w-[16px] h-[20px]" />
             <p className="text-[13px]">{location}</p>
           </div>
 
           {type === 'buy' ? (
             <div className="flex gap-[10px] border-l-2 px-[10px]">
-              <img src={time} />
+              <img src={time} className="w-[18px] h-[18px]" />
               <p className="text-[13px]">
                 <strong className="text-main">{due}</strong> 까지 모집
               </p>
             </div>
           ) : (
             <div className="flex gap-[10px] border-l-2 px-[10px]">
-              <img src={priceTag} />
+              <img src={priceTag} className="w-[18px] h-[18px]" />
               <p className="text-[13px]">{price}원</p>
             </div>
           )}
         </div>
-        <div className='ml-auto'>
+        <div className="ml-auto">
           <PostType type={type} />
         </div>
       </div>
 
       <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-font1">
-        <img src={bookmark} />
-        <p className="text-font1 text-[13px]">관심 {like}</p>
-        <p className="text-font1 text-[13px]">댓글 {comments}</p>
+        <img src={bookmark} className="w-[12px]" />
+        <p className="text-font2 text-[13px]">관심 {like}</p>
+        <p className="text-font2 text-[13px]">댓글 {comments}</p>
       </div>
     </div>
   );

@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import Header from '../../components/Header';
+
 import { ImageSlideDetail } from '../../components/ImageSlideDetail';
+import Header from '../../components/Header';
 import Total from '../../components/Total';
-import close from '/images/close.svg';
 import PostType from '../../components/PostType';
-import basicImage from '/images/logos/detail_default_image.svg';
-import map from '/images/map.svg';
-import time from '/images/time.svg';
-import member from '/images/member.svg';
 import Comment from '../../components/Comment';
 import CommentAdd from '../../components/CommentAdd';
 import Button from '../../components/Button';
+
+import close from '/images/icons/close.svg';
+import basicImage from '/images/chef/drawingChef.svg';
+import map from '/images/tag/location.svg';
+import time from '/images/tag/time.svg';
+import member from '/images/tag/member.svg';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
@@ -21,7 +23,7 @@ const Detail = () => {
   const [interest, setInterest] = useState(7);
   const [commentNum, setCommentNum] = useState(5);
   return (
-    <div className="mb-[60px] h-screen">
+    <div className="pt-14 pb-[100px] h-screen">
       <Header>
         <div className="flex items-center">
           <h1 className="text-5 font-bold ml-2 text-font1">
@@ -33,8 +35,10 @@ const Detail = () => {
           {/* X 버튼 누를 시 이번트 설정 必 */}
         </button>
       </Header>
+
       {/* 이미지 슬라이드 */}
       <ImageSlideDetail />
+
       <div className="main">
         <div className="board-info">
           <div className="board-title flex mt-4 pl-7 pr-6">
@@ -52,7 +56,7 @@ const Detail = () => {
           </div>
           <div className="board-transinfo mt-[26px] ml-[28px] flex flex-col gap-y-3">
             <div className="location flex border-l-2">
-              <img src={map} alt="장소" className="ml-[7px] mr-[9.5px]" />
+              <img src={map} alt="장소" className="ml-[7px] mr-[9.5px] w-[16px] h-[20px]" />
               <p>공릉2동 주공아파트 3단지 놀이터 앞</p>
             </div>
             <div className="time flex border-l-2">

@@ -1,18 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import { ImageSlide } from '../../components/ImageSlide';
-
-import greenchef from '/images/greenchef.svg';
-import search from '/images/icons/search.svg';
-import check from '/images/icons/check.svg';
-import checkActive from '/images/icons/check-active.svg';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
 
+import greenchef from '/images/chef/greenChef.svg';
+import search from '/images/icons/search.svg';
+import check from '/images/check/check.svg';
+import checkActive from '/images/check/check-active.svg';
+
 const Main = () => {
   const [isActive, setIsActive] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="pt-14 pb-[100px] bg-back1">
@@ -23,7 +25,7 @@ const Main = () => {
           <h1 className="text-5 font-bold ml-2 text-font1">Share Food</h1>
         </div>
 
-        <button className="fixed right-[17px]">
+        <button onClick={() => navigate('/search')} className="fixed right-[30px]">
           <img src={search} alt="Search Icon" className="w-5 h-5" />
         </button>
       </Header>

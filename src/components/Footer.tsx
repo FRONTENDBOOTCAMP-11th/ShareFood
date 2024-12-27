@@ -7,25 +7,27 @@ export default function Footer() {
   const footerItems = [
     {
       label: '홈',
-      iconSrc: '/images/home.svg',
-      activeIconSrc: '/images/home-active.svg',
+      iconSrc: '/images/icons/home.svg',
+      activeIconSrc: '/images/icons/home-active.svg',
       route: '/main',
     },
     {
       label: '글쓰기',
-      iconSrc: '/images/write.svg',
-      activeIconSrc: '/images/write-active.svg',
+      iconSrc: '/images/icons/write.svg',
+      activeIconSrc: '/images/icons/write-active.svg',
       route: '/write',
     },
     {
       label: '마이페이지',
-      iconSrc: '/images/myPage.svg',
-      activeIconSrc: '/images/myPage-active.svg',
+      iconSrc: '/images/icons/myPage.svg',
+      activeIconSrc: '/images/icons/myPage-active.svg',
       route: '/mypage',
     },
   ];
 
-  return (
+  return location.pathname === '/' ? (
+    <></>
+  ) : (
     <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 max-w-md w-full bg-white h-[86px] flex justify-around items-center px-4 z-10 rounded-tl-[10px] rounded-tr-[10px] shadow-custom">
       {footerItems.map((item, index) => (
         <button
