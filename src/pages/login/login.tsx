@@ -5,11 +5,11 @@ import LoginSignupTitle from '../../components/LoginSignupTitle';
 
 const Login: React.FC = () => {
   // 로그인 상태 유지
-  const [active, setActive] = useState<string>('Inactive');
+  const [active, setActive] = useState<string>('inactive');
 
   // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
-    setActive((active) => (active === 'Inactive' ? 'Active' : 'Inactive'));
+    setActive((active) => (active === 'inactive' ? 'active' : 'inactive'));
   };
 
   return (
@@ -21,15 +21,15 @@ const Login: React.FC = () => {
             <input className="mb-4" type="email" placeholder="아이디(이메일)" />
             <input className="mb-2" type="password" placeholder="비밀번호" />
             <Error>* 아이디(이메일), 비밀번호를 확인해 주십시오</Error>
-            <label className="mt-6 flex items-center gap-2 hover:cursor-pointer">
+            <label className="mt-6 flex items-center gap-2 w-fit hover:cursor-pointer">
               <button onClick={() => handleActive()}>
                 <img
                   className="size-5"
-                  src={`images/btnImg/check${active}.svg`}
+                  src={`images/check/checkCircle-${active}.svg`}
                 />
               </button>
               <p
-                className={`${active === 'Inactive' ? 'text-font2' : 'text-black'}`}
+                className={`${active === 'inactive' ? 'text-font2' : 'text-black'}`}
               >
                 로그인 상태 유지
               </p>
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
             </Button>
             <Button height="40px" text="text-sm" bg="kakao" color="kakao">
               <div className="flex justify-center items-center gap-2">
-                <img src="/images/kakao.svg" />
+                <img src="/images/icons/kakao.svg" />
                 <p>카카오계정으로 로그인</p>
               </div>
             </Button>
