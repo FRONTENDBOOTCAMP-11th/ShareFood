@@ -15,8 +15,6 @@ import basicImage from '/images/chef/drawingChef.svg';
 import map from '/images/tag/location.svg';
 import time from '/images/tag/time.svg';
 import member from '/images/tag/member.svg';
-import Modal from '../../components/Modal';
-import Tag from '../../components/Tag';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
