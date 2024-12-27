@@ -14,7 +14,7 @@ function Modal({ setViewPayment, children }: props) {
   return (
     <div className="fixed justify-normal top-0 left-50 w-[448px] h-full bg-black bg-opacity-20 overflow-hidden">
       <button
-        className="absolute top-3 right-6 w-4 h-4 text-3xl text-neutral-50 cursor-pointer"
+        className="fixed top-16 right-40 w-4 h-4 text-3xl text-neutral-50 cursor-pointer"
         onClick={() => closeModal()}
       >
         X
