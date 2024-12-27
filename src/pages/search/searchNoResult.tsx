@@ -56,7 +56,7 @@ const SearchNoResult: React.FC = () => {
       <div className='flex-grow flex items-center justify-center'>
         <div className='text-center'>
           <img
-            src={NoResult} // 이미지 경로를 여기에 맞게 수정하세요
+            src={NoResult}
             alt='검색 결과 없음'
             className='h-24 w-24 mx-auto mb-4'
           />
