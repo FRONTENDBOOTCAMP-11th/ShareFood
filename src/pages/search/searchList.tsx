@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
-import PrevIcon from '/images/icons/prevArrow.svg';
-import SearchIcon from '/images/icons/search.svg';
 import TypeSelector from "../../components/TypeSelector";
 import List from "../../components/List";
+import PrevIcon from '/images/icons/prevArrow.svg';
+import SearchIcon from '/images/icons/search.svg';
 
 const SearchList: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const SearchList: React.FC = () => {
           <div className='flex items-center justify-between w-full px-4'>
             {/* 뒤로가기 버튼 */}
             <button
+              type='button'
               aria-label='뒤로가기'
               className='transition-colors hover:text-main' // hover 시 main 색상으로 변경
               onClick={handlePrevClick}
@@ -37,6 +38,7 @@ const SearchList: React.FC = () => {
             <span className='text-line1 text-lg font-medium'>검색어를 입력하세요</span>
             {/* 검색 버튼 */}
             <button
+              type='button'
               aria-label='검색'
               className='transition-colors text-line1 hover:text-main' // 기본은 line1, hover 시 main 색상
               onClick={handleSearchClick}
