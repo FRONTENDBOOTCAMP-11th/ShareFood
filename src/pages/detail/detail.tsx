@@ -11,6 +11,8 @@ import member from '/images/member.svg';
 import Comment from '../../components/Comment';
 import CommentAdd from '../../components/CommentAdd';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
+import Tag from '../../components/Tag';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
@@ -20,6 +22,21 @@ const Detail = () => {
   // 관심 및 댓글의 수
   const [interest, setInterest] = useState(7);
   const [commentNum, setCommentNum] = useState(5);
+
+  const [viewPayment, setViewPayment] = useState(false);
+
+  // counter 상태 관리
+  const [num, setNum] = useState(0);
+
+  // modal 상태 관리
+  // 임시로 1, 2, 3으로 지정했고 추후에 상세페이지에서 버튼 클릭했을 때
+  // 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
+  const [content, setContent] = useState(2);
+
+  const handleModal = () => {
+    setViewPayment(true);
+  };
+
   return (
     <div className="mb-[60px] h-screen">
       <Header>
@@ -35,6 +52,7 @@ const Detail = () => {
       </Header>
       {/* 이미지 슬라이드 */}
       <ImageSlideDetail />
+
       <div className="main">
         <div className="board-info">
           <div className="board-title flex mt-4 pl-7 pr-6">
@@ -87,10 +105,90 @@ const Detail = () => {
           </div>
           <Comment />
           <CommentAdd />
-          <Button height="40px" text="text-sm" bg="main" color="white">
+          <Button
+            height="40px"
+            text="text-sm"
+            bg="main"
+            color="white"
+            onClick={() => handleModal()}
+          >
             공구하기
           </Button>
         </div>
+        {viewPayment && (
+          <Modal setViewPayment={setViewPayment}>
+            {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
+            {/* content === 1 : 공구 */}
+
+            <div>
+              <h2 className="mb-5 font-semibold">
+                공구 장소, 시간을 확인하세요
+              </h2>
+              <div className="flex flex-col gap-4 mb-8">
+                <Tag tagName="location">공릉2동 주공아파트 3단지 놀이터 앞</Tag>
+                <Tag tagName="time">10:00</Tag>
+                <Tag tagName="people">2/10</Tag>
+              </div>
+              <Button bg="main" color="white" height="40px" text="text-sm">
+                공구하기
+              </Button>
+            </div>
+
+            {/* content === 2 : 구매 */}
+            {/* {content === 2 && (
+                <div>
+                  <h2 className="mb-5 font-semibold">
+                    거래 가격, 장소, 개수를 확인하세요
+                  </h2>
+                  <div className="flex flex-col gap-4 mb-8">
+                    <Tag tagName="cash">총가격 : 9,000원</Tag>
+                    <Tag tagName="location">
+                      공릉2동 주공아파트 3단지 놀이터 앞
+                    </Tag>
+                    <Tag tagName="item">
+                      구매 개수 <Counter num={num} setNum={setNum}></Counter>
+                    </Tag>
+                    <Tag tagName="time">10:00</Tag>
+                  </div>
+                  <Button bg="main" color="white" height="40px" text="text-sm">
+                    구매하기
+                  </Button>
+                </div>
+              )} */}
+            {/* 구매자 늘어나면 스크롤 넣어야 될것 같습니다. */}
+            {/* content === 3 : 구매자 조회 */}
+            {/* {content === 3 && (
+                <div>
+                  <h2 className="mb-3">구매 신청자 목록</h2>
+                  <div className="flex flex-col gap-5">
+                    <Tag tagName="people">2/10</Tag>
+                    <ul className="mr-7 flex flex-col gap-3">
+                      <li className="flex items-center gap-3">
+                        <img src="images/logos/default_image.svg" />
+                        <p className="grow text-left">장유진</p>
+                        <Tag tagName="item">1/6</Tag>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <img src="images/logos/default_image.svg" />
+                        <p className="grow text-left">이선재</p>
+                        <Tag tagName="item">1/6</Tag>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <img src="images/logos/default_image.svg" />
+                        <p className="grow text-left">이현종</p>
+                        <Tag tagName="item">1/6</Tag>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <img src="images/logos/default_image.svg" />
+                        <p className="grow text-left">김건우</p>
+                        <Tag tagName="item">1/6</Tag>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )} */}
+          </Modal>
+        )}
       </div>
     </div>
   );
