@@ -26,7 +26,7 @@ function Total({ interest, setInterest, commentNum }: TotalProps) {
   };
 
   return (
-    <div>
+    <div className="mx-[24px]">
       <div className="flex text-xs leading-6">
         <button onClick={handleClick}>
           <img src={imageSrc} alt="" />
@@ -39,7 +39,7 @@ function Total({ interest, setInterest, commentNum }: TotalProps) {
         </p>
       </div>
       <div>
-        <hr className="w-88 mt-3 h-px bg-main" />
+        <hr className="w-88 mt-3 h-[1.2px] bg-main" />
       </div>
     </div>
   );
