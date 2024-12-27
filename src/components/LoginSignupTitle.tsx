@@ -9,7 +9,7 @@ const LoginSignupTitle: React.FC<Props> = ({ children }) => {
         <div className="flex flex-col">
           <img
             className="size-10 ml-[17px] mb-[-6px]"
-            src="images/logos/logo1.svg"
+            src="images/chef/whiteChef.svg"
           />
           <h1 className="font-BMJUA text-[30px] text-white ">
             셰푸 {children}
