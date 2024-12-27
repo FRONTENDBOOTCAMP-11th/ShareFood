@@ -21,7 +21,7 @@ const Login: React.FC = () => {
             <input className="mb-4" type="email" placeholder="아이디(이메일)" />
             <input className="mb-2" type="password" placeholder="비밀번호" />
             <Error>* 아이디(이메일), 비밀번호를 확인해 주십시오</Error>
-            <label className="mt-6 text-subText flex items-center gap-2 hover:cursor-pointer">
+            <label className="mt-6 flex items-center gap-2 hover:cursor-pointer">
               <button onClick={() => handleActive()}>
                 <img
                   className="size-5"

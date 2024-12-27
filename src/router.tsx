@@ -8,6 +8,7 @@ import MyPage from "./pages/myPage/myPage";
 import Search from "./pages/search/search";
 import Detail from "./pages/detail/detail";
 import Write from "./pages/write/write";
+import UserInfo from "./pages/myPage/UserInfo";
 
 
 export const router = createBrowserRouter([
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
       {
         path: 'mypage',
         element: <MyPage />,
+      },
+      {
+        path: 'userinfo',
+        element: <UserInfo />,
       },
       {
         path: 'search',
