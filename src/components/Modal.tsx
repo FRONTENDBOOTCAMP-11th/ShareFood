@@ -21,10 +21,10 @@ function Modal({ setViewPayment }: props) {
   // modal 상태 관리
   // 임시로 1, 2, 3으로 지정했고 추후에 상세페이지에서 버튼 클릭했을 때
   // 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
-  const [content] = useState(3);
+  const [content] = useState(2);
 
   return (
-    <div className="absolute justify-normal top-0 left-0 w-full h-full bg-black opacity-20 overflow-hidden">
+    <div className="absolute justify-normal top-0 left-0 w-full h-full bg-black bg-opacity-20 overflow-hidden">
       <button
         className="absolute top-3 right-6 w-4 h-4 text-3xl text-neutral-50 cursor-pointer"
         onClick={() => closeModal()}
@@ -34,6 +34,7 @@ function Modal({ setViewPayment }: props) {
       {/* <div className="absolute top-[84%] left-2/4 w-[400px] h-1/3 p-5 text-center bg-white rounded shadow transform -translate-x-1/2 -translate-y-1/2 animate-revealDown"> */}
       <div className="absolute bottom-0 left-1/2 w-[400px] p-5 text-center bg-white rounded shadow transform -translate-x-1/2 animate-revealDown">
         {/* 아래부터 모달 내용 */}
+        {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
         {content === 1 && (
           <div>
             <h2 className="mb-5 font-semibold">공구 장소, 시간을 확인하세요</h2>
