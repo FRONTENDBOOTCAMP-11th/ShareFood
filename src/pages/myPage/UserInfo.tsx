@@ -1,10 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 import Button from '../../components/Button';
 import Header from '../../components/Header';
 import Layout from '../../components/Layout';
-import arrow from '/images/icons/arrow.svg';
-import profile from '/images/logos/default_image.svg';
+
+import arrow from '/images/arrow/prevArrow.svg';
+import profile from '/images/chef/drawingChef.svg';
 import gallery from '/images/icons/gallery.svg';
-import { useNavigate } from 'react-router-dom';
 
 const UserInfo = () => {
   const navigate = useNavigate();

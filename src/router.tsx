@@ -3,12 +3,12 @@ import App from "./App";
 import SignUp from "./pages/signUp/signUp";
 import Login from "./pages/login/login";
 import Main from "./pages/main/main";
-import Splash from "./pages/splash/splash";
 import MyPage from "./pages/myPage/myPage";
 import Search from "./pages/search/search";
 import Detail from "./pages/detail/detail";
 import Write from "./pages/write/write";
 import UserInfo from "./pages/myPage/UserInfo";
+import SplashTransition from "./pages/splash/splashTransition";
 
 
 export const router = createBrowserRouter([
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Splash />,
+        element: <SplashTransition />,
       },
       {
         path: 'sign-up',

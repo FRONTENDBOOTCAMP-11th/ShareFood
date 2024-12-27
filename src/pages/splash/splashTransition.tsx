@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import Splash from './splash';
 import SplashStart from './splashStart';
 

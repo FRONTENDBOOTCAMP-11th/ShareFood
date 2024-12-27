@@ -1,4 +1,4 @@
-import basicImage from '/images/logos/default_image.svg';
+import basicImage from '/images/chef/drawingChef.svg';
 
 function CommentItem() {
   return (
