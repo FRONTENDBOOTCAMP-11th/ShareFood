@@ -48,7 +48,7 @@ const Select: React.FC = () => {
   ));
 
   return (
-    <div className="relative w-[84px]">
+    <div className="relative">
       <button
         onClick={handleToggle}
         className="flex gap-[3px] items-center justify-center border-main border-[1px] rounded-full text-main text-[13px] px-[13px] py-[4px] bg-white ml-auto"
