@@ -41,7 +41,7 @@ const Detail = () => {
   };
 
   return (
-    <div className="mb-[50px] h-screen">
+    <div className="mb-[50px] min-h-screen">
       <Header>
         <div className="flex items-center">
           <h1 className="text-5 font-bold ml-2 text-font1">
