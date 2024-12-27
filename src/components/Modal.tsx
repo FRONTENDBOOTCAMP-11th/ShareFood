@@ -35,6 +35,7 @@ function Modal({ setViewPayment }: props) {
       <div className="absolute bottom-0 left-1/2 w-[400px] p-5 text-center bg-white rounded shadow transform -translate-x-1/2 animate-revealDown">
         {/* 아래부터 모달 내용 */}
         {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
+        {/* content === 1 : 공구 */}
         {content === 1 && (
           <div>
             <h2 className="mb-5 font-semibold">공구 장소, 시간을 확인하세요</h2>
@@ -48,6 +49,7 @@ function Modal({ setViewPayment }: props) {
             </Button>
           </div>
         )}
+        {/* content === 2 : 구매 */}
         {content === 2 && (
           <div>
             <h2 className="mb-5 font-semibold">
@@ -66,8 +68,8 @@ function Modal({ setViewPayment }: props) {
             </Button>
           </div>
         )}
-
         {/* 구매자 늘어나면 스크롤 넣어야 될것 같습니다. */}
+        {/* content === 3 : 구매자 조회 */}
         {content === 3 && (
           <div>
             <h2 className="mb-3">구매 신청자 목록</h2>
