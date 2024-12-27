@@ -1,5 +1,7 @@
 import Tag from './Tag';
 import Button from './Button';
+import Counter from './Counter';
+import { useState } from 'react';
 
 interface props {
   setViewPayment: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,6 +15,9 @@ function Modal({ setViewPayment }: props) {
     setViewPayment(false);
   };
 
+  // counter 상태 관리
+  const [num, setNum] = useState(0);
+
   return (
     <div className="absolute justify-normal top-0 left-0 w-full h-full bg-black opacity-20 overflow-hidden">
       <button
@@ -21,9 +26,9 @@ function Modal({ setViewPayment }: props) {
       >
         X
       </button>
-      <div className="absolute top-[84%] left-2/4 w-[400px] h-1/3 p-5 text-center bg-white rounded shadow transform -translate-x-1/2  -translate-y-1/2 animate-revealDown">
+      <div className="absolute top-[84%] left-2/4 w-[400px] h-1/3 p-5 text-center bg-white rounded shadow transform -translate-x-1/2 -translate-y-1/2 animate-revealDown">
         {/* 아래부터 모달 내용 */}
-        <h2 className="mb-5 font-semibold">공구 장소, 시간을 확인하세요</h2>
+        {/* <h2 className="mb-5 font-semibold">공구 장소, 시간을 확인하세요</h2>
         <div className="flex flex-col gap-4 mb-8">
           <Tag tagName="location">공릉2동 주공아파트 3단지 놀이터 앞</Tag>
           <Tag tagName="time">10:00</Tag>
@@ -31,7 +36,47 @@ function Modal({ setViewPayment }: props) {
         </div>
         <Button bg="main" color="white" height="40px" text="text-sm">
           공구하기
+        </Button> */}
+        <h2 className="mb-5 font-semibold">
+          거래 가격, 장소, 개수를 확인하세요
+        </h2>
+        <div className="flex flex-col gap-4 mb-8">
+          <Tag tagName="cash">총가격 : 9,000원</Tag>
+          <Tag tagName="location">공릉2동 주공아파트 3단지 놀이터 앞</Tag>
+          <Tag tagName="item">
+            구매 개수 <Counter num={num} setNum={setNum}></Counter>
+          </Tag>
+          <Tag tagName="time">10:00</Tag>
+        </div>
+        <Button bg="main" color="white" height="40px" text="text-sm">
+          구매하기
         </Button>
+        {/* <h2 className="mb-3">구매 신청자 목록</h2>
+        <div className="flex flex-col gap-5">
+          <Tag tagName="people">2/10</Tag>
+          <ul className="mr-7 flex flex-col gap-3">
+            <li className="flex items-center gap-3">
+              <img src="images/logos/default_image.svg" />
+              <p className="grow text-left">장유진</p>
+              <Tag tagName="item">1/6</Tag>
+            </li>
+            <li className="flex items-center gap-3">
+              <img src="images/logos/default_image.svg" />
+              <p className="grow text-left">이선재</p>
+              <Tag tagName="item">1/6</Tag>
+            </li>
+            <li className="flex items-center gap-3">
+              <img src="images/logos/default_image.svg" />
+              <p className="grow text-left">이현종</p>
+              <Tag tagName="item">1/6</Tag>
+            </li>
+            <li className="flex items-center gap-3">
+              <img src="images/logos/default_image.svg" />
+              <p className="grow text-left">김건우</p>
+              <Tag tagName="item">1/6</Tag>
+            </li>
+          </ul>
+        </div> */}
       </div>
     </div>
   );
