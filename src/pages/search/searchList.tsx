@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
+
 import Header from "../../components/Header";
 import TypeSelector from "../../components/TypeSelector";
 import List from "../../components/List";
-import PrevIcon from '/images/icons/prevArrow.svg';
+import PrevIcon from '/images/arrow/prevArrow.svg';
 import SearchIcon from '/images/icons/search.svg';
 
 const SearchList: React.FC = () => {

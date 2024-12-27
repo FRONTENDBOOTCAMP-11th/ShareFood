@@ -1,7 +1,8 @@
+import { useState } from 'react';
+
 import Tag from './Tag';
 import Button from './Button';
 import Counter from './Counter';
-import { useState } from 'react';
 
 interface props {
   setViewPayment: React.Dispatch<React.SetStateAction<boolean>>;
