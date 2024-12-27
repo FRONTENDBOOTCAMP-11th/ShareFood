@@ -26,7 +26,8 @@ function Modal({ setViewPayment }: props) {
       >
         X
       </button>
-      <div className="absolute top-[84%] left-2/4 w-[400px] h-1/3 p-5 text-center bg-white rounded shadow transform -translate-x-1/2 -translate-y-1/2 animate-revealDown">
+      {/* <div className="absolute top-[84%] left-2/4 w-[400px] h-1/3 p-5 text-center bg-white rounded shadow transform -translate-x-1/2 -translate-y-1/2 animate-revealDown"> */}
+      <div className="fixed bottom-5 left-1/2 w-[400px] p-5 text-center bg-white rounded shadow transform -translate-x-1/2 animate-revealDown">
         {/* 아래부터 모달 내용 */}
         {/* <h2 className="mb-5 font-semibold">공구 장소, 시간을 확인하세요</h2>
         <div className="flex flex-col gap-4 mb-8">
