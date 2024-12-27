@@ -21,7 +21,7 @@ const Detail = () => {
   const [interest, setInterest] = useState(7);
   const [commentNum, setCommentNum] = useState(5);
   return (
-    <div className="mb-[60px] h-screen">
+    <div className="mb-[50px] h-screen">
       <Header>
         <div className="flex items-center">
           <h1 className="text-5 font-bold ml-2 text-font1">
