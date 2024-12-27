@@ -25,7 +25,10 @@ const Main = () => {
           <h1 className="text-5 font-bold ml-2 text-font1">Share Food</h1>
         </div>
 
-        <button onClick={() => navigate('/search')} className="fixed right-[30px]">
+        <button
+          onClick={() => navigate('/search')}
+          className="fixed right-[30px]"
+        >
           <img src={search} alt="Search Icon" className="w-5 h-5" />
         </button>
       </Header>
@@ -36,9 +39,7 @@ const Main = () => {
       {/* 게시글 목록 */}
       <div className="px-[17px] mt-[10px] flex flex-col gap-[10px]">
         <div className="flex flex-col gap-[10px]">
-          <h2 className="text-[15px] font-bold text-font1">
-            우리 동네 셰푸들
-          </h2>
+          <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
               onClick={() => setIsActive((prev) => !prev)}
@@ -62,7 +63,7 @@ const Main = () => {
           <TypeSelector />
         </div>
 
-        <div className='flex flex-col gap-[10px]'>
+        <div className="flex flex-col gap-[10px]">
           <List
             title={'귤은 겨울에 먹어야 해요'}
             type={'sell'}
