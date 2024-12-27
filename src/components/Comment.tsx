@@ -4,11 +4,10 @@ function Comment() {
   const list = <CommentItem />;
 
   return (
-    <>
-      <br />
+    <div>
       {list}
       <CommentItem />
-    </>
+    </div>
   );
 }
 
