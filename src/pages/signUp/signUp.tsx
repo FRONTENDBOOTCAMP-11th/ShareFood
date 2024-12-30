@@ -173,9 +173,15 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
             placeholder="휴대전화 번호"
-            {...register('phone')}
+            {...register('phone', {
+              required: '휴대전화 번호를 입력해 주세요.',
+              pattern: {
+                value: /^(\d{3})(\d{4})(\d{4})/,
+                message: '휴대전화 번호 형식으로 입력해 주세요.',
+              },
+            })}
           />
-          <Error text="text-[10px]">휴대전화 번호 형식으로 입력해주세요</Error>
+          <Error text="text-[10px]">{errors.phone?.message}</Error>
         </section>
         <Button
           type="submit"
