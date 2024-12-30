@@ -150,7 +150,13 @@ const SignUp: React.FC = () => {
               className="grow"
               type="text"
               placeholder="닉네임"
-              {...register('name')}
+              {...register('name', {
+                required: '닉네임을 입력해주세요.',
+                pattern: {
+                  value: /^[0-9a-zA-Z가-힣]*$/,
+                  message: '특수문자는 사용할 수 없습니다.',
+                },
+              })}
             />
             <Button
               bg="main"
@@ -162,7 +168,7 @@ const SignUp: React.FC = () => {
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">이미 존재하는 닉네임입니다</Error>
+          <Error text="text-[10px]">{errors.name?.message}</Error>
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
