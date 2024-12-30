@@ -72,7 +72,12 @@ const SignUp: React.FC = () => {
 
   // input창 공백 입력 제거
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.replace(/\s/g, '');
+    const { name, value } = e.target;
+    e.target.value = value.replace(/\s/g, '');
+
+    if (name === 'confirmPassword') {
+      setConfirmPassword(value);
+    }
   };
 
   return (
@@ -131,7 +136,8 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호 확인"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            name="confirmPassword"
+            onChange={handlePasswordChange}
           />
           <Error text="text-[10px]">{passwordError}</Error>
         </section>
