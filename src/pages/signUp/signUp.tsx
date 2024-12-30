@@ -68,7 +68,13 @@ const SignUp: React.FC = () => {
               className="grow"
               type="text"
               placeholder="아이디(이메일)"
-              {...register('email')}
+              {...register('email', {
+                required: '아이디(이메일)을 입력해 주세요.',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: '이메일 형식으로 입력해 주세요.',
+                },
+              })}
             />
             <Button
               bg="main"
@@ -80,7 +86,7 @@ const SignUp: React.FC = () => {
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">이메일 형식으로 입력해주세요</Error>
+          <Error text="text-[10px]">{errors.email?.message}</Error>
 
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
