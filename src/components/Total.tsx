@@ -26,21 +26,16 @@ function Total({ interest, setInterest, commentNum }: TotalProps) {
   };
 
   return (
-    <div className="mx-[24px]">
-      <div className="flex text-xs leading-6">
-        <button onClick={handleClick}>
-          <img src={imageSrc} alt="" className="w-[12px]"/>
-        </button>
-        <p className="ml-1.5 text-font2">
-          관심 <span className="text-main">{interest}</span>
-        </p>
-        <p className="ml-3 text-font2">
-          댓글 <span className="text-main">{commentNum}</span>
-        </p>
-      </div>
-      <div>
-        <hr className="w-88 mt-3 h-[1px] bg-main border-0" />
-      </div>
+    <div className="border-b border-main pb-3 flex gap-2 text-[13px]">
+      <button onClick={handleClick}>
+        <img src={imageSrc} alt="" className="w-[16px]" />
+      </button>
+      <p className="ml-1.5 text-font2">
+        관심 <span className="text-main">{interest}</span>
+      </p>
+      <p className="ml-3 text-font2">
+        댓글 <span className="text-main">{commentNum}</span>
+      </p>
     </div>
   );
 }

@@ -12,13 +12,19 @@ function Modal({ setViewPayment, children }: props) {
   };
 
   return (
-    <div className="fixed z-11 justify-normal top-0 left-50 w-[448px] h-full bg-black bg-opacity-20 overflow-hidden">
-      <div className="absolute bottom-1/3 left-1/2 w-[400px] p-5 bg-white rounded shadow transform -translate-x-1/2 animate-revealDown ">
+    <div
+      onClick={closeModal}
+      className="fixed inset-0 z-[110] bg-black bg-opacity-20 flex items-center justify-center"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-[400px] p-5 bg-white rounded-[10px] shadow-custom animate-revealDown"
+      >
         <button
-          className="fixed top-4 right-4 size-6 text-3xl text-neutral-50 cursor-pointer"
-          onClick={() => closeModal()}
+          className="absolute top-4 right-4 size-6 text-3xl text-neutral-500 cursor-pointer"
+          onClick={closeModal}
         >
-          <img src="images/icons/close.svg" />
+          <img src="images/icons/close.svg" alt="닫기" />
         </button>
         {children}
       </div>

@@ -85,7 +85,7 @@ function ImageUpload() {
 
   return (
     <div
-      className="flex gap-x-4 flex-nowrap overflow-x-hidden mt-[40px] mb-[14px]"
+      className="flex gap-x-4 flex-nowrap overflow-x-hidden"
       onMouseDown={onDragStart}
       onMouseMove={isDrag ? onThrottleDragMove : undefined}
       onMouseUp={onDragEnd}

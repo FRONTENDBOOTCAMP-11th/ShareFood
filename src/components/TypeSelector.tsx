@@ -4,7 +4,7 @@ const TypeSelector = () => {
   const [type, setType] = useState("together");
 
   return (
-    <div className="bg-white p-[2px] rounded-[5px] flex">
+    <div className="bg-white p-[2px] rounded-[5px] flex border">
       <button
         onClick={() => setType("together")}
         className={`text-[14px] w-[50%] py-3 rounded-[5px] font-medium ${
