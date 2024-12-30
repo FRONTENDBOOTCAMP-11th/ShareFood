@@ -17,7 +17,11 @@ interface UserInfo {
 }
 
 const SignUp: React.FC = () => {
-  const { register, handleSubmit } = useForm<UserInfo>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserInfo>();
 
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
