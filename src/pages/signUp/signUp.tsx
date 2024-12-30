@@ -6,6 +6,7 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import UserInfo from '../myPage/UserInfo';
 import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 
 // 서버에 넘길 데이터
 interface UserInfo {
@@ -21,7 +22,24 @@ const SignUp: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<UserInfo>();
+
+  // 비밀번호 확인
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const password = watch('password');
+
+  // 비밀번호, 비밀번호 확인 입력창이 변경될 때마다 렌더링 실행
+  // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
+  useEffect(() => {
+    if (confirmPassword && confirmPassword !== password) {
+      setPasswordError('비밀번호가 일치하지 않습니다.');
+    } else {
+      setPasswordError('');
+    }
+  }, [confirmPassword, password]);
 
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
@@ -113,8 +131,9 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호 확인"
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <Error text="text-[10px]">입력한 비밀번호와 맞지 않습니다</Error>
+          <Error text="text-[10px]">{passwordError}</Error>
         </section>
         <section
           className="bg-white p-4 rounded-[10px] 
