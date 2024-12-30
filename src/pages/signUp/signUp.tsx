@@ -92,9 +92,16 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호"
-            {...register('password')}
+            {...register('password', {
+              required: '비밀번호를 입력해 주세요.',
+              pattern: {
+                value: /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/,
+                message:
+                  '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
+              },
+            })}
           />
-          <Error text="text-[10px]">8자 이상 32자 이하 입력(공백 제외)</Error>
+          <Error text="text-[10px]">{errors.password?.message}</Error>
 
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
