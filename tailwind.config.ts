@@ -29,13 +29,17 @@ export default {
         // 모달 창 등장 애니메이션
         revealDown: {
           '0%': {
-            // 어디서부터 등장하는지?
-            transform: 'translate(-50%, 50%)',
+            transform: 'translate(0, 50%)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'translate(0, 0)',
+            opacity: '1',
           },
         },
       },
       animation: {
-        revealDown: 'revealDown 0.2s ease-in-out',
+        revealDown: 'revealDown 0.3s ease-in-out',
       },
     },
     fontFamily: {

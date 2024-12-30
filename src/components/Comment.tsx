@@ -1,11 +1,11 @@
 import CommentItem from './CommentItem';
 
 function Comment() {
-  const list = <CommentItem />;
 
   return (
-    <div>
-      {list}
+    <div className='flex flex-col gap-[16px]'>
+      <CommentItem />
+      <CommentItem />
       <CommentItem />
     </div>
   );
