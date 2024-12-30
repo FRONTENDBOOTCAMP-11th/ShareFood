@@ -89,7 +89,7 @@ const SignUp: React.FC = () => {
   // 휴대전화 번호 자동 하이픈
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    value = value.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    value = value.replace(/(\d{3})-(\d{4})-(\d{4})/, '$1-$2-$3');
 
     setPhone(value);
     e.target.value = value;
@@ -192,7 +192,7 @@ const SignUp: React.FC = () => {
             {...register('phone', {
               required: '휴대전화 번호를 입력해 주세요.',
               pattern: {
-                value: /^(\d{3})(\d{4})(\d{4})/,
+                value: /^(\d{3})-(\d{4})-(\d{4})/,
                 message: '휴대전화 번호 형식으로 입력해 주세요.',
               },
             })}
