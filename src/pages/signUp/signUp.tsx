@@ -23,6 +23,7 @@ const SignUp: React.FC = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    clearErrors,
   } = useForm<UserInfo>();
 
   // 비밀번호 확인
@@ -76,6 +77,10 @@ const SignUp: React.FC = () => {
     const { name, value } = e.target;
     e.target.value = value.replace(/\s/g, '');
 
+    if (name === 'password') {
+      clearErrors('password');
+    }
+
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
     }
@@ -88,6 +93,7 @@ const SignUp: React.FC = () => {
 
     setPhone(value);
     e.target.value = value;
+    clearErrors('phone');
   };
 
   return (
