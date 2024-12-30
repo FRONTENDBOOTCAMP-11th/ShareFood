@@ -14,14 +14,14 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
-import map from '/images/tag/location.svg';
-import time from '/images/tag/time.svg';
-import member from '/images/tag/member.svg';
+import { useNavigate } from 'react-router-dom';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
   const typeSell: string = 'sell';
   const typeBuy: string = 'buy';
+
+  const navigate = useNavigate();
 
   // 관심 및 댓글의 수
   const [interest, setInterest] = useState(7);
@@ -64,69 +64,59 @@ const Detail = () => {
             포도 함께 사실 분~!
           </h1>
         </div>
-        <button className="fixed right-[17px]">
+        <button onClick={() => navigate(-1)} className="fixed right-[17px]">
           <img src={close} alt="Close Icon" className="w-5 h-5" />
-          {/* X 버튼 누를 시 이번트 설정 必 */}
         </button>
       </Header>
 
       {/* 이미지 슬라이드 */}
       <ImageSlideDetail />
 
-      <div className="main">
-        <div className="board-info">
-          <div className="board-title flex mt-4 pl-7 pr-6">
-            <h1 className="grow font-bold text-xl">포도 함께 사실 분~!</h1>
-            <PostType type={typeBuy} />
-          </div>
-          <div className="board-author flex mt-6 items-center">
-            <img src={basicImage} alt="기본 이미지" className="ml-7" />
-            <h2 className="grow ml-3 font-medium text-sm">닉네임</h2>
-            <div className="mr-5 border w-[60px] h-[25px] border-main rounded-full">
-              <p className="w-fit mx-auto text-xs font-normal text-main leading-6">
-                서울
-              </p>
-            </div>
-          </div>
-          <div className="board-transinfo mt-[26px] ml-[28px] flex flex-col gap-y-3">
-            <div className="location flex border-l-2">
-              <img
-                src={map}
-                alt="장소"
-                className="ml-[7px] mr-[9.5px] w-[16px] h-[20px]"
-              />
-              <p>공릉2동 주공아파트 3단지 놀이터 앞</p>
-            </div>
-            <div className="time flex border-l-2">
-              <img src={time} alt="시간" className="ml-[7px] mr-[9.5px]" />
-              <p>10:00</p>
-            </div>
-            <div className="member flex border-l-2">
-              <img
-                src={member}
-                alt="구매자 현황"
-                className="ml-[7px] mr-[9.5px]"
-              />
-              <p>2 / 10</p>
-            </div>
-          </div>
-          <div className="board-content mt-[18px] mx-[28px] mb-[22px]">
-            <p className="whitespace-pre-wrap">
-              상태 좋고 맛있어요
-              <br />
-              얼른 가져가세요 ~
+      <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
+        <div className="flex">
+          <h1 className="grow font-bold text-xl">포도 함께 사실 분~!</h1>
+          <PostType type={typeBuy} />
+        </div>
+
+        <div className="board-author flex items-center">
+          <img src={basicImage} alt="기본 이미지" />
+          <h2 className="grow ml-3 font-medium text-sm">닉네임</h2>
+          <div className="border border-main rounded-full px-5 py-[1px]">
+            <p className="text-xs font-normal text-main leading-6 text-center">
+              서울
             </p>
           </div>
-          <Total
-            interest={interest}
-            setInterest={setInterest}
-            commentNum={commentNum}
-          />
         </div>
-        <div className="board-attach">
-          <div className="attach-title mx-[26px] mt-[16px] mb-[18px]">
-            <h1 className="text-base font-bold">댓글</h1>
+
+        <div className="board-transinfo flex flex-col gap-[10px]">
+          <div className="border-l-2 pl-[10px]">
+            <Tag
+              children={'공릉2동 주공아파트 3단지 놀이터 앞'}
+              tagName={'location'}
+            />
           </div>
+          <div className="border-l-2 pl-[10px]">
+            <Tag children={'10:00'} tagName={'time'} />
+          </div>
+          <div className="border-l-2 pl-[10px]">
+            <Tag children={'2 / 10'} tagName={'member'} />
+          </div>
+        </div>
+
+        <p className="whitespace-pre-wrap text-[15px]">
+          상태 좋고 맛있어요
+          <br />
+          얼른 가져가세요 ~
+        </p>
+
+        <Total
+          interest={interest}
+          setInterest={setInterest}
+          commentNum={commentNum}
+        />
+
+        <div className="board-attach">
+          <h2 className="text-base font-bold mb-[15px]">댓글</h2>
           <Comment />
           <CommentAdd />
           <Button
@@ -134,12 +124,12 @@ const Detail = () => {
             text="text-sm"
             bg="main"
             color="white"
-            // handleModal 변수에 따라서 모달 내용 변경되게
             onClick={() => handleModal(typeBuy)}
           >
             공구하기
           </Button>
         </div>
+
         {viewPayment && (
           <Modal setViewPayment={setViewPayment}>
             {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
