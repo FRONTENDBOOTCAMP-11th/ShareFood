@@ -21,6 +21,16 @@ const Detail = () => {
   const typeSell: string = 'sell';
   const typeBuy: string = 'buy';
 
+  const axios = axiosInstance;
+  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ 일단 임시로 7
+  const postNum: number = 3;
+  const { data } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => axios.get(`/posts/${postNum}`),
+    select: (res) => res.data,
+    staleTime: 1000 * 10,
+  });
+
   const navigate = useNavigate();
 
   // 관심 및 댓글의 수
@@ -42,15 +52,6 @@ const Detail = () => {
     setViewPayment(true);
   };
 
-  const axios = axiosInstance;
-  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ 일단 임시로 7
-  const postNum: number = 7;
-  const { data } = useQuery({
-    queryKey: ['posts'],
-    queryFn: () => axios.get(`/posts/${postNum}`),
-    select: (res) => res.data,
-    staleTime: 1000 * 10,
-  });
   if (!data) {
     return <div>로딩중...</div>;
   }
