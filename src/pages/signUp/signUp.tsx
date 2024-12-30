@@ -28,6 +28,7 @@ const SignUp: React.FC = () => {
   // 비밀번호 확인
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [phone, setPhone] = useState('휴대전화 번호');
 
   const password = watch('password');
 
@@ -78,6 +79,15 @@ const SignUp: React.FC = () => {
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
     }
+  };
+
+  // 휴대전화 번호 자동 하이픈
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    value = value.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+
+    setPhone(value);
+    e.target.value = value;
   };
 
   return (
@@ -172,7 +182,7 @@ const SignUp: React.FC = () => {
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
-            placeholder="휴대전화 번호"
+            placeholder={phone}
             {...register('phone', {
               required: '휴대전화 번호를 입력해 주세요.',
               pattern: {
@@ -180,6 +190,7 @@ const SignUp: React.FC = () => {
                 message: '휴대전화 번호 형식으로 입력해 주세요.',
               },
             })}
+            onChange={handlePhoneChange}
           />
           <Error text="text-[10px]">{errors.phone?.message}</Error>
         </section>
