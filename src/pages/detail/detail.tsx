@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Header from '../../components/Header';
@@ -9,6 +10,7 @@ import CommentAdd from '../../components/CommentAdd';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Tag from '../../components/Tag';
+import { axiosInstance } from '../../hooks/axiosInstance';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
@@ -39,6 +41,20 @@ const Detail = () => {
     setContent(contentType);
     setViewPayment(true);
   };
+
+  const axios = axiosInstance;
+  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ 일단 임시로 7
+  const postNum: number = 7;
+  const { data } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => axios.get(`/posts/${postNum}`),
+    select: (res) => res.data,
+    staleTime: 1000 * 10,
+  });
+  if (!data) {
+    return <div>로딩중...</div>;
+  }
+  console.log(data);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen">
