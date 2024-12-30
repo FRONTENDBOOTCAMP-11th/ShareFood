@@ -137,7 +137,7 @@ const Detail = () => {
                     공릉2동 주공아파트 3단지 놀이터 앞
                   </Tag>
                   <Tag tagName="time">10:00</Tag>
-                  <Tag tagName="people">2/10</Tag>
+                  <Tag tagName="member">2/10</Tag>
                 </div>
                 <Button bg="main" color="white" height="40px" text="text-sm">
                   공구하기
@@ -169,25 +169,25 @@ const Detail = () => {
               <div>
                 <h2 className="mb-3">구매 신청자 목록</h2>
                 <div className="flex flex-col gap-5">
-                  <Tag tagName="people">2/10</Tag>
+                  <Tag tagName="member">2/10</Tag>
                   <ul className="mr-7 flex flex-col gap-3">
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">장유진</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">이선재</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">이현종</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
                     <li className="flex items-center gap-3">
-                      <img src="images/logos/default_image.svg" />
+                      <img src="images/chef/greenChef.svg" />
                       <p className="grow text-left">김건우</p>
                       <Tag tagName="item">1/6</Tag>
                     </li>
