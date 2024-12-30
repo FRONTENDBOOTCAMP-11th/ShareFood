@@ -1,8 +1,33 @@
+import { useForm } from 'react-hook-form';
 import Button from '../../components/Button';
 import Error from '../../components/Error';
 import LoginSignupTitle from '../../components/LoginSignupTitle';
+import { axiosInstance } from '../../hooks/axiosInstance';
+import { useMutation } from '@tanstack/react-query';
+import UserInfo from '../myPage/UserInfo';
+
+interface UserInfo {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  nickname: string;
+  phoneNumber: string;
+  type?: string;
+}
 
 const SignUp: React.FC = () => {
+  const { register, handleSubmit } = useForm<UserInfo>();
+
+  const addUser = useMutation({
+    mutationFn: async (userInfo: UserInfo) => {
+      userInfo.type = 'user';
+
+      console.log(UserInfo);
+
+      return axiosInstance.post(`/users`, userInfo);
+    },
+  });
+
   return (
     <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
@@ -12,7 +37,12 @@ const SignUp: React.FC = () => {
         [&_input]:h-[26px] text-xs"
         >
           <div className="flex items-center border-b-[1px] border-line2 mb-1">
-            <input className="grow" type="text" placeholder="아이디(이메일)" />
+            <input
+              className="grow"
+              type="text"
+              placeholder="아이디(이메일)"
+              {...register('email')}
+            />
             <Button
               bg="main"
               color="white"
@@ -29,6 +59,7 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호"
+            {...register('password')}
           />
           <Error text="text-[10px]">8자 이상 32자 이하 입력(공백 제외)</Error>
 
@@ -36,6 +67,7 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호 확인"
+            {...register('confirmPassword')}
           />
           <Error text="text-[10px]">입력한 비밀번호와 맞지 않습니다</Error>
         </section>
@@ -44,7 +76,12 @@ const SignUp: React.FC = () => {
         [&_input:focus]:outline-none [&_input]:h-[26px] text-xs"
         >
           <div className="flex items-center border-b-[1px] border-line2 mb-1">
-            <input className="grow" type="text" placeholder="닉네임" />
+            <input
+              className="grow"
+              type="text"
+              placeholder="닉네임"
+              {...register('nickname')}
+            />
             <Button
               bg="main"
               color="white"
@@ -60,6 +97,7 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
             placeholder="휴대전화 번호"
+            {...register('phoneNumber')}
           />
           <Error text="text-[10px]">휴대전화 번호 형식으로 입력해주세요</Error>
         </section>
