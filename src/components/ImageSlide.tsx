@@ -53,7 +53,7 @@ export const ImageSlide = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-full max-w-[1000px] overflow-hidden">
+      <div className="relative w-full max-w-[1000px] overflow-hidden z-2">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{

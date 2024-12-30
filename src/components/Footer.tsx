@@ -25,7 +25,7 @@ export default function Footer() {
     },
   ];
 
-  return location.pathname === '/' ? (
+  return ['/', '/login', '/sign-up'].includes(location.pathname) ? (
     <></>
   ) : (
     <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 max-w-md w-full bg-white h-[86px] flex justify-around items-center px-4 z-10 rounded-tl-[10px] rounded-tr-[10px] shadow-custom">

@@ -35,7 +35,7 @@ export default {
         },
       },
       animation: {
-        revealDown: 'revealDown 1s ease-in-out',
+        revealDown: 'revealDown 0.2s ease-in-out',
       },
     },
     fontFamily: {
