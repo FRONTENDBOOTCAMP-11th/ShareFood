@@ -5,12 +5,13 @@ import LoginSignupTitle from '../../components/LoginSignupTitle';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import UserInfo from '../myPage/UserInfo';
+import { AxiosError } from 'axios';
 
 interface UserInfo {
   email: string;
   password: string;
   confirmPassword: string;
-  nickname: string;
+  name: string;
   phoneNumber: string;
   type?: string;
 }
@@ -22,16 +23,35 @@ const SignUp: React.FC = () => {
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'user';
 
-      console.log(UserInfo);
+      console.log(userInfo);
 
-      return axiosInstance.post(`/users`, userInfo);
+      try {
+        const response = await axiosInstance.post(`/users`, userInfo);
+        console.log('Response:', response.data); // 응답 데이터 로그
+        return response.data;
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response) {
+          console.log('Error Response:', axiosError.response.data); // 에러 응답 데이터 로그
+        } else {
+          console.error('Error:', error);
+        }
+        throw error;
+      }
     },
   });
+
+  const onSubmit = (data: UserInfo) => {
+    addUser.mutate(data);
+  };
 
   return (
     <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
-      <div className="flex flex-col gap-2 mb-14">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-2 mb-14"
+      >
         <section
           className="bg-white p-4 rounded-[10px] [&_input:focus]:outline-none 
         [&_input]:h-[26px] text-xs"
@@ -80,7 +100,7 @@ const SignUp: React.FC = () => {
               className="grow"
               type="text"
               placeholder="닉네임"
-              {...register('nickname')}
+              {...register('name')}
             />
             <Button
               bg="main"
@@ -101,10 +121,16 @@ const SignUp: React.FC = () => {
           />
           <Error text="text-[10px]">휴대전화 번호 형식으로 입력해주세요</Error>
         </section>
-      </div>
-      <Button bg="white" color="main" height="40px" text="text-sm">
-        회원가입
-      </Button>
+        <Button
+          type="submit"
+          bg="white"
+          color="main"
+          height="40px"
+          text="text-sm"
+        >
+          회원가입
+        </Button>
+      </form>
     </div>
   );
 };
