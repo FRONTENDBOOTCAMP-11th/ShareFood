@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import Button from '../../components/Button';
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 import Layout from '../../components/Layout';
 
 import arrow from '/images/arrow/prevArrow.svg';

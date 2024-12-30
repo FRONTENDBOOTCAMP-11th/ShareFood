@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-import Header from "../../components/Header";
-import TypeSelector from "../../components/TypeSelector";
-import List from "../../components/List";
+import Header from '../../components/Layout/Header';
+import TypeSelector from '../../components/TypeSelector';
+import List from '../../components/List';
 import PrevIcon from '/images/arrow/prevArrow.svg';
 import SearchIcon from '/images/icons/search.svg';
 
@@ -19,42 +19,36 @@ const SearchList: React.FC = () => {
 
   return (
     <>
-      <div className='pt-14 bg-back1 h-screen flex flex-col'>
+      <div className="pt-14 bg-back1 h-screen flex flex-col">
         {/* 헤더 */}
         <Header>
-          <div className='flex items-center justify-between w-full px-4'>
+          <div className="flex items-center justify-between w-full px-4">
             {/* 뒤로가기 버튼 */}
             <button
-              type='button'
-              aria-label='뒤로가기'
-              className='transition-colors hover:text-main' // hover 시 main 색상으로 변경
+              type="button"
+              aria-label="뒤로가기"
+              className="transition-colors hover:text-main" // hover 시 main 색상으로 변경
               onClick={handlePrevClick}
             >
-              <img
-                src={PrevIcon}
-                alt='뒤로가기'
-                className='h-6 w-6'
-              />
+              <img src={PrevIcon} alt="뒤로가기" className="h-6 w-6" />
             </button>
-            <span className='text-line1 text-lg font-medium'>검색어를 입력하세요</span>
+            <span className="text-line1 text-lg font-medium">
+              검색어를 입력하세요
+            </span>
             {/* 검색 버튼 */}
             <button
-              type='button'
-              aria-label='검색'
-              className='transition-colors text-line1 hover:text-main' // 기본은 line1, hover 시 main 색상
+              type="button"
+              aria-label="검색"
+              className="transition-colors text-line1 hover:text-main" // 기본은 line1, hover 시 main 색상
               onClick={handleSearchClick}
             >
-              <img
-                src={SearchIcon}
-                alt='검색'
-                className='w-5 h-5'
-              />
+              <img src={SearchIcon} alt="검색" className="w-5 h-5" />
             </button>
           </div>
         </Header>
         <div className="px-4 flex flex-col gap-[10px] mt-4">
           <TypeSelector />
-          <div className='flex flex-col gap-[14px]'>
+          <div className="flex flex-col gap-[14px]">
             <List
               title={'포도 두 송이 남는데 구매하실 분~'}
               type={'buy'}
@@ -83,7 +77,7 @@ const SearchList: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default SearchList;

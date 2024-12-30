@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 import { ImageSlide } from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
@@ -12,9 +12,25 @@ import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 
+// images
+import banner1 from '/images/banner/banner1.png';
+import banner2 from '/images/banner/banner2.png';
+
 const Main = () => {
   const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
+
+  // 배너
+  const images = [banner1, banner2, banner1, banner2];
+  const handleImage1Click = () => {
+    window.open(
+      'https://blog.naver.com/kies84/223697413966?photoView=2',
+      '_blank',
+    );
+  };
+  const handleImage2Click = () => alert('Image 2 Clicked!');
+  const handleImage3Click = () => alert('Image 3 Clicked!');
+  const handleImage4Click = () => alert('Image 4 Clicked!');
 
   return (
     <div className="pt-14 pb-[100px] bg-back1">
@@ -34,7 +50,16 @@ const Main = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <ImageSlide />
+      <ImageSlide
+        imageList={images}
+        autoSlide={true}
+        onClickHandler={[
+          handleImage1Click,
+          handleImage2Click,
+          handleImage3Click,
+          handleImage4Click,
+        ]}
+      />
 
       {/* 게시글 목록 */}
       <div className="px-[17px] mt-[10px] flex flex-col gap-[10px]">

@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 
-// images
-import banner1 from '/images/banner/banner1.png';
-import banner2 from '/images/banner/banner2.png';
+interface ImageSlidePropsType {
+  imageList: string[];
+  autoSlide: boolean;
+  onClickHandler?: (() => void)[];
+}
 
-export const ImageSlide = () => {
-  const images = [banner1, banner2, banner1, banner2];
+export const ImageSlide = ({
+  imageList,
+  autoSlide,
+  onClickHandler,
+}: ImageSlidePropsType) => {
   // 현재 슬라이드 인덱스
   const [currentIndex, setCurrentIndex] = useState(0);
   // 애니메이션 진행상황
@@ -13,11 +18,12 @@ export const ImageSlide = () => {
 
   // 2초마다 슬라이드 전환
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext();
-    }, 3000);
-
-    return () => clearInterval(interval);
+    if (autoSlide) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, 3000);
+      return () => clearInterval(interval);
+    }
   }, [currentIndex]);
 
   // 이전 슬라이드로 이동
@@ -31,7 +37,7 @@ export const ImageSlide = () => {
     // 첫장이면 마지막 슬라이드로, 아니면 이전 슬라이드로
     setTimeout(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === 0 ? images.length - 1 : prevIndex - 1
+        prevIndex === 0 ? imageList.length - 1 : prevIndex - 1,
       );
       setIsAnimating(false);
     }, 500);
@@ -45,52 +51,51 @@ export const ImageSlide = () => {
 
     setTimeout(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+        prevIndex === imageList.length - 1 ? 0 : prevIndex + 1,
       );
       setIsAnimating(false);
     }, 500);
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-full max-w-[1000px] overflow-hidden z-2">
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{
-            transform: `translateX(-${currentIndex * 100}%)`,
-          }}
-        >
-          {images.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`slide-${index}`}
-              className="w-full h-full object-contain"
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={handlePrev}
-          className="absolute left-[13px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
-        ></button>
-
-        <button
-          onClick={handleNext}
-          className="absolute right-[13px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
-        ></button>
-
-        <div className="flex gap-2 absolute bottom-[14px] left-1/2 transform -translate-x-1/2">
-          {images.map((_, index) => (
-            <div
-              key={index}
-              className={`w-[10px] h-[10px] rounded-full ${
-                index === currentIndex ? 'bg-white' : 'bg-line1'
-              }`}
-            ></div>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col items-center bg-back1">
+  <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[375px]">
+    <div
+      className="flex transition-transform duration-500 ease-in-out"
+      style={{
+        transform: `translateX(-${currentIndex * 100}%)`,
+      }}
+    >
+      {imageList.map((image, index) => (
+        <img
+          key={index}
+          src={image}
+          alt={`slide-${index}`}
+          className="w-full h-full max-h-[375px] object-cover"
+          onClick={onClickHandler && onClickHandler[index] ? onClickHandler[index] : undefined}
+        />
+      ))}
     </div>
+    <button
+      onClick={handlePrev}
+      className="absolute left-[13px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+    ></button>
+    <button
+      onClick={handleNext}
+      className="absolute right-[13px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+    ></button>
+    <div className="flex gap-2 absolute bottom-[14px] left-1/2 transform -translate-x-1/2">
+      {imageList.map((_, index) => (
+        <div
+          key={index}
+          className={`w-[10px] h-[10px] rounded-full ${
+            index === currentIndex ? 'bg-white' : 'bg-line1'
+          }`}
+        ></div>
+      ))}
+    </div>
+  </div>
+</div>
+
   );
 };

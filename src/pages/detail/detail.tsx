@@ -1,18 +1,22 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { ImageSlideDetail } from '../../components/ImageSlideDetail';
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 import Total from '../../components/Total';
 import PostType from '../../components/PostType';
-import Comment from '../../components/Comment';
-import CommentAdd from '../../components/CommentAdd';
+import Comment from '../../components/Comment/Comment';
+import CommentAdd from '../../components/Comment/CommentAdd';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Tag from '../../components/Tag';
+import { ImageSlide } from '../../components/ImageSlide';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
-import { useNavigate } from 'react-router-dom';
+
+// images
+import grape1 from '/images/sample/grape1.jpg';
+import grape2 from '/images/sample/grape2.jpg';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
@@ -20,6 +24,8 @@ const Detail = () => {
   const typeBuy: string = 'buy';
 
   const navigate = useNavigate();
+
+  const images = [grape1, grape2, grape1, grape2];
 
   // 관심 및 댓글의 수
   const [interest, setInterest] = useState(7);
@@ -54,7 +60,9 @@ const Detail = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <ImageSlideDetail />
+      <div className='max-h-[375px] overflow-hidden'>
+        <ImageSlide imageList={images} autoSlide={false} />
+      </div>
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
