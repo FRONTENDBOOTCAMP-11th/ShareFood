@@ -4,7 +4,7 @@ import LoginSignupTitle from '../../components/LoginSignupTitle';
 
 const SignUp: React.FC = () => {
   return (
-    <div className="flex flex-col px-4 bg-main py-[120px] my-10 rounded-[10px]">
+    <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
       <div className="flex flex-col gap-2 mb-14">
         <section
