@@ -12,7 +12,7 @@ function Modal({ setViewPayment, children }: props) {
   };
 
   return (
-    <div className="fixed justify-normal top-0 left-50 w-[448px] h-full bg-black bg-opacity-20 overflow-hidden">
+    <div className="fixed z-11 justify-normal top-0 left-50 w-[448px] h-full bg-black bg-opacity-20 overflow-hidden">
       <div className="absolute bottom-1/3 left-1/2 w-[400px] p-5 bg-white rounded shadow transform -translate-x-1/2 animate-revealDown ">
         <button
           className="fixed top-4 right-4 size-6 text-3xl text-neutral-50 cursor-pointer"
@@ -20,7 +20,6 @@ function Modal({ setViewPayment, children }: props) {
         >
           <img src="images/icons/close.svg" />
         </button>
-        {/* 아래부터 모달 내용 */}
         {children}
       </div>
     </div>
