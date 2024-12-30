@@ -12,9 +12,6 @@ import Tag from '../../components/Tag';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
-import map from '/images/tag/location.svg';
-import time from '/images/tag/time.svg';
-import member from '/images/tag/member.svg';
 import { useNavigate } from 'react-router-dom';
 
 const Detail = () => {
