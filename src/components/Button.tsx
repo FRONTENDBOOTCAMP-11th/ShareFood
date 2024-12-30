@@ -6,6 +6,7 @@ interface Props {
   bg?: string; // 버튼 배경색
   color?: string; // 버튼 글자색
   border?: string; // 버튼 border
+  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type']; // 버튼 type 지정
   onClick?: React.MouseEventHandler<HTMLButtonElement>; // 클릭 이벤트
 }
 
@@ -17,6 +18,7 @@ const Button: React.FC<Props> = ({
   bg = 'white', // 버튼 기본 배경색 - 흰색
   color = 'black', // 버튼 기본 글자색 - 검정색
   border,
+  type = 'button',
   onClick,
 }) => {
   // 가로, 세로 값
@@ -45,7 +47,7 @@ const Button: React.FC<Props> = ({
   return (
     <>
       <button
-        type="button"
+        type={type}
         style={styles}
         className={`rounded-[10px] font-sans shadow-button font-semibold 
           ${text} ${border} ${bgColor[bg]} ${textColor[color]}`}
