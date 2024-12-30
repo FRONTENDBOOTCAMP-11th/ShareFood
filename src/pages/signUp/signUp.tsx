@@ -52,6 +52,11 @@ const SignUp: React.FC = () => {
     addUser.mutate(data);
   };
 
+  // input창 공백 입력 제거
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value.replace(/\s/g, '');
+  };
+
   return (
     <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
@@ -100,6 +105,7 @@ const SignUp: React.FC = () => {
                   '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
               },
             })}
+            onChange={handlePasswordChange}
           />
           <Error text="text-[10px]">{errors.password?.message}</Error>
 
