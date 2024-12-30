@@ -192,7 +192,7 @@ const SignUp: React.FC = () => {
             {...register('phone', {
               required: '휴대전화 번호를 입력해 주세요.',
               pattern: {
-                value: /^(\d{3})(\d{4})(\d{4})/,
+                value: /^(\d{3})-(\d{4})-(\d{4})/,
                 message: '휴대전화 번호 형식으로 입력해 주세요.',
               },
             })}
