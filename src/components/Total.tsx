@@ -39,7 +39,7 @@ function Total({ interest, setInterest, commentNum }: TotalProps) {
         </p>
       </div>
       <div>
-        <hr className="w-88 mt-3 h-[1.2px] bg-main" />
+        <hr className="w-88 mt-3 h-[1px] bg-main border-0" />
       </div>
     </div>
   );
