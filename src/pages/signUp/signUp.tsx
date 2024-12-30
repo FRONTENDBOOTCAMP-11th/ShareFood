@@ -7,13 +7,13 @@ import { useMutation } from '@tanstack/react-query';
 import UserInfo from '../myPage/UserInfo';
 import { AxiosError } from 'axios';
 
+// 서버에 넘길 데이터
 interface UserInfo {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
-  phoneNumber: string;
-  type?: string;
+  email: string; // 이메일(ID)
+  password: string; // 비밀번호
+  name: string; // 닉네임
+  phone: string; // 전화번호
+  type?: string; // data 타입 => user로 지정
 }
 
 const SignUp: React.FC = () => {
@@ -21,15 +21,17 @@ const SignUp: React.FC = () => {
 
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
-      userInfo.type = 'user';
+      userInfo.type = 'user'; // 데이터 타입 지정
 
       console.log(userInfo);
 
       try {
+        // 응답 성공 시
         const response = await axiosInstance.post(`/users`, userInfo);
         console.log('Response:', response.data); // 응답 데이터 로그
         return response.data;
       } catch (error) {
+        // 응답 실패 시
         const axiosError = error as AxiosError;
         if (axiosError.response) {
           console.log('Error Response:', axiosError.response.data); // 에러 응답 데이터 로그
@@ -41,6 +43,7 @@ const SignUp: React.FC = () => {
     },
   });
 
+  // onSubmit에 사용
   const onSubmit = (data: UserInfo) => {
     addUser.mutate(data);
   };
@@ -87,7 +90,6 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="password"
             placeholder="비밀번호 확인"
-            {...register('confirmPassword')}
           />
           <Error text="text-[10px]">입력한 비밀번호와 맞지 않습니다</Error>
         </section>
@@ -117,7 +119,7 @@ const SignUp: React.FC = () => {
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
             placeholder="휴대전화 번호"
-            {...register('phoneNumber')}
+            {...register('phone')}
           />
           <Error text="text-[10px]">휴대전화 번호 형식으로 입력해주세요</Error>
         </section>
