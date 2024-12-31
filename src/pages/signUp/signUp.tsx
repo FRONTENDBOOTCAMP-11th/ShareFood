@@ -30,8 +30,12 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [phone, setPhone] = useState('휴대전화 번호');
+  const [emailDuplicationError, setEmailDuplicationError] = useState('');
+  const [nameDuplicationError, setNameDuplicationError] = useState('');
 
   const password = watch('password');
+  const email = watch('email');
+  const name = watch('name');
 
   // 비밀번호, 비밀번호 확인 입력창이 변경될 때마다 렌더링 실행
   // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
@@ -96,6 +100,25 @@ const SignUp: React.FC = () => {
     clearErrors('phone');
   };
 
+  const duplication = async (type: 'email' | 'name') => {
+    const value = type === 'email' ? email : name;
+    const res = await axiosInstance.get(`/users?${type}=${value}`);
+    return { type, isDuplicate: res.data.item.length > 0 };
+  };
+
+  const handleDuplication = async (type: 'email' | 'name') => {
+    const result = await duplication(type);
+    if (result.type === 'email') {
+      setEmailDuplicationError(
+        result.isDuplicate ? '이미 존재하는 아이디입니다.' : '',
+      );
+    } else {
+      setNameDuplicationError(
+        result.isDuplicate ? '이미 존재하는 닉네임입니다.' : '',
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
@@ -126,11 +149,14 @@ const SignUp: React.FC = () => {
               text="text-[10px]"
               width="53px"
               height="22px"
+              onClick={() => handleDuplication('email')}
             >
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">{errors.email?.message}</Error>
+          <Error text="text-[10px]">
+            {errors.email?.message || emailDuplicationError}
+          </Error>
 
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
@@ -180,11 +206,14 @@ const SignUp: React.FC = () => {
               text="text-[10px]"
               width="53px"
               height="22px"
+              onClick={() => handleDuplication('name')}
             >
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">{errors.name?.message}</Error>
+          <Error text="text-[10px]">
+            {errors.name?.message || nameDuplicationError}
+          </Error>
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
