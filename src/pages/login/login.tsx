@@ -44,7 +44,11 @@ const Login: React.FC = () => {
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
-      if (error.response?.status === 422) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status < 500
+      ) {
         setError('email', {
           message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오',
         });
