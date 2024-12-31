@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
 import Select from '../../components/Select';
 
@@ -41,7 +41,7 @@ const Write = () => {
                 placeholder="제목을 입력해주세요."
               />
             </div>
-            <Error children={'* 제목은 필수입니다'}/>
+            <Error children={'* 제목은 필수입니다'} />
           </div>
 
           <div className="info-location">
@@ -49,7 +49,7 @@ const Write = () => {
               <p className="font-semibold">공구 위치 </p>
               <Select />
             </div>
-            <Error children={'* 공구 위치를 선택해주세요.'}/>
+            <Error children={'* 공구 위치를 선택해주세요.'} />
           </div>
 
           <div className="info-location-detail">
@@ -61,7 +61,7 @@ const Write = () => {
                 placeholder="거래 상세 위치를 입력해주세요."
               />
             </div>
-            <Error children={'* 상세 위치는 필수입니다.'}/>
+            <Error children={'* 상세 위치는 필수입니다.'} />
           </div>
 
           <div className="info-time">
@@ -73,7 +73,7 @@ const Write = () => {
                 placeholder="마감 시간을 입력해주세요."
               />
             </div>
-            <Error children={'* 마감시간은 필수입니다'}/>
+            <Error children={'* 마감시간은 필수입니다'} />
           </div>
 
           <div className="info-content mt-[20px] mb-[10px]">
@@ -84,7 +84,7 @@ const Write = () => {
               className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
               placeholder="상품에 대한 설명을 적어주세요!"
             />
-            <Error children={'* 내용은 필수입니다'}/>
+            <Error children={'* 내용은 필수입니다'} />
           </div>
           <Button bg="main" color="white" height="40px" text="text-sm">
             작성 완료
