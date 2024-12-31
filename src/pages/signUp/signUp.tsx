@@ -97,11 +97,11 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col px-4 bg-main py-[120px] rounded-[10px]">
+    <div className="flex flex-col px-4 justify-center bg-main min-h-screen">
       <LoginSignupTitle>회원가입</LoginSignupTitle>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 mb-14"
+        className="flex flex-col gap-2 mt-6 mb-20"
       >
         <section
           className="bg-white p-4 rounded-[10px] [&_input:focus]:outline-none 
@@ -192,7 +192,7 @@ const SignUp: React.FC = () => {
             {...register('phone', {
               required: '휴대전화 번호를 입력해 주세요.',
               pattern: {
-                value: /^(\d{3})(\d{4})(\d{4})/,
+                value: /^(\d{3})-(\d{4})-(\d{4})$/,
                 message: '휴대전화 번호 형식으로 입력해 주세요.',
               },
             })}
