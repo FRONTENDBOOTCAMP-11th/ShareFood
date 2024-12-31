@@ -32,6 +32,8 @@ const SignUp: React.FC = () => {
   const [phone, setPhone] = useState('휴대전화 번호');
   const [emailDuplicationError, setEmailDuplicationError] = useState('');
   const [nameDuplicationError, setNameDuplicationError] = useState('');
+  const [isEmailUnique, setIsEmailUnique] = useState(false);
+  const [isNameUnique, setIsNameUnique] = useState(false);
 
   const password = watch('password');
   const email = watch('email');
@@ -73,7 +75,16 @@ const SignUp: React.FC = () => {
 
   // onSubmit에 사용
   const onSubmit = (data: UserInfo) => {
-    addUser.mutate(data);
+    if (isEmailUnique && isNameUnique) {
+      addUser.mutate(data);
+    } else {
+      if (!isEmailUnique) {
+        setEmailDuplicationError('다른 아이디를 입력해 주세요.');
+      }
+      if (!isNameUnique) {
+        setNameDuplicationError('다른 닉네임을 입력해 주세요.');
+      }
+    }
   };
 
   // input창 공백 입력 제거
@@ -112,10 +123,12 @@ const SignUp: React.FC = () => {
       setEmailDuplicationError(
         result.isDuplicate ? '이미 존재하는 아이디입니다.' : '',
       );
+      setIsEmailUnique(!result.isDuplicate);
     } else {
       setNameDuplicationError(
         result.isDuplicate ? '이미 존재하는 닉네임입니다.' : '',
       );
+      setIsNameUnique(!result.isDuplicate);
     }
   };
 
