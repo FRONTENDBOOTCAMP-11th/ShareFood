@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import Header from '../../components/Layout/Header';
 import Total from '../../components/Total';
@@ -9,15 +10,12 @@ import CommentAdd from '../../components/Comment/CommentAdd';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Tag from '../../components/Tag';
-import { ImageSlide } from '../../components/ImageSlide';
 import { axiosInstance } from '../../hooks/axiosInstance';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
 
-// images
-import grape1 from '/images/sample/grape1.jpg';
-import grape2 from '/images/sample/grape2.jpg';
+import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
@@ -36,8 +34,6 @@ const Detail = () => {
   });
 
   const navigate = useNavigate();
-
-  const images = [grape1, grape2, grape1, grape2];
 
   // 관심 및 댓글의 수
   const [interest, setInterest] = useState(7);
@@ -76,8 +72,8 @@ const Detail = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <div className="max-h-[375px] overflow-hidden">
-        <ImageSlide imageList={images} autoSlide={false} />
+      <div className="max-w-[448px] min-h-[212px] overflow-hidden">
+        <ImageSlideDetail imageList={data.item.mainImages} autoSlide={false} />
       </div>
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
@@ -87,7 +83,15 @@ const Detail = () => {
         </div>
 
         <div className="board-author flex items-center">
-          <img src={basicImage} alt="기본 이미지" />
+          <img
+            className="w-[38px] h-[38px] rounded-full"
+            src={
+              data.item.seller.image
+                ? `https://11.fesp.shop${data.item.seller.image}`
+                : basicImage
+            }
+            alt="기본 이미지"
+          />
           <h2 className="grow ml-3 font-medium text-sm">
             {data.item.seller.name}
           </h2>
