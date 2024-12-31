@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useForm } from 'react-hook-form';
+import { AxiosError } from 'axios';
 
 interface FormData {
   email: string;
@@ -17,6 +18,7 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<FormData>();
 
   const navigate = useNavigate();
@@ -29,23 +31,31 @@ const Login: React.FC = () => {
     setActive((active) => (active === 'inactive' ? 'active' : 'inactive'));
   };
 
+  // 로그인 기능
   const login = useMutation({
     mutationFn: async (formData: FormData) => {
-      try {
-        const res = await axiosInstance.post('/users/login', formData);
-        return res.data;
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
+      const res = await axiosInstance.post('/users/login', formData);
+      return res.data;
     },
     onSuccess: (res) => {
       console.log(res);
       alert(`${res.item.name} 님 환영합니다.`);
       navigate('/main');
     },
+    onError: (error: AxiosError) => {
+      console.log('Error occurred:', error);
+      if (error.response?.status === 422) {
+        setError('email', {
+          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오',
+        });
+        setError('password', {
+          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오',
+        });
+      }
+    },
   });
 
+  // onSubmit에 사용하기 위함
   const onSubmit = (data: FormData) => {
     login.mutate(data);
   };
@@ -63,17 +73,13 @@ const Login: React.FC = () => {
               className="mb-4"
               type="email"
               placeholder="아이디(이메일)"
-              {...register('email', {
-                required: '아이디(이메일), 비밀번호를 확인해 주십시오.',
-              })}
+              {...register('email')}
             />
             <input
               className="mb-2"
               type="password"
               placeholder="비밀번호"
-              {...register('password', {
-                required: '아이디(이메일), 비밀번호를 확인해 주십시오.',
-              })}
+              {...register('password')}
             />
             <Error>{errors.email?.message || errors.password?.message}</Error>
             <label className="mt-6 flex items-center gap-2 w-fit hover:cursor-pointer">
