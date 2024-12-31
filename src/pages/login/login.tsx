@@ -39,11 +39,13 @@ const Login: React.FC = () => {
     },
     onSuccess: (res) => {
       console.log(res);
+      // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       alert(`${res.item.name} 님 환영합니다.`);
       navigate('/main');
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
+      // 400번대 에러에 전부 에러메세지 출력
       if (
         error.response &&
         error.response.status >= 400 &&
