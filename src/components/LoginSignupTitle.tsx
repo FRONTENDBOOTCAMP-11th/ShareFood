@@ -5,7 +5,7 @@ interface Props {
 const LoginSignupTitle: React.FC<Props> = ({ children }) => {
   return (
     <>
-      <div className="bg-broccoli flex justify-center items-end py-2">
+      <div className="bg-broccoli flex justify-center items-end">
         <div className="flex flex-col">
           <img
             className="size-10 ml-[17px] mb-[-6px]"

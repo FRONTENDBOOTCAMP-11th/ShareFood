@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../../components/Header';
+import Header from '../../components/Layout/Header';
 import { ImageSlide } from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
@@ -12,12 +12,43 @@ import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 
+// images
+import banner1 from '/images/banner/banner1.png';
+import banner2 from '/images/banner/banner2.png';
+import { useQuery } from '@tanstack/react-query';
+import { axiosInstance } from '../../hooks/axiosInstance';
+
 const Main = () => {
-  const [isActive, setIsActive] = useState(false);
+  // 거래 완료 글 숨기기 버튼
+  const [hideFinish, setHideFinish] = useState(false);
+
   const navigate = useNavigate();
 
+  //게시글 불러오기
+  const { data } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => axiosInstance.get('/products/?showSoldOut=true'),
+    select: (res) => res.data,
+    staleTime: 1000 * 10,
+  });
+  if (data) {
+    console.log(data);
+  }
+
+  // 배너
+  const images = [banner1, banner2, banner1, banner2];
+  const handleImage1Click = () => {
+    window.open(
+      'https://blog.naver.com/kies84/223697413966?photoView=2',
+      '_blank',
+    );
+  };
+  const handleImage2Click = () => alert('Image 2 Clicked!');
+  const handleImage3Click = () => alert('Image 3 Clicked!');
+  const handleImage4Click = () => alert('Image 4 Clicked!');
+
   return (
-    <div className="pt-14 pb-[100px] bg-back1">
+    <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
       {/* 헤더 */}
       <Header>
         <div className="flex items-center">
@@ -34,7 +65,16 @@ const Main = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <ImageSlide />
+      <ImageSlide
+        imageList={images}
+        autoSlide={true}
+        onClickHandler={[
+          handleImage1Click,
+          handleImage2Click,
+          handleImage3Click,
+          handleImage4Click,
+        ]}
+      />
 
       {/* 게시글 목록 */}
       <div className="px-[17px] mt-[10px] flex flex-col gap-[10px]">
@@ -42,17 +82,17 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setIsActive((prev) => !prev)}
+              onClick={() => setHideFinish((prev) => !prev)}
               className="flex items-center gap-[5px]"
             >
               <img
-                src={`${isActive ? checkActive : check}`}
+                src={`${hideFinish ? checkActive : check}`}
                 alt="check"
                 className="w-[15px] h-[15px]"
               />
               <p
                 className={`text-[13px] ${
-                  isActive ? 'text-main' : 'text-font2'
+                  hideFinish ? 'text-main' : 'text-font2'
                 }`}
               >
                 거래 완료 글 숨기기
@@ -63,80 +103,84 @@ const Main = () => {
           <TypeSelector />
         </div>
 
-        <div className="flex flex-col gap-[10px]">
-          <List
-            title={'귤은 겨울에 먹어야 해요'}
-            type={'sell'}
-            total={10}
-            remain={2}
-            location={'제주도 제주시'}
-            due={'12/31'}
-            price={3000}
-            date={'12/31'}
-            like={5}
-            comments={7}
-          />
-          <List
-            title={'겨울엔 딸기도 맛있다'}
-            type={'buy'}
-            total={7}
-            remain={3}
-            location={'이마트 부천시청점'}
-            due={'12/31'}
-            price={8000}
-            date={'12/31'}
-            like={15}
-            comments={21}
-          />
-          <List
-            title={'귤은 겨울에 먹어야 해요'}
-            type={'sell'}
-            total={10}
-            remain={2}
-            location={'제주도 제주시'}
-            due={'12/31'}
-            price={3000}
-            date={'12/31'}
-            like={5}
-            comments={7}
-          />
-          <List
-            title={'겨울엔 딸기도 맛있다'}
-            type={'buy'}
-            total={7}
-            remain={3}
-            location={'이마트 부천시청점'}
-            due={'12/31'}
-            price={8000}
-            date={'12/31'}
-            like={15}
-            comments={21}
-          />
-          <List
-            title={'귤은 겨울에 먹어야 해요'}
-            type={'sell'}
-            total={10}
-            remain={2}
-            location={'제주도 제주시'}
-            due={'12/31'}
-            price={3000}
-            date={'12/31'}
-            like={5}
-            comments={7}
-          />
-          <List
-            title={'겨울엔 딸기도 맛있다'}
-            type={'buy'}
-            total={7}
-            remain={3}
-            location={'이마트 부천시청점'}
-            due={'12/31'}
-            price={8000}
-            date={'12/31'}
-            like={15}
-            comments={21}
-          />
-        </div>
+        {data ? (
+          <div className="flex flex-col gap-[10px]">
+            <List
+              title={'귤은 겨울에 먹어야 해요'}
+              type={'sell'}
+              total={10}
+              remain={2}
+              location={'제주도 제주시'}
+              due={'12/31'}
+              price={3000}
+              date={'12/31'}
+              like={5}
+              comments={7}
+            />
+            <List
+              title={'겨울엔 딸기도 맛있다'}
+              type={'buy'}
+              total={7}
+              remain={3}
+              location={'이마트 부천시청점'}
+              due={'12/31'}
+              price={8000}
+              date={'12/31'}
+              like={15}
+              comments={21}
+            />
+            <List
+              title={'귤은 겨울에 먹어야 해요'}
+              type={'sell'}
+              total={10}
+              remain={2}
+              location={'제주도 제주시'}
+              due={'12/31'}
+              price={3000}
+              date={'12/31'}
+              like={5}
+              comments={7}
+            />
+            <List
+              title={'겨울엔 딸기도 맛있다'}
+              type={'buy'}
+              total={7}
+              remain={3}
+              location={'이마트 부천시청점'}
+              due={'12/31'}
+              price={8000}
+              date={'12/31'}
+              like={15}
+              comments={21}
+            />
+            <List
+              title={'귤은 겨울에 먹어야 해요'}
+              type={'sell'}
+              total={10}
+              remain={2}
+              location={'제주도 제주시'}
+              due={'12/31'}
+              price={3000}
+              date={'12/31'}
+              like={5}
+              comments={7}
+            />
+            <List
+              title={'겨울엔 딸기도 맛있다'}
+              type={'buy'}
+              total={7}
+              remain={3}
+              location={'이마트 부천시청점'}
+              due={'12/31'}
+              price={8000}
+              date={'12/31'}
+              like={15}
+              comments={21}
+            />
+          </div>
+        ) : (
+          <div>로딩중...</div>
+        )}
       </div>
     </div>
   );
