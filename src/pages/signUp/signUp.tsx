@@ -29,9 +29,19 @@ const SignUp: React.FC = () => {
   // 비밀번호 확인
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // 전화번호 확인
   const [phone, setPhone] = useState('휴대전화 번호');
 
+  // 아이디, 닉네임 중복 확인
+  const [emailDuplicationError, setEmailDuplicationError] = useState('');
+  const [nameDuplicationError, setNameDuplicationError] = useState('');
+  const [isEmailUnique, setIsEmailUnique] = useState(false);
+  const [isNameUnique, setIsNameUnique] = useState(false);
+
   const password = watch('password');
+  const email = watch('email');
+  const name = watch('name');
 
   // 비밀번호, 비밀번호 확인 입력창이 변경될 때마다 렌더링 실행
   // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
@@ -69,7 +79,19 @@ const SignUp: React.FC = () => {
 
   // onSubmit에 사용
   const onSubmit = (data: UserInfo) => {
-    addUser.mutate(data);
+    // 아이디, 닉네임 중복 검증
+    if (isEmailUnique && isNameUnique) {
+      // 통과하면 가입
+      addUser.mutate(data);
+    } else {
+      // 통과하지 못하는 경우 에러메세지 출력
+      if (!isEmailUnique) {
+        setEmailDuplicationError('다른 아이디를 입력해 주세요.');
+      }
+      if (!isNameUnique) {
+        setNameDuplicationError('다른 닉네임을 입력해 주세요.');
+      }
+    }
   };
 
   // input창 공백 입력 제거
@@ -94,6 +116,29 @@ const SignUp: React.FC = () => {
     setPhone(value);
     e.target.value = value;
     clearErrors('phone');
+  };
+
+  // 서버에서 데이터 받아와서 중복 확인
+  const duplication = async (type: 'email' | 'name') => {
+    const value = type === 'email' ? email : name;
+    const res = await axiosInstance.get(`/users?${type}=${value}`);
+    return { type, isDuplicate: res.data.item.length > 0 };
+  };
+
+  // 버튼 클릭 시 중복된 데이터가 있으면 에러 메세지 출력
+  const handleDuplication = async (type: 'email' | 'name') => {
+    const result = await duplication(type);
+    if (result.type === 'email') {
+      setEmailDuplicationError(
+        result.isDuplicate ? '이미 존재하는 아이디입니다.' : '',
+      );
+      setIsEmailUnique(!result.isDuplicate);
+    } else {
+      setNameDuplicationError(
+        result.isDuplicate ? '이미 존재하는 닉네임입니다.' : '',
+      );
+      setIsNameUnique(!result.isDuplicate);
+    }
   };
 
   return (
@@ -126,11 +171,14 @@ const SignUp: React.FC = () => {
               text="text-[10px]"
               width="53px"
               height="22px"
+              onClick={() => handleDuplication('email')}
             >
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">{errors.email?.message}</Error>
+          <Error text="text-[10px]">
+            {errors.email?.message || emailDuplicationError}
+          </Error>
 
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
@@ -180,11 +228,14 @@ const SignUp: React.FC = () => {
               text="text-[10px]"
               width="53px"
               height="22px"
+              onClick={() => handleDuplication('name')}
             >
               중복체크
             </Button>
           </div>
-          <Error text="text-[10px]">{errors.name?.message}</Error>
+          <Error text="text-[10px]">
+            {errors.name?.message || nameDuplicationError}
+          </Error>
           <input
             className="w-full border-b-[1px] border-line2 mt-2 mb-1"
             type="text"
