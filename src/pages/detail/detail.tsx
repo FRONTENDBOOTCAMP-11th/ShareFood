@@ -18,15 +18,15 @@ import { useNavigate } from 'react-router-dom';
 
 const Detail = () => {
   // 공구인지, 판매하기인지에 따라 멘트 구별
-  const typeSell: string = 'sell';
-  const typeBuy: string = 'buy';
+  // const typeSell: string = 'sell';
+  // const typeBuy: string = 'buy';
 
   const axios = axiosInstance;
   // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ 일단 임시로 7
-  const postNum: number = 3;
+  const postNum: number = 1;
   const { data } = useQuery({
-    queryKey: ['posts'],
-    queryFn: () => axios.get(`/posts/${postNum}`),
+    queryKey: ['products'],
+    queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
@@ -45,7 +45,7 @@ const Detail = () => {
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  const [content, setContent] = useState(typeBuy);
+  const [content, setContent] = useState();
 
   const handleModal = (contentType: string) => {
     setContent(contentType);
@@ -55,7 +55,9 @@ const Detail = () => {
   if (!data) {
     return <div>로딩중...</div>;
   }
-  console.log(data);
+
+  const productType: string = data.item.extra.type;
+  console.log(productType);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen">
@@ -76,7 +78,7 @@ const Detail = () => {
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
           <h1 className="grow font-bold text-xl">포도 함께 사실 분~!</h1>
-          <PostType type={typeBuy} />
+          <PostType type={productType} />
         </div>
 
         <div className="board-author flex items-center">
@@ -125,7 +127,7 @@ const Detail = () => {
             text="text-sm"
             bg="main"
             color="white"
-            onClick={() => handleModal(typeBuy)}
+            onClick={() => handleModal(productType)}
           >
             공구하기
           </Button>
@@ -134,7 +136,7 @@ const Detail = () => {
         {viewPayment && (
           <Modal setViewPayment={setViewPayment}>
             {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
-            {content === typeBuy && (
+            {content === productType && (
               <div>
                 <h2 className="mb-5 font-semibold">
                   공구 장소, 시간을 확인하세요
@@ -172,7 +174,7 @@ const Detail = () => {
                 </div>
               )} */}
             {/* 구매자 늘어나면 스크롤 넣어야 될것 같습니다. */}
-            {content === typeSell && (
+            {content === productType && (
               <div>
                 <h2 className="mb-3">구매 신청자 목록</h2>
                 <div className="flex flex-col gap-5">
