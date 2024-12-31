@@ -13,7 +13,11 @@ interface FormData {
 }
 
 const Login: React.FC = () => {
-  const { handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
@@ -24,28 +28,51 @@ const Login: React.FC = () => {
   };
 
   const login = useMutation({
-    mutationFn: async (formData: FormData) =>
-      axiosInstance.post('/users/login', formData),
+    mutationFn: async (formData: FormData) => {
+      try {
+        const res = await axiosInstance.post('/users/login', formData);
+        return res.data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
     onSuccess: (res) => {
       console.log(res);
-
-      const user = res.data.item;
-
-      console.log(user);
-
-      alert(user.name + '님, 안녕하세요');
+      alert(`${res.item.name} 님 환영합니다.`);
     },
   });
+
+  const onSubmit = (data: FormData) => {
+    login.mutate(data);
+  };
 
   return (
     <>
       <div className="flex flex-col px-4 justify-center bg-main min-h-screen">
         <LoginSignupTitle>로그인</LoginSignupTitle>
-        <main className="bg-white my-6 px-4 py-[27px] h-[372px] rounded-[10px] font-sans text-xs">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white my-6 px-4 py-[27px] h-[372px] rounded-[10px] font-sans text-xs"
+        >
           <section className="[&_input]:w-full [&_input]:h-[26px] [&_input]:border-b-[1px] [&_input]:border-line2 [&_input]:py-1 [&_input:focus]:outline-none">
-            <input className="mb-4" type="email" placeholder="아이디(이메일)" />
-            <input className="mb-2" type="password" placeholder="비밀번호" />
-            <Error>* 아이디(이메일), 비밀번호를 확인해 주십시오</Error>
+            <input
+              className="mb-4"
+              type="email"
+              placeholder="아이디(이메일)"
+              {...register('email', {
+                required: '아이디(이메일), 비밀번호를 확인해 주십시오.',
+              })}
+            />
+            <input
+              className="mb-2"
+              type="password"
+              placeholder="비밀번호"
+              {...register('password', {
+                required: '아이디(이메일), 비밀번호를 확인해 주십시오.',
+              })}
+            />
+            <Error>{errors.email?.message || errors.password?.message}</Error>
             <label className="mt-6 flex items-center gap-2 w-fit hover:cursor-pointer">
               <button onClick={() => handleActive()}>
                 <img
@@ -61,7 +88,13 @@ const Login: React.FC = () => {
             </label>
           </section>
           <section className="flex flex-col justify-center items-center gap-4 mt-9">
-            <Button height="40px" text="text-sm" bg="main" color="white">
+            <Button
+              height="40px"
+              text="text-sm"
+              bg="main"
+              color="white"
+              type="submit"
+            >
               로그인
             </Button>
             <Button height="40px" text="text-sm" bg="kakao" color="kakao">
@@ -76,7 +109,7 @@ const Login: React.FC = () => {
               회원가입하기
             </Link>
           </section>
-        </main>
+        </form>
       </div>
     </>
   );
