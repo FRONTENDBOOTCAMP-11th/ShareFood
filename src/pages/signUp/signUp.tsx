@@ -29,7 +29,11 @@ const SignUp: React.FC = () => {
   // 비밀번호 확인
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  // 전화번호 확인
   const [phone, setPhone] = useState('휴대전화 번호');
+
+  // 아이디, 닉네임 중복 확인
   const [emailDuplicationError, setEmailDuplicationError] = useState('');
   const [nameDuplicationError, setNameDuplicationError] = useState('');
   const [isEmailUnique, setIsEmailUnique] = useState(false);
@@ -75,9 +79,12 @@ const SignUp: React.FC = () => {
 
   // onSubmit에 사용
   const onSubmit = (data: UserInfo) => {
+    // 아이디, 닉네임 중복 검증
     if (isEmailUnique && isNameUnique) {
+      // 통과하면 가입
       addUser.mutate(data);
     } else {
+      // 통과하지 못하는 경우 에러메세지 출력
       if (!isEmailUnique) {
         setEmailDuplicationError('다른 아이디를 입력해 주세요.');
       }
@@ -111,12 +118,14 @@ const SignUp: React.FC = () => {
     clearErrors('phone');
   };
 
+  // 서버에서 데이터 받아와서 중복 확인
   const duplication = async (type: 'email' | 'name') => {
     const value = type === 'email' ? email : name;
     const res = await axiosInstance.get(`/users?${type}=${value}`);
     return { type, isDuplicate: res.data.item.length > 0 };
   };
 
+  // 버튼 클릭 시 중복된 데이터가 있으면 에러 메세지 출력
   const handleDuplication = async (type: 'email' | 'name') => {
     const result = await duplication(type);
     if (result.type === 'email') {
