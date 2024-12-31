@@ -22,7 +22,8 @@ const Detail = () => {
   // const typeBuy: string = 'buy';
 
   const axios = axiosInstance;
-  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ 일단 임시로 7
+  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ
+  // 임시로 하드 코딩
   const postNum: number = 1;
   const { data } = useQuery({
     queryKey: ['products'],
@@ -45,7 +46,7 @@ const Detail = () => {
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  const [content, setContent] = useState();
+  const [content, setContent] = useState<string>();
 
   const handleModal = (contentType: string) => {
     setContent(contentType);
@@ -57,15 +58,12 @@ const Detail = () => {
   }
 
   const productType: string = data.item.extra.type;
-  console.log(productType);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen">
       <Header>
         <div className="flex items-center">
-          <h1 className="text-5 font-bold ml-2 text-font1">
-            포도 함께 사실 분~!
-          </h1>
+          <h1 className="text-5 font-bold ml-2 text-font1">{data.item.name}</h1>
         </div>
         <button onClick={() => navigate(-1)} className="fixed right-[17px]">
           <img src={close} alt="Close Icon" className="w-5 h-5" />
@@ -73,44 +71,42 @@ const Detail = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <ImageSlideDetail />
+      <ImageSlideDetail children={data.item.mainImages} />
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
-          <h1 className="grow font-bold text-xl">포도 함께 사실 분~!</h1>
+          <h1 className="grow font-bold text-xl">{data.item.name}</h1>
           <PostType type={productType} />
         </div>
 
         <div className="board-author flex items-center">
           <img src={basicImage} alt="기본 이미지" />
-          <h2 className="grow ml-3 font-medium text-sm">닉네임</h2>
+          <h2 className="grow ml-3 font-medium text-sm">
+            {data.item.seller.name}
+          </h2>
           <div className="border border-main rounded-full px-5 py-[1px]">
             <p className="text-xs font-normal text-main leading-6 text-center">
-              서울
+              {data.item.extra.location}
             </p>
           </div>
         </div>
 
         <div className="board-transinfo flex flex-col gap-[10px]">
           <div className="border-l-2 pl-[10px]">
+            <Tag children={data.item.extra.subLocation} tagName={'location'} />
+          </div>
+          <div className="border-l-2 pl-[10px]">
+            <Tag children={data.item.extra.meetingTime} tagName={'time'} />
+          </div>
+          <div className="border-l-2 pl-[10px]">
             <Tag
-              children={'공릉2동 주공아파트 3단지 놀이터 앞'}
-              tagName={'location'}
+              children={`${data.item.buyQuantity} / ${data.item.quantity}`}
+              tagName={'member'}
             />
-          </div>
-          <div className="border-l-2 pl-[10px]">
-            <Tag children={'10:00'} tagName={'time'} />
-          </div>
-          <div className="border-l-2 pl-[10px]">
-            <Tag children={'2 / 10'} tagName={'member'} />
           </div>
         </div>
 
-        <p className="whitespace-pre-wrap text-[15px]">
-          상태 좋고 맛있어요
-          <br />
-          얼른 가져가세요 ~
-        </p>
+        <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
         <Total
           interest={interest}

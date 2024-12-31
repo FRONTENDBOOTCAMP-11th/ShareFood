@@ -1,11 +1,17 @@
 import { useState } from 'react';
 
-// images
-import grape1 from '/images/sample/grape1.jpg';
-import grape2 from '/images/sample/grape2.jpg';
+interface Props {
+  children: Array<{ path: string }>;
+}
 
-export const ImageSlideDetail = () => {
-  const images = [grape1, grape2, grape1, grape2];
+export const ImageSlideDetail = ({ children }: Props) => {
+  const imageList: Array<{ path: string }> = children;
+  const images = imageList.map((value) => {
+    return value.path;
+  });
+  console.log(images);
+  // const images = [grape1, grape2, grape1, grape2];
+
   // 현재 슬라이드 인덱스
   const [currentIndex, setCurrentIndex] = useState(0);
 
