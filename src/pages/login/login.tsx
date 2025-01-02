@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
+import { useAuthStore } from '../../store/authStore';
 
 interface FormData {
   email: string;
@@ -21,10 +22,12 @@ const Login: React.FC = () => {
     setError,
   } = useForm<FormData>();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
+
+  const setUser = useAuthStore((store) => store.setUser);
 
   // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
@@ -39,9 +42,10 @@ const Login: React.FC = () => {
     },
     onSuccess: (res) => {
       console.log(res);
+
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       alert(`${res.item.name} 님 환영합니다.`);
-      navigate('/main');
+      // navigate('/main');
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
