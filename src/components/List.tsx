@@ -72,7 +72,7 @@ const List = ({
         <p className="text-font2 text-[13px]">관심 {like}</p>
         <p className="text-font2 text-[13px]">댓글 {comments}</p>
       </div>
-      {total === remain && <div className='absolute w-[100%] h-[100%] bg-black bg-opacity-40 rounded-[6px] left-0 top-0 flex items-center justify-center text-[20px] text-white z-2 font-bold'>마감</div>}
+      {total === remain && <div className='absolute w-[100%] h-[100%] bg-black bg-opacity-40 rounded-[6px] left-0 top-0 flex items-center justify-center text-[20px] text-white font-bold'>마감</div>}
     </div>
   );
 };

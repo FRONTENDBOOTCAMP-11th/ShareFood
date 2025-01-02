@@ -1,20 +1,21 @@
 import { useState } from 'react';
+interface SelectTypes {
+  meetingLocation: string;
+  setMeetingLocation: (arg0: string) => void;
+}
 
-const Select: React.FC = () => {
+const Select = ({ meetingLocation, setMeetingLocation }: SelectTypes) => {
   const location: string[] = [
+    '전체지역',
     '서울',
     '경기',
     '강원',
-    '충북',
-    '충남',
-    '경북',
-    '경남',
-    '전북',
-    '전남',
+    '충청',
+    '경상',
+    '전라',
     '제주',
   ];
 
-  const [title, setTitle] = useState<string>('전체지역');
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   // 클릭 시 토글 나오게
@@ -24,7 +25,7 @@ const Select: React.FC = () => {
 
   // 지역 클릭시 대표 텍스트 교체
   const handleSelectLocation = (location: string) => {
-    setTitle(location);
+    setMeetingLocation(location);
     setIsVisible(false);
   };
 
@@ -53,12 +54,12 @@ const Select: React.FC = () => {
         onClick={handleToggle}
         className="flex gap-[3px] items-center justify-center border-main border-[1px] rounded-full text-main text-[13px] px-[13px] py-[4px] bg-white ml-auto"
       >
-        {title}
+        {meetingLocation}
         <img className="size-2" src="images/arrow/down.svg" />
       </button>
 
       {isVisible && (
-        <ul className="absolute right-[1px] selectbox-option hide border border-[#D9D9D9] rounded-[10px] mt-[5px] text-center shadow-custom px-[10px] z-11 bg-white">
+        <ul className="absolute right-[1px] selectbox-option hide border border-[#D9D9D9] rounded-[10px] mt-[5px] text-center shadow-custom px-[10px] z-[2] bg-white">
           {list}
         </ul>
       )}

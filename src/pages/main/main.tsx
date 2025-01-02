@@ -19,23 +19,39 @@ import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { Product } from '../../types/productsTypes';
 
+interface ParamsType {
+  showSoldOut: boolean;
+  custom: string; // JSON 문자열
+}
+
 const Main = () => {
-  // 거래 완료 된 상품 보기
+  // 필터링 상태
   const [showSoldOut, setShowSoldOut] = useState(false);
   const [productsType, setProductsType] = useState('buy');
+  const [meetingLocation, setMeetingLocation] = useState('전체지역');
 
   const navigate = useNavigate();
 
   //게시글 불러오기
   const { data } = useQuery({
-    queryKey: ['products', showSoldOut, productsType],
-    queryFn: () =>
-      axiosInstance.get('/products', {
-        params: {
-          showSoldOut,
-          custom: JSON.stringify({ 'extra.type': productsType }),
-        },
-      }),
+    queryKey: ['products', showSoldOut, productsType, meetingLocation],
+    queryFn: () => {
+      const baseParams: ParamsType = {
+        showSoldOut,
+        custom: JSON.stringify({
+          'extra.type': productsType,
+        }),
+      };
+
+      if (meetingLocation !== '전체지역') {
+        baseParams.custom = JSON.stringify({
+          ...JSON.parse(baseParams.custom),
+          'extra.location': meetingLocation,
+        });
+      }
+
+      return axiosInstance.get('/products', { params: baseParams });
+    },
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
@@ -109,7 +125,10 @@ const Main = () => {
                 거래 완료 된 상품 보기
               </p>
             </button>
-            <Select />
+            <Select
+              meetingLocation={meetingLocation}
+              setMeetingLocation={setMeetingLocation}
+            />
           </div>
           <TypeSelector
             setProductsType={setProductsType}
