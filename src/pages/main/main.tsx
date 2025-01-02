@@ -20,17 +20,20 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import { Product } from '../../types/productsTypes';
 
 const Main = () => {
-  const navigate = useNavigate();
-  // 거래 완료 글 숨기기 버튼
+  // 거래 완료 된 상품 보기
   const [showSoldOut, setShowSoldOut] = useState(false);
+  const [productsType, setProductsType] = useState('buy');
+
+  const navigate = useNavigate();
 
   //게시글 불러오기
   const { data } = useQuery({
-    queryKey: ['products', showSoldOut],
+    queryKey: ['products', showSoldOut, productsType],
     queryFn: () =>
       axiosInstance.get('/products', {
         params: {
           showSoldOut,
+          custom: JSON.stringify({ 'extra.type': productsType }),
         },
       }),
     select: (res) => res.data,
@@ -108,7 +111,10 @@ const Main = () => {
             </button>
             <Select />
           </div>
-          <TypeSelector />
+          <TypeSelector
+            setProductsType={setProductsType}
+            productsType={productsType}
+          />
         </div>
 
         {data ? (
