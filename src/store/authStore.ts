@@ -1,7 +1,11 @@
 import { create } from 'zustand';
 
 export type User = {
+  _id: number;
+  name: string;
+  profile: string;
   accessToken: string;
+  refreshToken: string;
 };
 
 interface AuthState {
