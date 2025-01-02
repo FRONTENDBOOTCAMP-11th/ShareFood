@@ -22,7 +22,7 @@ const Login: React.FC = () => {
     setError,
   } = useForm<FormData>();
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       alert(`${res.item.name} 님 환영합니다.`);
-      // navigate('/main');
+      navigate('/main');
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
