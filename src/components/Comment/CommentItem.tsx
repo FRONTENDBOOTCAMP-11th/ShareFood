@@ -8,7 +8,6 @@ interface CommentItemProps {
 }
 
 function CommentItem({ name, content, createdAt, image }: CommentItemProps) {
-  console.log(name, content, createdAt, image);
   const date = createdAt.slice(5, 10);
   return (
     <div>

@@ -13,7 +13,6 @@ function Total({ interest, setInterest, data }: TotalProps) {
   // 버튼 클릭 시 이미지 버튼을 위한 state
   const [imageSrc, setImageSrc] = useState(emptyHeart);
   const [isClicked, setIsClicked] = useState(false);
-  console.log('total 랜더링');
 
   // const addInterest = useMutation({
   //   mutationFn: (data.item._id) =>
