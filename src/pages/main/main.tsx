@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Product } from '../../types/productsTypes';
+import { useGetList } from '../../hooks/useGetList';
+
 import Header from '../../components/Layout/Header';
 import { ImageSlide } from '../../components/ImageSlide';
 import Select from '../../components/Select';
@@ -15,14 +18,6 @@ import checkActive from '/images/check/check-active.svg';
 // images
 import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
-import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from '../../hooks/axiosInstance';
-import { Product } from '../../types/productsTypes';
-
-interface ParamsType {
-  showSoldOut: boolean;
-  custom: string; // JSON 문자열
-}
 
 const Main = () => {
   // 필터링 상태
@@ -33,28 +28,11 @@ const Main = () => {
   const navigate = useNavigate();
 
   //게시글 불러오기
-  const { data } = useQuery({
-    queryKey: ['products', showSoldOut, productsType, meetingLocation],
-    queryFn: () => {
-      const baseParams: ParamsType = {
-        showSoldOut,
-        custom: JSON.stringify({
-          'extra.type': productsType,
-        }),
-      };
-
-      if (meetingLocation !== '전체지역') {
-        baseParams.custom = JSON.stringify({
-          ...JSON.parse(baseParams.custom),
-          'extra.location': meetingLocation,
-        });
-      }
-
-      return axiosInstance.get('/products', { params: baseParams });
-    },
-    select: (res) => res.data,
-    staleTime: 1000 * 10,
-  });
+  const { data } = useGetList(
+    showSoldOut,
+    productsType,
+    meetingLocation
+  );
 
   useEffect(() => {
     if (data) {
