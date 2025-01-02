@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import emptyHeart from '/images/icons/heart.svg';
 import fullHeart from '/images/icons/full_heart.svg';
-import { useMutation } from '@tanstack/react-query';
 
 interface TotalProps {
   interest: number;
