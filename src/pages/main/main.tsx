@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Product } from '../../types/productsTypes';
+import { useGetList } from '../../hooks/useGetList';
+
 import Header from '../../components/Layout/Header';
 import { ImageSlide } from '../../components/ImageSlide';
 import Select from '../../components/Select';
@@ -15,23 +18,21 @@ import checkActive from '/images/check/check-active.svg';
 // images
 import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
-import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from '../../hooks/axiosInstance';
-import { Product } from '../../types/productsTypes';
 
 const Main = () => {
+  // 필터링 상태
+  const [showSoldOut, setShowSoldOut] = useState(false);
+  const [productsType, setProductsType] = useState('buy');
+  const [meetingLocation, setMeetingLocation] = useState('전체지역');
+
   const navigate = useNavigate();
 
-  // 거래 완료 글 숨기기 버튼
-  const [hideFinish, setHideFinish] = useState(false);
-
   //게시글 불러오기
-  const { data } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => axiosInstance.get('/products/?showSoldOut=true'),
-    select: (res) => res.data,
-    staleTime: 1000 * 10,
-  });
+  const { data } = useGetList(
+    showSoldOut,
+    productsType,
+    meetingLocation
+  );
 
   useEffect(() => {
     if (data) {
@@ -86,36 +87,42 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setHideFinish((prev) => !prev)}
+              onClick={() => setShowSoldOut((prev) => !prev)}
               className="flex items-center gap-[5px]"
             >
               <img
-                src={`${hideFinish ? checkActive : check}`}
+                src={`${showSoldOut ? checkActive : check}`}
                 alt="check"
                 className="w-[15px] h-[15px]"
               />
               <p
                 className={`text-[13px] ${
-                  hideFinish ? 'text-main' : 'text-font2'
+                  showSoldOut ? 'text-main' : 'text-font2'
                 }`}
               >
-                거래 완료 글 숨기기
+                거래 완료 된 상품 보기
               </p>
             </button>
-            <Select />
+            <Select
+              meetingLocation={meetingLocation}
+              setMeetingLocation={setMeetingLocation}
+            />
           </div>
-          <TypeSelector />
+          <TypeSelector
+            setProductsType={setProductsType}
+            productsType={productsType}
+          />
         </div>
 
         {data ? (
           <div className="flex flex-col gap-[10px]">
-            {data.item.map((products: Product, index:number) => (
+            {data.item.map((products: Product, index: number) => (
               <List
                 key={index}
                 title={products.name}
                 type={products.extra.type}
                 total={products.quantity}
-                remain={2}
+                remain={products.buyQuantity}
                 location={products.extra.subLocation}
                 due={products.extra.meetingTime}
                 price={products.price}

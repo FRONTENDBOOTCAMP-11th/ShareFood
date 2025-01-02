@@ -7,6 +7,7 @@ export type Product = {
     meetingTime: string;
   };
   quantity: number;
+  buyQuantity: number;
   price: number;
   createdAt: string;
   bookmarks: number;
