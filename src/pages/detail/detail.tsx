@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import Header from '../../components/Layout/Header';
@@ -24,10 +24,10 @@ const Detail = () => {
   // const typeBuy: string = 'buy';
 
   const axios = axiosInstance;
-  // postNum에 useParams를 사용해서 값을 가져올 거임 ㅇㅇ
-  // 임시로 하드 코딩
-  const postNum: number = 1;
-  const { data } = useQuery({
+  const { _id } = useParams();
+
+  const postNum: number = Number(_id);
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['products'],
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
@@ -58,10 +58,13 @@ const Detail = () => {
     return <div>로딩중...</div>;
   }
 
+  console.log(data);
   const productType: string = data.item.extra.type;
   const priceTrim = data.item.price
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // console.log('Updated user:', useAuthStore.getState().user);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen">
@@ -105,35 +108,50 @@ const Detail = () => {
           </div>
         </div>
 
-        <div className="board-transinfo flex flex-col gap-[10px]">
-          {productType === 'sell' && (
-            <div className="border-l-2 pl-[10px]">
-              <Tag children={priceTrim} tagName={'cash'} />
+        {/* 공구일 경우 아래 내용 출력 */}
+        {productType === 'buy' && (
+          <div className="board-transinfo flex flex-col gap-[10px]">
+            <div>
+              <Tag
+                children={data.item.extra.subLocation}
+                tagName={'location'}
+              />
             </div>
-          )}
-          <div className="border-l-2 pl-[10px]">
-            <Tag children={data.item.extra.subLocation} tagName={'location'} />
-          </div>
-          <div className="border-l-2 pl-[10px]">
-            <Tag children={data.item.extra.meetingTime} tagName={'time'} />
-          </div>
-          {productType === 'buy' && (
-            <div className="border-l-2 pl-[10px]">
+            <div>
+              <Tag children={data.item.extra.meetingTime} tagName={'time'} />
+            </div>
+            <div>
               <Tag
                 children={`${data.item.buyQuantity} / ${data.item.quantity}`}
                 tagName={'member'}
               />
             </div>
-          )}
-          {productType === 'sell' && (
-            <div className="border-l-2 pl-[10px]">
+          </div>
+        )}
+
+        {/* 판매일 경우 아래 내용 출력 */}
+        {productType === 'sell' && (
+          <div className="board-transinfo flex flex-col gap-[10px]">
+            <div>
+              <Tag children={priceTrim} tagName={'cash'} />
+            </div>
+            <div>
+              <Tag
+                children={data.item.extra.subLocation}
+                tagName={'location'}
+              />
+            </div>
+            <div>
+              <Tag children={data.item.extra.meetingTime} tagName={'time'} />
+            </div>
+            <div>
               <Tag
                 children={`${data.item.buyQuantity} / ${data.item.quantity}`}
                 tagName={'item'}
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
