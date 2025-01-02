@@ -4,7 +4,7 @@ import Footer from './components/Layout/Footer';
 
 function App() {
   return (
-    <div className="max-w-md m-auto relative font-sans">
+    <div className="max-w-md m-auto relative font-sans text-font1">
       <main>
         <Outlet />
       </main>
