@@ -43,18 +43,20 @@ const Login: React.FC = () => {
     onSuccess: (res) => {
       console.log(res);
 
-      const user = res.item;
-      console.log(user);
+      if (active === 'active') {
+        const user = res.item;
+        console.log(user);
 
-      setUser({
-        _id: user._id,
-        name: user.name,
-        profile: user.image ? user.image : undefined,
-        accessToken: user.token.accessToken,
-        refreshToken: user.token.refreshToken,
-      });
+        setUser({
+          _id: user._id,
+          name: user.name,
+          profile: user.image ? user.image : undefined,
+          accessToken: user.token.accessToken,
+          refreshToken: user.token.refreshToken,
+        });
 
-      console.log('Updated user:', useAuthStore.getState().user);
+        console.log('Updated user:', useAuthStore.getState().user);
+      }
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       alert(`${res.item.name} 님 환영합니다.`);
