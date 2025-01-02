@@ -26,7 +26,6 @@ const Login: React.FC = () => {
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
-
   const setUser = useAuthStore((store) => store.setUser);
 
   // 활성, 비활성 따라서 이미지 변경
