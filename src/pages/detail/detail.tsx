@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
@@ -24,11 +24,12 @@ const Detail = () => {
   // const typeBuy: string = 'buy';
 
   const axios = axiosInstance;
+  useEffect(() => {});
   const { _id } = useParams();
 
   const postNum: number = Number(_id);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['products'],
+    queryKey: ['products', _id],
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
     staleTime: 1000 * 10,

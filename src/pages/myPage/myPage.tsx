@@ -10,7 +10,7 @@ import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 
 const MyPage = () => {
-  const [isActive, setIsActive] = useState(false);
+  const [showSoldOut, setShowSoldOut] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('작성글');
   const tabs = [
     { label: '작성글', key: 'post' },
@@ -58,22 +58,25 @@ const MyPage = () => {
         </div>
 
         <button
-          onClick={() => setIsActive((prev) => !prev)}
+          onClick={() => setShowSoldOut((prev) => !prev)}
           className="flex items-center gap-[5px] my-[10px]"
         >
           <img
-            src={`${isActive ? checkActive : check}`}
+            src={`${showSoldOut ? checkActive : check}`}
             alt="check"
             className="w-[15px] h-[15px]"
           />
-          <p className={`text-[13px] ${isActive ? 'text-main' : 'text-font2'}`}>
-            거래 완료 글 숨기기
+          <p
+            className={`text-[13px] ${showSoldOut ? 'text-main' : 'text-font2'}`}
+          >
+            거래 완료 된 상품 보기
           </p>
         </button>
 
         {activeTab === '작성글' && (
           <div className="flex flex-col gap-[10px]">
             <List
+              id={1}
               title={'귤은 겨울에 먹어야 해요1'}
               type={'sell'}
               total={10}
@@ -86,6 +89,7 @@ const MyPage = () => {
               comments={7}
             />
             <List
+              id={1}
               title={'귤은 겨울에 먹어야 해요1'}
               type={'sell'}
               total={10}
@@ -98,6 +102,7 @@ const MyPage = () => {
               comments={7}
             />
             <List
+              id={1}
               title={'귤은 겨울에 먹어야 해요1'}
               type={'sell'}
               total={10}
@@ -114,6 +119,7 @@ const MyPage = () => {
         {activeTab === '좋아요한글' && (
           <div className="flex flex-col gap-[10px]">
             <List
+              id={1}
               title={'귤은 겨울에 먹어야 해요2'}
               type={'sell'}
               total={10}
@@ -130,6 +136,7 @@ const MyPage = () => {
         {activeTab === '거래신청글' && (
           <div className="flex flex-col gap-[10px]">
             <List
+              id={1}
               title={'귤은 겨울에 먹어야 해요3'}
               type={'sell'}
               total={10}
