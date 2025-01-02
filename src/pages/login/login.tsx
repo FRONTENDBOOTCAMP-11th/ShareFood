@@ -108,7 +108,7 @@ const Login: React.FC = () => {
             />
             <Error>{errors.email?.message || errors.password?.message}</Error>
             <label className="mt-6 flex items-center gap-2 w-fit hover:cursor-pointer">
-              <button onClick={() => handleActive()}>
+              <button type="button" onClick={() => handleActive()}>
                 <img
                   className="size-5"
                   src={`images/check/checkCircle-${active}.svg`}
