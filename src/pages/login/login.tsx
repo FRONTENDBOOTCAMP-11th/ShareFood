@@ -8,6 +8,7 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import { useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '../../store/authStore';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 interface FormData {
   email: string;
@@ -58,8 +59,11 @@ const Login: React.FC = () => {
       }
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
-      alert(`${res.item.name} 님 환영합니다.`);
-      navigate('/main');
+      toast.success(`${res.item.name}님, 환영합니다.`, {
+        onClose: () => {
+          navigate('/main');
+        },
+      });
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
@@ -144,6 +148,19 @@ const Login: React.FC = () => {
           </section>
         </form>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
     </>
   );
 };
