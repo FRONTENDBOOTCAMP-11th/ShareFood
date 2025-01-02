@@ -1,12 +1,10 @@
 import { ListProps } from '../types/listComponentTypes';
 
+import Tag from './Tag';
+
 // images
 import image from '/images/chef/forkChef_back.svg';
-import priceTag from '/images/tag/price.svg';
-import map from '/images/tag/location.svg';
-import pack from '/images/tag/item.svg';
 import bookmark from '/images/icons/heart.svg';
-import time from '/images/tag/time.svg';
 import PostType from './PostType';
 
 const List = ({
@@ -23,49 +21,48 @@ const List = ({
   imageScr,
 }: ListProps) => {
   const defaultImage = image;
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+
+  // 날짜 형식 변경
+  const parts = date.split(' ')[0].split('.');
+  const formattedDate = `${parts[1]}.${parts[2]}`;
 
   return (
-    <div className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px]">
+    <div  className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px]">
       <div className="flex justify-between mb-[15px]">
         <p className="text-font1 font-semibold text-[14px]">{title}</p>
-        <p className="text-font2 text-[13px]">{date}</p>
+        <p className="text-font2 text-[13px]">{formattedDate}</p>
       </div>
 
       <div className="flex">
         <img
-          src={imageScr || defaultImage}
+          src={`${apiUrl}${imageScr}` || defaultImage}
           alt="상품 이미지"
-          className="mr-[22px] w-[90px] h-[90px]"
+          className="min-w-[100px] min-h-[50px] w-[100px] h-[100px] object-cover mr-[10px] rounded-[10px]"
         />
 
-        <div className="flex flex-col gap-[12px]">
-          <div className="flex gap-[10px] border-l-2 px-[10px]">
-            <img src={pack} className="w-[18px] h-[18px]" />
-            <p className="text-[13px]">
-              {remain} / <strong className="text-main">{total}</strong>
-            </p>
-          </div>
+        <div className="flex flex-col gap-[12px] justify-evenly">
+          <Tag tagName={'item'}>
+            {remain} / <strong className="text-main">{total}</strong>
+          </Tag>
 
-          <div className="flex gap-[10px] border-l-2 px-[10px]">
-            <img src={map} className="w-[16px] h-[20px]" />
+          <Tag tagName={'location'}>
             <p className="text-[13px]">{location}</p>
-          </div>
+          </Tag>
 
           {type === 'buy' ? (
-            <div className="flex gap-[10px] border-l-2 px-[10px]">
-              <img src={time} className="w-[18px] h-[18px]" />
+            <Tag tagName={'time'}>
               <p className="text-[13px]">
-                <strong className="text-main">{due}</strong> 까지 모집
+                <strong className="text-main">{due}</strong> 까지
               </p>
-            </div>
+            </Tag>
           ) : (
-            <div className="flex gap-[10px] border-l-2 px-[10px]">
-              <img src={priceTag} className="w-[18px] h-[18px]" />
+            <Tag tagName={'price'}>
               <p className="text-[13px]">{price}원</p>
-            </div>
+            </Tag>
           )}
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex-shrink-0">
           <PostType type={type} />
         </div>
       </div>
