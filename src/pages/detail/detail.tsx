@@ -36,8 +36,7 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 관심 및 댓글의 수
-  const [interest, setInterest] = useState(7);
-  const [commentNum, setCommentNum] = useState(5);
+  const [interest, setInterest] = useState(0);
 
   const [viewPayment, setViewPayment] = useState(false);
 
@@ -119,11 +118,7 @@ const Detail = () => {
 
         <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
-        <Total
-          interest={interest}
-          setInterest={setInterest}
-          commentNum={commentNum}
-        />
+        <Total interest={interest} setInterest={setInterest} data={data} />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
