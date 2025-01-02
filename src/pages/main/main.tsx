@@ -21,14 +21,18 @@ import { Product } from '../../types/productsTypes';
 
 const Main = () => {
   const navigate = useNavigate();
-
   // 거래 완료 글 숨기기 버튼
-  const [hideFinish, setHideFinish] = useState(false);
+  const [showSoldOut, setShowSoldOut] = useState(false);
 
   //게시글 불러오기
   const { data } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => axiosInstance.get('/products/?showSoldOut=true'),
+    queryKey: ['products', showSoldOut],
+    queryFn: () =>
+      axiosInstance.get('/products', {
+        params: {
+          showSoldOut,
+        },
+      }),
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
@@ -86,20 +90,20 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setHideFinish((prev) => !prev)}
+              onClick={() => setShowSoldOut((prev) => !prev)}
               className="flex items-center gap-[5px]"
             >
               <img
-                src={`${hideFinish ? checkActive : check}`}
+                src={`${showSoldOut ? checkActive : check}`}
                 alt="check"
                 className="w-[15px] h-[15px]"
               />
               <p
                 className={`text-[13px] ${
-                  hideFinish ? 'text-main' : 'text-font2'
+                  showSoldOut ? 'text-main' : 'text-font2'
                 }`}
               >
-                거래 완료 글 숨기기
+                거래 완료 된 상품 보기
               </p>
             </button>
             <Select />
@@ -109,13 +113,13 @@ const Main = () => {
 
         {data ? (
           <div className="flex flex-col gap-[10px]">
-            {data.item.map((products: Product, index:number) => (
+            {data.item.map((products: Product, index: number) => (
               <List
                 key={index}
                 title={products.name}
                 type={products.extra.type}
                 total={products.quantity}
-                remain={2}
+                remain={products.buyQuantity}
                 location={products.extra.subLocation}
                 due={products.extra.meetingTime}
                 price={products.price}
