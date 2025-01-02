@@ -49,10 +49,12 @@ const Login: React.FC = () => {
       setUser({
         _id: user._id,
         name: user.name,
-        image: user.image?.image,
+        profile: user.image ? user.image : undefined,
         accessToken: user.token.accessToken,
         refreshToken: user.token.refreshToken,
       });
+
+      console.log('Updated user:', useAuthStore.getState().user);
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       alert(`${res.item.name} 님 환영합니다.`);
