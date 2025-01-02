@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Layout/Header';
@@ -17,12 +17,13 @@ import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
+import { Product } from '../../types/productsTypes';
 
 const Main = () => {
+  const navigate = useNavigate();
+
   // 거래 완료 글 숨기기 버튼
   const [hideFinish, setHideFinish] = useState(false);
-
-  const navigate = useNavigate();
 
   //게시글 불러오기
   const { data } = useQuery({
@@ -31,9 +32,12 @@ const Main = () => {
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
-  if (data) {
-    console.log(data);
-  }
+
+  useEffect(() => {
+    if (data) {
+      console.log(data.item);
+    }
+  }, [data]);
 
   // 배너
   const images = [banner1, banner2, banner1, banner2];
@@ -105,78 +109,22 @@ const Main = () => {
 
         {data ? (
           <div className="flex flex-col gap-[10px]">
-            <List
-              title={'귤은 겨울에 먹어야 해요'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
-            <List
-              title={'겨울엔 딸기도 맛있다'}
-              type={'buy'}
-              total={7}
-              remain={3}
-              location={'이마트 부천시청점'}
-              due={'12/31'}
-              price={8000}
-              date={'12/31'}
-              like={15}
-              comments={21}
-            />
-            <List
-              title={'귤은 겨울에 먹어야 해요'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
-            <List
-              title={'겨울엔 딸기도 맛있다'}
-              type={'buy'}
-              total={7}
-              remain={3}
-              location={'이마트 부천시청점'}
-              due={'12/31'}
-              price={8000}
-              date={'12/31'}
-              like={15}
-              comments={21}
-            />
-            <List
-              title={'귤은 겨울에 먹어야 해요'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
-            <List
-              title={'겨울엔 딸기도 맛있다'}
-              type={'buy'}
-              total={7}
-              remain={3}
-              location={'이마트 부천시청점'}
-              due={'12/31'}
-              price={8000}
-              date={'12/31'}
-              like={15}
-              comments={21}
-            />
+            {data.item.map((products: Product, index:number) => (
+              <List
+                key={index}
+                title={products.name}
+                type={products.extra.type}
+                total={products.quantity}
+                remain={2}
+                location={products.extra.subLocation}
+                due={products.extra.meetingTime}
+                price={products.price}
+                date={products.createdAt}
+                like={products.bookmarks}
+                comments={products.replies}
+                imageScr={products?.mainImages[0]?.path || ''}
+              />
+            ))}
           </div>
         ) : (
           <div>로딩중...</div>

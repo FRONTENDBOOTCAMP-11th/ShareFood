@@ -1,6 +1,6 @@
 export interface ListProps {
   title: string;
-  type: 'buy' | 'sell';
+  type: string;
   total: number;
   remain: number;
   location: string;
