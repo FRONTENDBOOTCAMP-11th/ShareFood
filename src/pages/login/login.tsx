@@ -8,6 +8,7 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import { useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '../../store/authStore';
+import Modal from '../../components/Modal';
 
 interface FormData {
   email: string;
@@ -22,11 +23,13 @@ const Login: React.FC = () => {
     setError,
   } = useForm<FormData>();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
   const setUser = useAuthStore((store) => store.setUser);
+
+  const [viewPayment, setViewPayment] = useState(false);
 
   // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
@@ -58,8 +61,9 @@ const Login: React.FC = () => {
       }
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
-      alert(`${res.item.name} 님 환영합니다.`);
-      navigate('/main');
+      // alert(`${res.item.name} 님 환영합니다.`);
+      setViewPayment(true);
+      // navigate('/main');
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
@@ -86,6 +90,7 @@ const Login: React.FC = () => {
 
   return (
     <>
+      {viewPayment && <Modal setViewPayment={setViewPayment}>11</Modal>}
       <div className="flex flex-col px-4 justify-center bg-main min-h-screen">
         <LoginSignupTitle>로그인</LoginSignupTitle>
         <form
