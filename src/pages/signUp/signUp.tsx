@@ -62,7 +62,6 @@ const SignUp: React.FC = () => {
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'user'; // 데이터 타입 지정
-      console.log(userInfo);
 
       // API 호출
       const res = await axiosInstance.post('/users', userInfo);
