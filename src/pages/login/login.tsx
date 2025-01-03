@@ -68,16 +68,21 @@ const Login: React.FC = () => {
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
       // 400번대 에러에 전부 에러메세지 출력
-      if (
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status < 500
-      ) {
+      if (error.response && error.response.status === 403) {
         setError('email', {
-          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오',
+          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오.',
         });
         setError('password', {
-          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오',
+          message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오.',
+        });
+      } else if (error.response && error.response.status === 422) {
+        setError('email', {
+          message:
+            '아이디(이메일) 또는 비밀번호에 맞는 형식으로 입력해 주십시오.',
+        });
+        setError('password', {
+          message:
+            '아이디(이메일) 또는 비밀번호에 맞는 형식으로 입력해 주십시오.',
         });
       }
     },
