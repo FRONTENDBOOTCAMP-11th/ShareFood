@@ -6,7 +6,7 @@ interface ImageSlidePropsType {
   onClickHandler?: (() => void)[];
 }
 
-export const ImageSlide = ({
+const ImageSlide = ({
   imageList,
   autoSlide,
   onClickHandler,
@@ -59,43 +59,52 @@ export const ImageSlide = ({
 
   return (
     <div className="flex flex-col items-center bg-back1">
-  <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[375px]">
-    <div
-      className="flex transition-transform duration-500 ease-in-out"
-      style={{
-        transform: `translateX(-${currentIndex * 100}%)`,
-      }}
-    >
-      {imageList.map((image, index) => (
-        <img
-          key={index}
-          src={image}
-          alt={`slide-${index}`}
-          className="w-full h-full max-h-[375px] object-cover"
-          onClick={onClickHandler && onClickHandler[index] ? onClickHandler[index] : undefined}
-        />
-      ))}
-    </div>
-    <button
-      onClick={handlePrev}
-      className="absolute left-[13px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
-    ></button>
-    <button
-      onClick={handleNext}
-      className="absolute right-[13px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
-    ></button>
-    <div className="flex gap-2 absolute bottom-[14px] left-1/2 transform -translate-x-1/2">
-      {imageList.map((_, index) => (
+      <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[375px]">
         <div
-          key={index}
-          className={`w-[10px] h-[10px] rounded-full ${
-            index === currentIndex ? 'bg-white' : 'bg-line1'
-          }`}
-        ></div>
-      ))}
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateX(-${currentIndex * 100}%)`,
+          }}
+        >
+          {imageList.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`slide-${index}`}
+              className="w-full h-full max-h-[375px] object-cover"
+              onClick={
+                onClickHandler && onClickHandler[index]
+                  ? onClickHandler[index]
+                  : undefined
+              }
+            />
+          ))}
+        </div>
+        {imageList.length > 2 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-[13px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+            ></button>
+            <button
+              onClick={handleNext}
+              className="absolute right-[13px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+            ></button>
+          </>
+        )}
+        <div className="flex gap-2 absolute bottom-[14px] left-1/2 transform -translate-x-1/2">
+          {imageList.map((_, index) => (
+            <div
+              key={index}
+              className={`w-[10px] h-[10px] rounded-full ${
+                index === currentIndex ? 'bg-white' : 'bg-line1'
+              }`}
+            ></div>
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
   );
 };
+
+export default ImageSlide;

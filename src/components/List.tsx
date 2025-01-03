@@ -6,6 +6,7 @@ import Tag from './Tag';
 import image from '/images/chef/forkChef_back.svg';
 import bookmark from '/images/icons/heart.svg';
 import PostType from './PostType';
+import { useNavigate } from 'react-router-dom';
 
 const List = ({
   id,
@@ -24,14 +25,16 @@ const List = ({
   const defaultImage = image;
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
+  const navigate = useNavigate();
+
   // 날짜 형식 변경
   const parts = date.split(' ')[0].split('.');
   const formattedDate = `${parts[1]}.${parts[2]}`;
 
   return (
-    <div className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px] relative">
+    <div onClick={() => navigate(`/detail/${id}`)} className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px] relative cursor-pointer">
       <div className="flex justify-between mb-[15px]">
-        <p className="text-font1 font-semibold text-[14px]">{title}</p>
+        <p className="text-font1 font-semibold text-[14px] mr-[5px] truncate">{title}</p>
         <p className="text-font2 text-[13px]">{formattedDate}</p>
       </div>
 

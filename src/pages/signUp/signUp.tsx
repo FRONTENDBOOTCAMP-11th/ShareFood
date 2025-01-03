@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import UserInfo from '../myPage/UserInfo';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // 서버에 넘길 데이터
 interface UserInfo {
@@ -25,6 +26,8 @@ const SignUp: React.FC = () => {
     watch,
     clearErrors,
   } = useForm<UserInfo>();
+
+  const navigate = useNavigate();
 
   // 비밀번호 확인
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -56,23 +59,22 @@ const SignUp: React.FC = () => {
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'user'; // 데이터 타입 지정
-
       console.log(userInfo);
 
-      try {
-        // 응답 성공 시
-        const response = await axiosInstance.post(`/users`, userInfo);
-        console.log('Response:', response.data); // 응답 데이터 로그
-        return response.data;
-      } catch (error) {
-        // 응답 실패 시
-        const axiosError = error as AxiosError;
-        if (axiosError.response) {
-          console.log('Error Response:', axiosError.response.data); // 에러 응답 데이터 로그
-        } else {
-          console.error('Error:', error);
-        }
-        throw error;
+      // API 호출
+      const res = await axiosInstance.post('/users', userInfo);
+      return res.data; // 응답 데이터 로그
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      navigate('/login');
+    },
+    onError: (err) => {
+      const axiosError = err as AxiosError;
+      if (axiosError.response) {
+        console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+      } else {
+        console.error('Unexpected Error:', err); // 기타 에러
       }
     },
   });
@@ -130,12 +132,16 @@ const SignUp: React.FC = () => {
     const result = await duplication(type);
     if (result.type === 'email') {
       setEmailDuplicationError(
-        result.isDuplicate ? '이미 존재하는 아이디입니다.' : '',
+        result.isDuplicate
+          ? '이미 존재하는 아이디입니다.'
+          : '사용 가능한 아이디입니다.',
       );
       setIsEmailUnique(!result.isDuplicate);
     } else {
       setNameDuplicationError(
-        result.isDuplicate ? '이미 존재하는 닉네임입니다.' : '',
+        result.isDuplicate
+          ? '이미 존재하는 닉네임입니다.'
+          : '사용 가능한 닉네임 입니다.',
       );
       setIsNameUnique(!result.isDuplicate);
     }

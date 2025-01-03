@@ -18,13 +18,13 @@ export const useGetList = (
     queryFn: () => {
       const baseParams: ParamsType = {
         showSoldOut,
+        keyword: keyword ?? '',
         custom: JSON.stringify({
           'extra.type': productsType,
           ...(meetingLocation && meetingLocation !== '전체지역' && {
             'extra.location': meetingLocation,
           }),
         }),
-        keyword: keyword,
       };
 
       return axiosInstance.get('/products', { params: baseParams });

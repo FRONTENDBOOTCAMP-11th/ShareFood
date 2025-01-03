@@ -1,4 +1,5 @@
 export interface ListProps {
+  id: number;
   title: string;
   type: string;
   total: number;

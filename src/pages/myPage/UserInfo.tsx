@@ -1,15 +1,22 @@
 import { useNavigate } from 'react-router-dom';
+import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import Layout from '../../components/Layout';
 
 import arrow from '/images/arrow/prevArrow.svg';
-import profile from '/images/chef/drawingChef.svg';
 import gallery from '/images/icons/gallery.svg';
 
 const UserInfo = () => {
   const navigate = useNavigate();
+
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+
+  const { data: userInfo } = useGetUserInfo(1);
+  console.log(userInfo);
+
+  if (!userInfo) return <div>Loading...</div>;
 
   return (
     <div className="bg-back1 pt-[70px] px-[16px] min-h-screen">
@@ -29,7 +36,7 @@ const UserInfo = () => {
         <div className="flex flex-col gap-4">
           <div className="relative w-[90px] h-[90px] m-auto">
             <img
-              src={profile}
+              src={`${apiUrl}${userInfo.item.image}`}
               alt="Profile"
               className="rounded-full w-full h-full"
             />
@@ -55,6 +62,7 @@ const UserInfo = () => {
               id="nickname"
               placeholder="닉네임"
               className="border-b text-[13px] py-[3px]"
+              value={userInfo.item.name}
             />
             <div className="absolute right-0 top-[60%] transform -translate-y-1/2">
               <Button
@@ -76,12 +84,9 @@ const UserInfo = () => {
             >
               이메일
             </label>
-            <input
-              type="text"
-              id="email"
-              placeholder="이메일"
-              className="border-b text-[13px] py-[3px]"
-            />
+            <p className="border-b text-[13px] py-[3px]" id="email">
+              {userInfo.item.email}
+            </p>
           </div>
 
           <div className="flex flex-col gap-[5px] mb-[50px]">
@@ -96,6 +101,7 @@ const UserInfo = () => {
               id="phone"
               placeholder="휴대전화 번호"
               className="border-b text-[13px] py-[3px]"
+              value={userInfo.item.phone}
             />
           </div>
 

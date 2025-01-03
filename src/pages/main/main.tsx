@@ -5,7 +5,7 @@ import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
 
 import Header from '../../components/Layout/Header';
-import { ImageSlide } from '../../components/ImageSlide';
+import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
@@ -28,11 +28,7 @@ const Main = () => {
   const navigate = useNavigate();
 
   //게시글 불러오기
-  const { data } = useGetList(
-    showSoldOut,
-    productsType,
-    meetingLocation
-  );
+  const { data } = useGetList(showSoldOut, productsType, meetingLocation);
 
   useEffect(() => {
     if (data) {
@@ -118,6 +114,7 @@ const Main = () => {
           <div className="flex flex-col gap-[10px]">
             {data.item.map((products: Product, index: number) => (
               <List
+                id={products._id}
                 key={index}
                 title={products.name}
                 type={products.extra.type}

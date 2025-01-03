@@ -5,8 +5,7 @@ const SearchNoResult: React.FC = () => {
 
 
   return (
-    <div className="bg-back1 h-screen flex flex-col">
-
+    <div className="bg-back1 flex flex-col flex-grow">
       {/* 본문 중앙 정렬 */}
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
