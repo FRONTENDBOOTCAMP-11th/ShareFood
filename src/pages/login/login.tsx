@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
-import { useAuthStore } from '../../store/authStore';
+import { useLocalStorage, useSessionStorage } from '../../store/authStore';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
 interface FormData {
@@ -27,7 +27,8 @@ const Login: React.FC = () => {
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
-  const setUser = useAuthStore((store) => store.setUser);
+  const useLocal = useLocalStorage();
+  const useSession = useSessionStorage();
 
   // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
@@ -43,19 +44,28 @@ const Login: React.FC = () => {
     onSuccess: (res) => {
       console.log(res);
 
-      if (active === 'active') {
-        const user = res.item;
-        console.log(user);
+      const user = res.item;
+      console.log(user);
 
-        setUser({
+      // 로그인 정보 저장
+      // 로그인 상태 버튼 활성 시 로컬 스토리지 저장
+      if (active === 'active') {
+        useLocal.setUser({
           _id: user._id,
           name: user.name,
           profile: user.image ? user.image : undefined,
           accessToken: user.token.accessToken,
           refreshToken: user.token.refreshToken,
         });
-
-        console.log('Updated user:', useAuthStore.getState().user);
+        // 로그인 상태 버튼 비활성 시 세션 스토리지 저장
+      } else {
+        useSession.setUser({
+          _id: user._id,
+          name: user.name,
+          profile: user.image ? user.image : undefined,
+          accessToken: user.token.accessToken,
+          refreshToken: user.token.refreshToken,
+        });
       }
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
