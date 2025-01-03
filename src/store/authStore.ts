@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type User = {
   _id: number;
@@ -24,3 +25,31 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
   },
   resetUser: () => set({ user: null }),
 }));
+
+export const useSessionStorage = create<AuthState & AuthActions>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user: User | null) => set({ user }),
+      resetUser: () => set({ user: null }),
+    }),
+    {
+      name: 'user',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+);
+
+export const useLocalStorage = create<AuthState & AuthActions>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user: User | null) => set({ user }),
+      resetUser: () => set({ user: null }),
+    }),
+    {
+      name: 'user',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
