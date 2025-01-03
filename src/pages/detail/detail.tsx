@@ -166,7 +166,7 @@ const Detail = () => {
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
           <Comment replies={data.item.replies} />
-          <CommentAdd />
+          <CommentAdd _id={_id} />
           <Button
             height="40px"
             text="text-sm"
