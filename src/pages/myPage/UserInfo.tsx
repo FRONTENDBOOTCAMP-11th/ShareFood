@@ -6,7 +6,6 @@ import Header from '../../components/Layout/Header';
 import Layout from '../../components/Layout';
 
 import arrow from '/images/arrow/prevArrow.svg';
-import profile from '/images/chef/drawingChef.svg';
 import gallery from '/images/icons/gallery.svg';
 
 const UserInfo = () => {
