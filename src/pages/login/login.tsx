@@ -67,7 +67,7 @@ const Login: React.FC = () => {
     },
     onError: (error: AxiosError) => {
       console.log('Error occurred:', error);
-      // 400번대 에러에 전부 에러메세지 출력
+      // 403 에러 : 아이디, 비밀번호가 틀렸을 경우 === 서버에 저장된 데이터에 없는 경우
       if (error.response && error.response.status === 403) {
         setError('email', {
           message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오.',
@@ -75,6 +75,7 @@ const Login: React.FC = () => {
         setError('password', {
           message: '아이디(이메일) 또는 비밀번호를 확인해 주십시오.',
         });
+        // 422 에러 : 공란 또는 형식에 맞지않은 값이 입력된 경우
       } else if (error.response && error.response.status === 422) {
         setError('email', {
           message:
