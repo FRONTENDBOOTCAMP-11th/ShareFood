@@ -73,8 +73,12 @@ const SignUp: React.FC = () => {
 
       toast.success(
         `${data.item.name}님, 가입을 축하드립니다. \n 잠시 후 로그인 페이지로 이동합니다.`,
+        {
+          onClose: () => {
+            navigate('/login');
+          },
+        },
       );
-      navigate('/login');
     },
     onError: (err) => {
       const axiosError = err as AxiosError;
