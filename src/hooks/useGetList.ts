@@ -4,18 +4,21 @@ import { axiosInstance } from './axiosInstance';
 interface ParamsType {
   showSoldOut: boolean;
   custom: string;
+  keyword?: string;
 }
 
 export const useGetList = (
   showSoldOut: boolean,
   productsType: string,
-  meetingLocation: string
+  meetingLocation?: string,
+  keyword?: string
 ) => {
   return useQuery({
-    queryKey: ['products', showSoldOut, productsType, meetingLocation],
+    queryKey: ['products', showSoldOut, productsType, meetingLocation, keyword],
     queryFn: () => {
       const baseParams: ParamsType = {
         showSoldOut,
+        keyword: keyword ?? '',
         custom: JSON.stringify({
           'extra.type': productsType,
         }),
