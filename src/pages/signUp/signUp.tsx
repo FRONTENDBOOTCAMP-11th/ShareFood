@@ -56,25 +56,16 @@ const SignUp: React.FC = () => {
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'user'; // 데이터 타입 지정
-
       console.log(userInfo);
 
-      try {
-        // 응답 성공 시
-        const response = await axiosInstance.post(`/users`, userInfo);
-        console.log('Response:', response.data); // 응답 데이터 로그
-        return response.data;
-      } catch (error) {
-        // 응답 실패 시
-        const axiosError = error as AxiosError;
-        if (axiosError.response) {
-          console.log('Error Response:', axiosError.response.data); // 에러 응답 데이터 로그
-        } else {
-          console.error('Error:', error);
-        }
-        throw error;
-      }
+      // API 호출
+      const res = await axiosInstance.post('/users', userInfo);
+      return res.data; // 응답 데이터 로그
     },
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: () => {},
   });
 
   // onSubmit에 사용
