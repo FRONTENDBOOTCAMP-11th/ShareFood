@@ -6,7 +6,7 @@ interface ImageSlidePropsType {
   onClickHandler?: (() => void)[];
 }
 
-export const ImageSlide = ({
+const ImageSlide = ({
   imageList,
   autoSlide,
   onClickHandler,
@@ -106,3 +106,5 @@ export const ImageSlide = ({
     </div>
   );
 };
+
+export default ImageSlide;
