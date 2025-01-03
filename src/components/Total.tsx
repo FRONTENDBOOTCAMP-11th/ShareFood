@@ -4,11 +4,15 @@ import fullHeart from '/images/icons/full_heart.svg';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../hooks/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 interface TotalProps {
   interest: number;
   setInterest: React.Dispatch<React.SetStateAction<number>>;
   data: Data;
+  onRefetch: (options?: {
+    throwOnError?: boolean;
+  }) => Promise<QueryObserverResult<MyData, MyError>>;
 }
 
 interface Data {
@@ -23,7 +27,7 @@ interface Item {
 }
 
 // 매개변수로 관심 수 state, 관심 setter, 댓글 수 state 필요
-function Total({ interest, setInterest, data }: TotalProps) {
+function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
   // 버튼 클릭 시 이미지 버튼을 위한 state
   const [imageSrc, setImageSrc] = useState(emptyHeart);
   const [isClicked, setIsClicked] = useState(false);
@@ -41,6 +45,10 @@ function Total({ interest, setInterest, data }: TotalProps) {
       };
       return await axios.post('/bookmarks/product', body);
     },
+    onSuccess: () => {
+      onRefetch();
+      toast.success('관심이 추가 되었습니다.');
+    },
     onError: (err) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
@@ -51,7 +59,14 @@ function Total({ interest, setInterest, data }: TotalProps) {
 
   // 관심 삭제
   const deleteInterest = useMutation({
-    mutationFn: () => axios.delete(`/bookmarks/${data.item.myBookmarkId}`),
+    mutationFn: () => {
+      // console.log('삭제할 관심 번호 : ', data.item.myBookmarkId);
+      return axios.delete(`/bookmarks/${data.item.myBookmarkId}`);
+    },
+    onSuccess: () => {
+      onRefetch();
+      toast.success('관심이 삭제 되었습니다.');
+    },
     onError: (err) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
@@ -67,14 +82,14 @@ function Total({ interest, setInterest, data }: TotalProps) {
       setIsClicked(true);
     }
     setInterest(data.item.bookmarks);
-  });
+  }, [data]);
 
   const handleClick = () => {
     if (isClicked) {
       deleteInterest.mutate();
       setImageSrc(emptyHeart);
       setIsClicked(false);
-      setInterest(interest - 1);
+      setInterest((n) => n - 1);
     } else {
       addInterest.mutate();
       setInterest((n) => n + 1);
@@ -82,6 +97,8 @@ function Total({ interest, setInterest, data }: TotalProps) {
       setImageSrc(fullHeart);
     }
   };
+
+  // console.log(data);
 
   return (
     <div className="border-b border-main pb-3 flex gap-2 text-[13px]">
@@ -94,6 +111,19 @@ function Total({ interest, setInterest, data }: TotalProps) {
       <p className="ml-3 text-font2">
         댓글 <span className="text-main">{data.item.replies.length}</span>
       </p>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
     </div>
   );
 }

@@ -27,7 +27,7 @@ const Detail = () => {
   const { _id } = useParams();
 
   const postNum: number = Number(_id);
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['products', _id],
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
@@ -156,7 +156,12 @@ const Detail = () => {
 
         <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
-        <Total interest={interest} setInterest={setInterest} data={data} />
+        <Total
+          interest={interest}
+          setInterest={setInterest}
+          data={data}
+          onRefetch={refetch}
+        />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
