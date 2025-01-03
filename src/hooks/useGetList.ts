@@ -4,29 +4,28 @@ import { axiosInstance } from './axiosInstance';
 interface ParamsType {
   showSoldOut: boolean;
   custom: string;
+  keyword?: string;
 }
 
 export const useGetList = (
   showSoldOut: boolean,
   productsType: string,
-  meetingLocation: string
+  meetingLocation?: string,
+  keyword?: string
 ) => {
   return useQuery({
-    queryKey: ['products', showSoldOut, productsType, meetingLocation],
+    queryKey: ['products', showSoldOut, productsType, meetingLocation,keyword],
     queryFn: () => {
       const baseParams: ParamsType = {
         showSoldOut,
         custom: JSON.stringify({
           'extra.type': productsType,
+          ...(meetingLocation && meetingLocation !== '전체지역' && {
+            'extra.location': meetingLocation,
+          }),
         }),
+        keyword: keyword,
       };
-
-      if (meetingLocation !== '전체지역') {
-        baseParams.custom = JSON.stringify({
-          ...JSON.parse(baseParams.custom),
-          'extra.location': meetingLocation,
-        });
-      }
 
       return axiosInstance.get('/products', { params: baseParams });
     },

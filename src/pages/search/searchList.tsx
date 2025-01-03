@@ -1,38 +1,37 @@
-import List from "../../components/List";
 import { Product } from '../../types/productsTypes';
+
+import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
-import Select from "../../components/Select";
-import { useEffect, useState } from "react";
-import { useGetList } from "../../hooks/useGetList";
+import Select from '../../components/Select';
+
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 
 interface SearchListProps {
-  results: Product[]; // 검색 결과 타입 정의 (구체적으로 알면 any 대신 해당 타입 사용)
+  results: Product[];
+  showSoldOut: boolean;
+  handleShowSoldout: () => void;
+  productsType: string;
+  handleProductsType: (type: string) => void;
+  meetingLocation: string;
+  handleMeetingLoction: (location: string) => void;
 }
 
-const SearchList: React.FC<SearchListProps> = () => {
-
-  const [showSoldOut, setShowSoldOut] = useState(false);
-  const [productsType, setProductsType] = useState('buy');
-  const [meetingLocation, setMeetingLocation] = useState('전체지역');
-
-  //게시글 불러오기
-  const { data } = useGetList(showSoldOut, productsType, meetingLocation, keyword);
-
-  useEffect(() => {
-    if (data) {
-      console.log(data.item);
-    }
-  }, [data]);
-
+const SearchList: React.FC<SearchListProps> = ({
+  results,
+  showSoldOut,
+  handleShowSoldout,
+  productsType,
+  handleProductsType,
+  meetingLocation,
+  handleMeetingLoction,
+}) => {
   return (
     <>
       <div className="pt-14 bg-back1 h-screen flex flex-col">
-
         <div className="flex items-center justify-between">
           <button
-            onClick={() => setShowSoldOut((prev) => !prev)}
+            onClick={handleShowSoldout}
             className="flex items-center gap-[5px]"
           >
             <img
@@ -41,28 +40,29 @@ const SearchList: React.FC<SearchListProps> = () => {
               className="w-[15px] h-[15px]"
             />
             <p
-              className={`text-[13px] ${showSoldOut ? 'text-main' : 'text-font2'
-                }`}
+              className={`text-[13px] ${
+                showSoldOut ? 'text-main' : 'text-font2'
+              }`}
             >
               거래 완료 된 상품 보기
             </p>
           </button>
           <Select
             meetingLocation={meetingLocation}
-            setMeetingLocation={setMeetingLocation}
+            setMeetingLocation={handleMeetingLoction}
           />
         </div>
         <div className="px-4 flex flex-col gap-[10px] mt-4">
           <TypeSelector
-            setProductsType={setProductsType}
+            setProductsType={handleProductsType}
             productsType={productsType}
           />
-          {data ? (
+          {results ? (
             <div className="flex flex-col gap-[10px]">
-              {data.item.map((products: Product, index: number) => (
+              {results.map((products: Product, index: number) => (
                 <List
-                  id={products._id}
                   key={index}
+                  id={products._id}
                   title={products.name}
                   type={products.extra.type}
                   total={products.quantity}

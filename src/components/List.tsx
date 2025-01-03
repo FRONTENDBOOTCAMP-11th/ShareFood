@@ -8,6 +8,7 @@ import bookmark from '/images/icons/heart.svg';
 import PostType from './PostType';
 
 const List = ({
+  id,
   title,
   type,
   total,

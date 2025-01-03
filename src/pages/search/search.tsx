@@ -14,8 +14,7 @@ const Search: React.FC = () => {
   ]);
 
   return (
-    <div className="bg-back1 h-screen">
-      <div className="px-4 pt-[64px]">
+      <div>
         {/* 최근 검색어 */}
         <div className="flex items-center justify-between mb-2 py-3">
           <span className="text-black text-sm">최근 검색어</span>
@@ -50,7 +49,6 @@ const Search: React.FC = () => {
           ))}
         </div>
       </div>
-    </div>
   );
 };
 
