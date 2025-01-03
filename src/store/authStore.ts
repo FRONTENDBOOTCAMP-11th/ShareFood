@@ -39,3 +39,17 @@ export const useSessionStorage = create<AuthState & AuthActions>()(
     },
   ),
 );
+
+export const useLocalStorage = create<AuthState & AuthActions>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user: User | null) => set({ user }),
+      resetUser: () => set({ user: null }),
+    }),
+    {
+      name: 'user',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
