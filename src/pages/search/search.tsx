@@ -1,10 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import Header from '../../components/Layout/Header';
-
-import PrevIcon from '/images/arrow/prevArrow.svg';
-import SearchIcon from '/images/icons/search.svg';
 
 const Search: React.FC = () => {
   // 키워드 배열이 문자열 타입
@@ -19,44 +13,8 @@ const Search: React.FC = () => {
     '아메리카노',
   ]);
 
-  const navigate = useNavigate();
-
-  const handlePrevClick = () => {
-    navigate(-1); // 이전 페이지로 이동하기
-  };
-
-  const handleSearchClick = () => {
-    console.log('검색 실행'); // 검색 기능 추가 예정
-  };
-
   return (
     <div className="bg-back1 h-screen">
-      <Header>
-        <div className="flex items-center justify-between w-full px-4">
-          {/* 뒤로가기 버튼 */}
-          <button
-            type="button"
-            aria-label="뒤로가기"
-            className="transition-colors hover:text-main" // hover 시 main 색상으로 변경
-            onClick={handlePrevClick}
-          >
-            <img src={PrevIcon} alt="뒤로가기" className="h-5 w-5" />
-          </button>
-          <span className="text-line1 text-lg font-medium">
-            검색어를 입력하세요
-          </span>
-          {/* 검색 버튼 */}
-          <button
-            type="button"
-            aria-label="검색"
-            className="transition-colors text-line1 hover:text-main" // 기본은 line1, hover 시 main 색상
-            onClick={handleSearchClick}
-          >
-            <img src={SearchIcon} alt="검색" className="w-5 h-5" />
-          </button>
-        </div>
-      </Header>
-
       <div className="px-4 pt-[64px]">
         {/* 최근 검색어 */}
         <div className="flex items-center justify-between mb-2 py-3">
