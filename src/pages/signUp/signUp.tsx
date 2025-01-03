@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import UserInfo from '../myPage/UserInfo';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // 서버에 넘길 데이터
 interface UserInfo {
@@ -25,6 +26,8 @@ const SignUp: React.FC = () => {
     watch,
     clearErrors,
   } = useForm<UserInfo>();
+
+  const navigate = useNavigate();
 
   // 비밀번호 확인
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -64,6 +67,7 @@ const SignUp: React.FC = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+      navigate('/login');
     },
     onError: () => {},
   });
