@@ -69,7 +69,14 @@ const SignUp: React.FC = () => {
       console.log(data);
       navigate('/login');
     },
-    onError: () => {},
+    onError: (err) => {
+      const axiosError = err as AxiosError;
+      if (axiosError.response) {
+        console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+      } else {
+        console.error('Unexpected Error:', err); // 기타 에러
+      }
+    },
   });
 
   // onSubmit에 사용
