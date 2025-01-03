@@ -7,7 +7,6 @@ import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useLocalStorage, useSessionStorage } from '../../store/authStore';
-import { useAuthStore } from '../../store/authStore';
 
 import Button from '../../components/Button';
 import Error from '../../components/Error';

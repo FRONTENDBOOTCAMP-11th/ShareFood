@@ -11,7 +11,7 @@ export const useGetList = (
   showSoldOut: boolean,
   productsType: string,
   meetingLocation?: string,
-  keyword?: string
+  keyword?: string,
 ) => {
   return useQuery({
     queryKey: ['products', showSoldOut, productsType, meetingLocation, keyword],
@@ -34,6 +34,15 @@ export const useGetList = (
       return axiosInstance.get('/products', { params: baseParams });
     },
     select: (res) => res.data,
+    staleTime: 1000 * 10,
+  });
+};
+
+export const useGetMyList = (showSoldOut: boolean) => {
+  return useQuery({
+    queryKey: ['products', showSoldOut],
+    queryFn: () =>
+      axiosInstance.get(`/seller/products`).then((res) => res.data),
     staleTime: 1000 * 10,
   });
 };

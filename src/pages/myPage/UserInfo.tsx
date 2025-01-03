@@ -6,16 +6,15 @@ import Header from '../../components/Layout/Header';
 import Layout from '../../components/Layout';
 
 import arrow from '/images/arrow/prevArrow.svg';
-import profile from '/images/chef/drawingChef.svg';
 import gallery from '/images/icons/gallery.svg';
 
 const UserInfo = () => {
+  const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
-  const apiUrl = import.meta.env.VITE_BASE_URL;
-
+  // 회원 정보 조회
   const { data: userInfo } = useGetUserInfo(1);
-  console.log(userInfo);
+  
 
   if (!userInfo) return <div>Loading...</div>;
 

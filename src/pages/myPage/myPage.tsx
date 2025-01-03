@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
+import { useGetMyList } from '../../hooks/useGetList';
 
 import Layout from '../../components/Layout';
 import List from '../../components/List';
@@ -21,8 +22,22 @@ const MyPage = () => {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
+  // 회원정보 조회
   const { data: userInfo } = useGetUserInfo(1);
-  console.log(userInfo);
+
+  // 내 작성글 조회
+  const { data: myList } = useGetMyList(false);
+  console.log(myList);
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+
+    // 로그아웃 후 리다이렉트
+    window.location.href = '/';
+  };
 
   if (!userInfo) return <div>Loading...</div>;
 
@@ -161,7 +176,7 @@ const MyPage = () => {
       </Layout>
 
       <div className="mt-auto">
-        <Button height="40px" text="text-sm" bg="white" color="main">
+        <Button height="40px" text="text-sm" bg="white" color="main" onClick={handleLogout}>
           로그아웃
         </Button>
       </div>
