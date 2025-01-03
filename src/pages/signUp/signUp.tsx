@@ -132,12 +132,16 @@ const SignUp: React.FC = () => {
     const result = await duplication(type);
     if (result.type === 'email') {
       setEmailDuplicationError(
-        result.isDuplicate ? '이미 존재하는 아이디입니다.' : '',
+        result.isDuplicate
+          ? '이미 존재하는 아이디입니다.'
+          : '사용 가능한 아이디입니다.',
       );
       setIsEmailUnique(!result.isDuplicate);
     } else {
       setNameDuplicationError(
-        result.isDuplicate ? '이미 존재하는 닉네임입니다.' : '',
+        result.isDuplicate
+          ? '이미 존재하는 닉네임입니다.'
+          : '사용 가능한 닉네임 입니다.',
       );
       setIsNameUnique(!result.isDuplicate);
     }
