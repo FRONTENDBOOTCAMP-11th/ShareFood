@@ -24,11 +24,10 @@ const Detail = () => {
   // const typeBuy: string = 'buy';
 
   const axios = axiosInstance;
-  useEffect(() => {});
   const { _id } = useParams();
 
   const postNum: number = Number(_id);
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ['products', _id],
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
@@ -59,11 +58,12 @@ const Detail = () => {
     return <div>로딩중...</div>;
   }
 
-  console.log(data);
   const productType: string = data.item.extra.type;
   const priceTrim = data.item.price
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // console.log(data);
 
   // console.log('Updated user:', useAuthStore.getState().user);
 

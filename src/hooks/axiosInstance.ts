@@ -17,11 +17,12 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const accessToken = useAuthStore.getState().user?.accessToken;
     if (useAuthStore.getState().user?.accessToken) {
-      config.headers.Authorization = accessToken;
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      // config.headers.Authorization = accessToken;
     }
     return config;
   },
   (error) => {
     Promise.reject(error);
   },
-); 
+);
