@@ -23,7 +23,7 @@ const MyPage = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
   // 회원정보 조회
-  const { data: userInfo } = useGetUserInfo(1);
+  const { data: userInfo } = useGetUserInfo();
 
   // 내 작성글 조회
   const { data: myList } = useGetMyList(false);
