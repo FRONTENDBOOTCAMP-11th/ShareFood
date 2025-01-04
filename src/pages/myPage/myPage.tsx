@@ -9,6 +9,7 @@ import Button from '../../components/Button';
 
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
+import { Product } from '../../types/productsTypes';
 
 const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
@@ -23,7 +24,7 @@ const MyPage = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
   // 회원정보 조회
-  const { data: userInfo } = useGetUserInfo();
+  const { data: userInfo } = useGetUserInfo(1);
 
   // 내 작성글 조회
   const { data: myList } = useGetMyList(false);
@@ -98,45 +99,23 @@ const MyPage = () => {
 
         {activeTab === '작성글' && (
           <div className="flex flex-col gap-[10px]">
-            <List
-              id={1}
-              title={'귤은 겨울에 먹어야 해요1'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
-            <List
-              id={1}
-              title={'귤은 겨울에 먹어야 해요1'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
-            <List
-              id={1}
-              title={'귤은 겨울에 먹어야 해요1'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
+            {myList.item.map((products: Product, index: number) => (
+              <List
+                id={products._id}
+                key={index}
+                title={products.name}
+                type={products.extra.type}
+                total={products.quantity}
+                remain={products.buyQuantity}
+                location={products.extra.subLocation}
+                due={products.extra.meetingTime}
+                price={products.price}
+                date={products.createdAt}
+                like={products.bookmarks}
+                comments={products.replies}
+                imageScr={products?.mainImages[0]?.path || ''}
+              />
+            ))}
           </div>
         )}
         {activeTab === '좋아요한글' && (
@@ -176,7 +155,13 @@ const MyPage = () => {
       </Layout>
 
       <div className="mt-auto">
-        <Button height="40px" text="text-sm" bg="white" color="main" onClick={handleLogout}>
+        <Button
+          height="40px"
+          text="text-sm"
+          bg="white"
+          color="main"
+          onClick={handleLogout}
+        >
           로그아웃
         </Button>
       </div>
