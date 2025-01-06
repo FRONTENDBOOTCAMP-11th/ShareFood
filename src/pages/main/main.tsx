@@ -1,34 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
+import { useFilterStateStore } from '../../store/listStateStore';
 
+// components
 import Header from '../../components/Layout/Header';
 import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
 
+// images
 import greenchef from '/images/chef/greenChef.svg';
 import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
-
-// images
 import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
 
 const Main = () => {
   // 필터링 상태
-  const [showSoldOut, setShowSoldOut] = useState(false);
-  const [productsType, setProductsType] = useState('buy');
-  const [meetingLocation, setMeetingLocation] = useState('전체지역');
+  const {
+    soldout,
+    setSoldout,
+    location,
+    setLocation,
+    type,
+    setType,
+  } = useFilterStateStore();
 
   const navigate = useNavigate();
 
   //게시글 불러오기
-  const { data } = useGetList(showSoldOut, productsType, meetingLocation);
+  const { data } = useGetList(soldout, type, location);
 
   useEffect(() => {
     if (data) {
@@ -38,13 +44,13 @@ const Main = () => {
 
   // 배너
   const images = [banner1, banner2, banner1, banner2];
-  const handleImage1Click = () => {
+  const handleImage1Click = () => alert('Image 1 Clicked!');
+  const handleImage2Click = () => {
     window.open(
-      'https://blog.naver.com/kies84/223697413966?photoView=2',
+      'https://blog.naver.com/kies84/223697413966?trackingCode=external',
       '_blank',
     );
   };
-  const handleImage2Click = () => alert('Image 2 Clicked!');
   const handleImage3Click = () => alert('Image 3 Clicked!');
   const handleImage4Click = () => alert('Image 4 Clicked!');
 
@@ -83,30 +89,30 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setShowSoldOut((prev) => !prev)}
+              onClick={() => setSoldout((prev) => !prev)}
               className="flex items-center gap-[5px]"
             >
               <img
-                src={`${showSoldOut ? checkActive : check}`}
+                src={`${soldout ? checkActive : check}`}
                 alt="check"
                 className="w-[15px] h-[15px]"
               />
               <p
                 className={`text-[13px] ${
-                  showSoldOut ? 'text-main' : 'text-font2'
+                  soldout ? 'text-main' : 'text-font2'
                 }`}
               >
-                거래 완료 된 상품 보기
+                거래 완료 된 상품도 보기
               </p>
             </button>
             <Select
-              meetingLocation={meetingLocation}
-              setMeetingLocation={setMeetingLocation}
+              meetingLocation={location}
+              setMeetingLocation={setLocation}
             />
           </div>
           <TypeSelector
-            setProductsType={setProductsType}
-            productsType={productsType}
+            setProductsType={setType}
+            productsType={type}
           />
         </div>
 

@@ -51,27 +51,35 @@ const List = ({
 
         <div className="flex flex-col gap-[12px] justify-evenly">
           {remain !== undefined ? (
-            <Tag tagName={'item'}>
-              {remain} / <strong className="text-main">{total}</strong>
-            </Tag>
+            <div className="border-l-2">
+              <Tag tagName={'item'}>
+                {remain} / <strong className="text-main">{total}</strong>
+              </Tag>
+            </div>
           ) : (
             <></>
           )}
 
-          <Tag tagName={'location'}>
-            <p className="text-[13px]">{location}</p>
-          </Tag>
+          <div className="border-l-2">
+            <Tag tagName={'location'}>
+              <p className="text-[13px]">{location}</p>
+            </Tag>
+          </div>
 
           {type === 'buy' ? (
-            <Tag tagName={'time'}>
-              <p className="text-[13px]">
-                <strong className="text-main">{due}</strong> 까지
-              </p>
-            </Tag>
+            <div className="border-l-2">
+              <Tag tagName={'time'}>
+                <p className="text-[13px]">
+                  <strong className="text-main">{due}</strong> 까지
+                </p>
+              </Tag>
+            </div>
           ) : (
-            <Tag tagName={'price'}>
-              <p className="text-[13px]">{price}원</p>
-            </Tag>
+            <div className='border-l-2'>
+              <Tag tagName={'price'}>
+                <p className="text-[13px]">{price}원</p>
+              </Tag>
+            </div>
           )}
         </div>
         <div className="ml-auto flex-shrink-0">
