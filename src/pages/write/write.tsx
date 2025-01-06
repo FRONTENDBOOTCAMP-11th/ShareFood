@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import Button from '../../components/Button';
@@ -15,6 +15,7 @@ import Error from '../../components/Error';
 interface FormData {
   title: string;
   location: string;
+  detail: string;
   time: string;
   text: string;
   type?: string;
@@ -25,17 +26,25 @@ const Write = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
+    setError,
+    clearErrors,
   } = useForm<FormData>();
 
   const navigate = useNavigate();
 
+  // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
-  const [meetingLocation, setMeetingLocation] = useState('전체지역');
 
+  // Selector : 기본값 '전체지역'
+  const location = watch('location', '전체지역');
+
+  // 상품 게시글 등록
   const addPost = useMutation({
     mutationFn: async (formData: FormData) => {
-      formData.type = 'porduct';
-      const res = await axiosInstance.post('/product');
+      formData.type = 'product';
+      const res = await axiosInstance.post('/seller/products', formData);
       return res.data;
     },
     onSuccess: (data) => {
@@ -46,10 +55,20 @@ const Write = () => {
     },
   });
 
+  // onSubmit용 함수
   const onSubmit = (data: FormData) => {
+    // 전체지역
+    if (location === '전체지역') {
+      setError('location', {
+        message: '* 공구 위치를 선택해주세요',
+      });
+    }
+    data.location = location;
     addPost.mutate(data);
+    console.log(errors);
   };
 
+  console.log(errors.location);
   return (
     <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
       <Header>
@@ -96,11 +115,21 @@ const Write = () => {
             <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
               <p className="font-semibold">공구 위치 </p>
               <Select
-                meetingLocation={meetingLocation}
-                setMeetingLocation={setMeetingLocation}
+                meetingLocation={location}
+                setMeetingLocation={(value) => {
+                  setValue('location', value);
+                  if (value !== '전체지역') {
+                    clearErrors('location');
+                  } else {
+                    setError('location', {
+                      message: '* 공구 위치를 선택해주세요.',
+                    });
+                  }
+                }}
+                {...register('location')}
               />
             </div>
-            <Error children={'* 공구 위치를 선택해주세요.'} />
+            {errors.location && <Error>{errors.location?.message}</Error>}
           </div>
 
           <div className="info-location-detail">
@@ -110,12 +139,12 @@ const Write = () => {
                 type="text"
                 className="outline-none text-xs grow"
                 placeholder="거래 상세 위치를 입력해주세요."
-                {...register('location', {
+                {...register('detail', {
                   required: '* 상세 위치는 필수입니다.',
                 })}
               />
             </div>
-            <Error>{errors.location?.message}</Error>
+            <Error>{errors.detail?.message}</Error>
           </div>
 
           <div className="info-time">
