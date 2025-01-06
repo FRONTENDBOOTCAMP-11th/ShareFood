@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -10,6 +11,9 @@ import Error from '../../components/Error';
 
 const Write = () => {
   const navigate = useNavigate();
+
+  const [productsType, setProductsType] = useState('buy');
+  const [meetingLocation, setMeetingLocation] = useState('전체지역');
 
   return (
     <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
@@ -29,7 +33,10 @@ const Write = () => {
 
       <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
         <ImageUpload />
-        <TypeSelector />
+        <TypeSelector
+          productsType={productsType}
+          setProductsType={setProductsType}
+        />
 
         <form className="flex flex-col gap-[8px] text-[13px]">
           <div className="info-title">
@@ -47,7 +54,10 @@ const Write = () => {
           <div className="info-location">
             <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
               <p className="font-semibold">공구 위치 </p>
-              <Select />
+              <Select
+                meetingLocation={meetingLocation}
+                setMeetingLocation={setMeetingLocation}
+              />
             </div>
             <Error children={'* 공구 위치를 선택해주세요.'} />
           </div>
