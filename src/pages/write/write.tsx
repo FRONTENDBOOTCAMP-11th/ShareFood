@@ -1,4 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { axiosInstance } from '../../hooks/axiosInstance';
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
@@ -8,8 +12,60 @@ import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 
+interface FormData {
+  title: string;
+  location: string;
+  detail: string;
+  time: string;
+  text: string;
+  type?: string;
+}
+
 const Write = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+    setError,
+    clearErrors,
+  } = useForm<FormData>();
+
   const navigate = useNavigate();
+
+  // TypeSelector : 기본값 'buy'
+  const [productsType, setProductsType] = useState('buy');
+
+  // Selector : 기본값 '전체지역'
+  const location = watch('location', '전체지역');
+
+  // 상품 게시글 등록
+  const addPost = useMutation({
+    mutationFn: async (formData: FormData) => {
+      formData.type = 'product';
+      const res = await axiosInstance.post('/seller/products', formData);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  // onSubmit용 함수
+  const onSubmit = (data: FormData) => {
+    // 전체지역
+    if (location === '전체지역') {
+      setError('location', {
+        message: '* 공구 위치를 선택해주세요',
+      });
+    }
+    data.location = location;
+    addPost.mutate(data);
+  };
 
   return (
     <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
@@ -29,9 +85,15 @@ const Write = () => {
 
       <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
         <ImageUpload />
-        <TypeSelector />
+        <TypeSelector
+          productsType={productsType}
+          setProductsType={setProductsType}
+        />
 
-        <form className="flex flex-col gap-[8px] text-[13px]">
+        <form
+          className="flex flex-col gap-[8px] text-[13px]"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="info-title">
             <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
               <p className="font-semibold">제목 </p>
@@ -39,17 +101,35 @@ const Write = () => {
                 type="text"
                 className="outline-none grow"
                 placeholder="제목을 입력해주세요."
+                {...register('title', {
+                  required: '* 제목은 필수입니다',
+                })}
               />
             </div>
-            <Error children={'* 제목은 필수입니다'} />
+            <Error>{errors.title?.message}</Error>
           </div>
 
           <div className="info-location">
             <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
               <p className="font-semibold">공구 위치 </p>
-              <Select />
+              <Select
+                meetingLocation={location}
+                setMeetingLocation={(value) => {
+                  setValue('location', value);
+                  if (value !== '전체지역') {
+                    clearErrors('location');
+                  } else {
+                    setError('location', {
+                      message: '* 공구 위치를 선택해주세요.',
+                    });
+                  }
+                }}
+                {...register('location', {
+                  required: '*공구 위치를 선택해주세요',
+                })}
+              />
             </div>
-            <Error children={'* 공구 위치를 선택해주세요.'} />
+            {errors.location && <Error>{errors.location?.message}</Error>}
           </div>
 
           <div className="info-location-detail">
@@ -59,9 +139,12 @@ const Write = () => {
                 type="text"
                 className="outline-none text-xs grow"
                 placeholder="거래 상세 위치를 입력해주세요."
+                {...register('detail', {
+                  required: '* 상세 위치는 필수입니다.',
+                })}
               />
             </div>
-            <Error children={'* 상세 위치는 필수입니다.'} />
+            <Error>{errors.detail?.message}</Error>
           </div>
 
           <div className="info-time">
@@ -71,9 +154,10 @@ const Write = () => {
                 type="text"
                 className="outline-none text-xs grow"
                 placeholder="마감 시간을 입력해주세요."
+                {...register('time', { required: '* 마감시간은 필수입니다' })}
               />
             </div>
-            <Error children={'* 마감시간은 필수입니다'} />
+            <Error>{errors.time?.message}</Error>
           </div>
 
           <div className="info-content mt-[20px] mb-[10px]">
@@ -83,10 +167,17 @@ const Write = () => {
               id=""
               className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
               placeholder="상품에 대한 설명을 적어주세요!"
+              {...register('text', { required: '* 내용은 필수입니다' })}
             />
-            <Error children={'* 내용은 필수입니다'} />
+            <Error>{errors.title?.message}</Error>
           </div>
-          <Button bg="main" color="white" height="40px" text="text-sm">
+          <Button
+            type="submit"
+            bg="main"
+            color="white"
+            height="40px"
+            text="text-sm"
+          >
             작성 완료
           </Button>
         </form>
