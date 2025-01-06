@@ -5,7 +5,7 @@ import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
 
 import Header from '../../components/Layout/Header';
-import { ImageSlide } from '../../components/ImageSlide';
+import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
