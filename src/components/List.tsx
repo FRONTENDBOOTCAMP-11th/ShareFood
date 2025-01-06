@@ -24,18 +24,22 @@ const List = ({
 }: ListProps) => {
   const defaultImage = image;
   const apiUrl = import.meta.env.VITE_BASE_URL;
-
   const navigate = useNavigate();
 
   // 날짜 형식 변경
-  const parts = date.split(' ')[0].split('.');
+  const parts = date ? date.split(' ')[0].split('.') : ['00', '00'];
   const formattedDate = `${parts[1]}.${parts[2]}`;
 
   return (
-    <div onClick={() => navigate(`/detail/${id}`)} className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px] relative cursor-pointer">
+    <div
+      onClick={() => navigate(`/detail/${id}`)}
+      className="text-font1 flex flex-col rounded-custom px-[19px] py-[13px] shadow-custom bg-white rounded-[6px] relative cursor-pointer"
+    >
       <div className="flex justify-between mb-[15px]">
-        <p className="text-font1 font-semibold text-[14px] mr-[5px] truncate">{title}</p>
-        <p className="text-font2 text-[13px]">{formattedDate}</p>
+        <p className="text-font1 font-semibold text-[14px] mr-[5px] truncate">
+          {title}
+        </p>
+        {date && <p className="text-font2 text-[13px]">{formattedDate}</p>}
       </div>
 
       <div className="flex">
@@ -46,9 +50,13 @@ const List = ({
         />
 
         <div className="flex flex-col gap-[12px] justify-evenly">
-          <Tag tagName={'item'}>
-            {remain} / <strong className="text-main">{total}</strong>
-          </Tag>
+          {remain !== undefined ? (
+            <Tag tagName={'item'}>
+              {remain} / <strong className="text-main">{total}</strong>
+            </Tag>
+          ) : (
+            <></>
+          )}
 
           <Tag tagName={'location'}>
             <p className="text-[13px]">{location}</p>
@@ -71,12 +79,20 @@ const List = ({
         </div>
       </div>
 
-      <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-font1">
-        <img src={bookmark} className="w-[12px]" />
-        <p className="text-font2 text-[13px]">관심 {like}</p>
-        <p className="text-font2 text-[13px]">댓글 {comments}</p>
-      </div>
-      {total === remain && <div className='absolute w-[100%] h-[100%] bg-black bg-opacity-40 rounded-[6px] left-0 top-0 flex items-center justify-center text-[20px] text-white font-bold'>마감</div>}
+      {like !== undefined ? (
+        <div className="flex gap-[10px] mt-[17px] pt-[12px] border-t text-font1">
+          <img src={bookmark} className="w-[12px]" />
+          <p className="text-font2 text-[13px]">관심 {like}</p>
+          <p className="text-font2 text-[13px]">댓글 {comments}</p>
+        </div>
+      ) : (
+        <></>
+      )}
+      {total === remain && total !== undefined && (
+        <div className="absolute w-[100%] h-[100%] bg-black bg-opacity-40 rounded-[6px] left-0 top-0 flex items-center justify-center text-[20px] text-white font-bold">
+          마감
+        </div>
+      )}
     </div>
   );
 };

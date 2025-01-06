@@ -15,25 +15,21 @@ export const axiosInstance = axios.create({
 // Axios 요청 인터셉터 설정
 axiosInstance.interceptors.request.use(
   (config) => {
-    // localStorage에서 데이터 가져오기
     const userData = localStorage.getItem('user');
 
-    // 데이터가 존재할 경우 처리
-    let token = null; // token 변수 선언
+    let token = null;
 
     if (userData) {
       try {
-        // JSON 문자열을 객체로 변환
         const parsedData = JSON.parse(userData);
 
         // accessToken 값 추출 후 token 변수에 저장
         token = parsedData?.state?.user?.accessToken || null;
-
       } catch (error) {
         console.error('JSON 파싱 오류:', error);
       }
     } else {
-      console.log('localStorage에 "user" 데이터가 없습니다.');
+      console.log('저장된 정보가 없습니다.');
     }
 
     if (token) {

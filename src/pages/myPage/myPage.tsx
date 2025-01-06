@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
-import { useGetMyList } from '../../hooks/useGetList';
+import {
+  useGetBuyList,
+  useGetLikeList,
+  useGetMyList,
+} from '../../hooks/useGetList';
+import { useMyListStateStore } from '../../store/listStateStore';
 
 import Layout from '../../components/Layout';
 import List from '../../components/List';
@@ -9,27 +14,34 @@ import Button from '../../components/Button';
 
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
-import { Product } from '../../types/productsTypes';
+import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 
 const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>('작성글');
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+
+  // 게시물 토글 유지
   const tabs = [
     { label: '작성글', key: 'post' },
     { label: '좋아요한글', key: 'like' },
     { label: '거래신청글', key: 'trade' },
   ];
-
-  const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const { list, setList } = useMyListStateStore();
 
   // 회원정보 조회
   const { data: userInfo } = useGetUserInfo(1);
 
   // 내 작성글 조회
-  const { data: myList } = useGetMyList(false);
-  console.log(myList);
+  const { data: myList } = useGetMyList(showSoldOut);
 
+  // 내가 좋아요한 글 조회
+  const { data: myLikeList } = useGetLikeList(showSoldOut, '1');
+
+  // 거래 신청 글 조회
+  const { data: myBuyList } = useGetBuyList(showSoldOut);
+
+  // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -70,11 +82,11 @@ const MyPage = () => {
             <button
               key={tab.key}
               className={`text-[13px] font-semibold py-1 ${
-                activeTab === tab.label
+                list === tab.label
                   ? 'border-b-2 border-font1 text-font1'
                   : 'text-font2'
               }`}
-              onClick={() => setActiveTab(tab.label)}
+              onClick={() => setList(tab.label)}
             >
               {tab.label}
             </button>
@@ -97,59 +109,71 @@ const MyPage = () => {
           </p>
         </button>
 
-        {activeTab === '작성글' && (
+        {list === '작성글' && (
           <div className="flex flex-col gap-[10px]">
-            {myList.item.map((products: Product, index: number) => (
-              <List
-                id={products._id}
-                key={index}
-                title={products.name}
-                type={products.extra.type}
-                total={products.quantity}
-                remain={products.buyQuantity}
-                location={products.extra.subLocation}
-                due={products.extra.meetingTime}
-                price={products.price}
-                date={products.createdAt}
-                like={products.bookmarks}
-                comments={products.replies}
-                imageScr={products?.mainImages[0]?.path || ''}
-              />
-            ))}
+            {myList ? (
+              myList.item.map((products: Product, index: number) => (
+                <List
+                  id={products._id}
+                  key={index}
+                  title={products.name}
+                  type={products.extra.type}
+                  total={products.quantity}
+                  remain={products.buyQuantity}
+                  location={products.extra.subLocation}
+                  due={products.extra.meetingTime}
+                  price={products.price}
+                  date={products.createdAt}
+                  like={products.bookmarks}
+                  comments={products.replies}
+                  imageScr={products?.mainImages[0]?.path || ''}
+                />
+              ))
+            ) : (
+              <div>작성글이 없습니다.</div>
+            )}
           </div>
         )}
-        {activeTab === '좋아요한글' && (
+        {list === '좋아요한글' && (
           <div className="flex flex-col gap-[10px]">
-            <List
-              id={1}
-              title={'귤은 겨울에 먹어야 해요2'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
+            {myLikeList ? (
+              myLikeList.item.product.map((products: LikeProducts, index: number) => (
+                <List
+                  id={products.product._id}
+                  key={index}
+                  title={products.product.name}
+                  type={products.product.extra?.type}
+                  total={products.product.quantity}
+                  remain={products.product.buyQuantity}
+                  location={products.product.extra.subLocation}
+                  due={products.product.extra?.meetingTime}
+                  price={products.product.price}
+                  imageScr={products?.product.mainImages[0]?.path || ''}
+                />
+              ))
+            ) : (
+              <div>작성글이 없습니다.</div>
+            )}
           </div>
         )}
-        {activeTab === '거래신청글' && (
+        {list === '거래신청글' && (
           <div className="flex flex-col gap-[10px]">
-            <List
-              id={1}
-              title={'귤은 겨울에 먹어야 해요3'}
-              type={'sell'}
-              total={10}
-              remain={2}
-              location={'제주도 제주시'}
-              due={'12/31'}
-              price={3000}
-              date={'12/31'}
-              like={5}
-              comments={7}
-            />
+            {myBuyList ? (
+              myBuyList.item.map((product: MyProducts, index: number) => (
+                <List
+                  id={product.products[0]._id}
+                  key={index}
+                  title={product.products[0].name}
+                  type={product.products[0].extra?.type}
+                  location={product.products[0].extra?.subLocation}
+                  due={product.products[0].extra?.meetingTime}
+                  price={product.products[0].price}
+                  imageScr={product?.products[0].image.path || ''}
+                />
+              ))
+            ) : (
+              <div>작성글이 없습니다.</div>
+            )}
           </div>
         )}
       </Layout>
