@@ -7,6 +7,7 @@ interface ParamsType {
   keyword?: string;
 }
 
+// 게시물 목록
 export const useGetList = (
   showSoldOut: boolean,
   productsType: string,
@@ -14,16 +15,17 @@ export const useGetList = (
   keyword?: string,
 ) => {
   return useQuery({
-    queryKey: ['products', showSoldOut, productsType, meetingLocation,keyword],
+    queryKey: ['products', showSoldOut, productsType, meetingLocation, keyword],
     queryFn: () => {
       const baseParams: ParamsType = {
         showSoldOut,
         keyword: keyword ?? '',
         custom: JSON.stringify({
           'extra.type': productsType,
-          ...(meetingLocation && meetingLocation !== '전체지역' && {
-            'extra.location': meetingLocation,
-          }),
+          ...(meetingLocation &&
+            meetingLocation !== '전체지역' && {
+              'extra.location': meetingLocation,
+            }),
         }),
       };
 
@@ -34,11 +36,33 @@ export const useGetList = (
   });
 };
 
+// 내가 작성한 글
 export const useGetMyList = (showSoldOut: boolean) => {
   return useQuery({
-    queryKey: ['products', showSoldOut],
+    queryKey: ['myProducts', showSoldOut],
     queryFn: () =>
       axiosInstance.get(`/seller/products`).then((res) => res.data),
     staleTime: 1000 * 10,
   });
 };
+
+// 북마크 목록
+export const useGetLikeList = (showSoldOut: boolean, id: string) => {
+  return useQuery({
+    queryKey: ['likeProducts', showSoldOut, id],
+    queryFn: () =>
+      axiosInstance.get(`/users/${id}/bookmarks`).then((res) => res.data),
+    staleTime: 1000 * 10,
+  });
+};
+
+
+// 거래신청글
+export const useGetBuyList = (showSoldOut: boolean) => {
+  return useQuery({
+    queryKey: ['nuyProducts', showSoldOut],
+    queryFn: () =>
+      axiosInstance.get(`/orders`).then((res) => res.data),
+    staleTime: 1000 * 10,
+  });
+}
