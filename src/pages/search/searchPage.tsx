@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react';
+
+// 라이브러리
 import { useGetList } from '../../hooks/useGetList';
 
+// 컴포넌트
 import Header from '../../components/Layout/Header';
 import TypeSelector from '../../components/TypeSelector';
 import Select from '../../components/Select';
 import Search from './search';
 import SearchList from './searchList';
 import SearchNoResult from './searchNoResult';
+
+// 이미지
+import search from '/images/icons/search.svg';
+import searchActive from '/images/icons/search-active.svg';
+import check from '/images/check/check.svg';
+import checkActive from '/images/check/check-active.svg';
 
 const SearchPage: React.FC = () => {
   const [keyword, setKeyword] = useState<string>(''); // 실시간 입력 키워드
@@ -87,8 +96,8 @@ const SearchPage: React.FC = () => {
               src="/images/icons/search.svg"
               alt="Search Icon"
               className="w-6 h-6"
-              onMouseEnter={(e) => (e.currentTarget.src = '/images/icons/search-active.svg')}
-              onMouseLeave={(e) => (e.currentTarget.src = '/images/icons/search.svg')}
+              onMouseEnter={(e) => (e.currentTarget.src = searchActive)}
+              onMouseLeave={(e) => (e.currentTarget.src = search)}
             />
           </button>
         </div>
@@ -108,7 +117,7 @@ const SearchPage: React.FC = () => {
                 className="flex items-center gap-[5px]"
               >
                 <img
-                  src={showSoldOut ? '/images/check/check-active.svg' : '/images/check/check.svg'}
+                  src={showSoldOut ? checkActive : check}
                   alt="check"
                   className="w-[15px] h-[15px]"
                 />
