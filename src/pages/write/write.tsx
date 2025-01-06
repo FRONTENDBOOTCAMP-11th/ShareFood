@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import Button from '../../components/Button';
@@ -65,10 +65,8 @@ const Write = () => {
     }
     data.location = location;
     addPost.mutate(data);
-    console.log(errors);
   };
 
-  console.log(errors.location);
   return (
     <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
       <Header>
@@ -126,7 +124,9 @@ const Write = () => {
                     });
                   }
                 }}
-                {...register('location')}
+                {...register('location', {
+                  required: '*공구 위치를 선택해주세요',
+                })}
               />
             </div>
             {errors.location && <Error>{errors.location?.message}</Error>}
