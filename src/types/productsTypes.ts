@@ -1,5 +1,5 @@
 export type Product = {
-  _id:number;
+  _id: number;
   name: string;
   extra: {
     type: string;
@@ -19,4 +19,3 @@ export type Product = {
     path: string;
   }[];
 };
-
