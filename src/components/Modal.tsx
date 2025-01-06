@@ -24,7 +24,7 @@ function Modal({ setViewPayment, children }: props) {
           className="absolute top-4 right-4 size-6 text-3xl text-neutral-500 cursor-pointer"
           onClick={closeModal}
         >
-          <img src="images/icons/close.svg" alt="닫기" />
+          <img src="/images/icons/close.svg" alt="닫기" />
         </button>
         {children}
       </div>

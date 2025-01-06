@@ -48,6 +48,9 @@ function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
     onSuccess: () => {
       onRefetch();
       toast.success('관심이 추가 되었습니다.');
+      setInterest((n) => n + 1);
+      setIsClicked(true);
+      setImageSrc(fullHeart);
     },
     onError: (err) => {
       if (err.response.status === 401) {
@@ -66,6 +69,9 @@ function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
     onSuccess: () => {
       onRefetch();
       toast.success('관심이 삭제 되었습니다.');
+      setImageSrc(emptyHeart);
+      setIsClicked(false);
+      setInterest((n) => n - 1);
     },
     onError: (err) => {
       if (err.response.status === 401) {
@@ -87,14 +93,8 @@ function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
   const handleClick = () => {
     if (isClicked) {
       deleteInterest.mutate();
-      setImageSrc(emptyHeart);
-      setIsClicked(false);
-      setInterest((n) => n - 1);
     } else {
       addInterest.mutate();
-      setInterest((n) => n + 1);
-      setIsClicked(true);
-      setImageSrc(fullHeart);
     }
   };
 

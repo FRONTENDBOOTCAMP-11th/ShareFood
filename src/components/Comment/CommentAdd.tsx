@@ -1,19 +1,26 @@
 import { useForm } from 'react-hook-form';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 interface CommentAddProps {
-  _id: number | undefined;
+  _id: string | undefined;
+  onRefetch: (options?: {
+    throwOnError?: boolean;
+  }) => Promise<QueryObserverResult<MyData, MyError>>;
 }
 
-function CommentAdd({ _id }: CommentAddProps) {
+function CommentAdd({ _id, onRefetch }: CommentAddProps) {
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm();
 
   const axios = axiosInstance;
+  const navigate = useNavigate();
 
   const addComment = useMutation({
     mutationFn: (formData) => {
@@ -24,6 +31,17 @@ function CommentAdd({ _id }: CommentAddProps) {
       };
       console.log(body);
       return axios.post('/replies', body);
+    },
+    onSuccess: () => {
+      onRefetch();
+      toast.success('댓글이 추가 되었습니다.');
+      resetField('content');
+    },
+    onError: (err) => {
+      if (err.response.status === 401) {
+        alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
+        navigate(`/login`);
+      } else alert('잠시 후 다시 시도해주세요.');
     },
   });
 
