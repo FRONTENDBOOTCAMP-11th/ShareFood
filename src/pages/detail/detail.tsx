@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import Header from '../../components/Layout/Header';
 import Total from '../../components/Total';
@@ -17,33 +17,86 @@ import basicImage from '/images/chef/drawingChef.svg';
 
 import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Counter from '../../components/Counter';
+import { toast } from 'react-toastify';
 
 const Detail = () => {
-  // 공구인지, 판매하기인지에 따라 멘트 구별
-  // const typeSell: string = 'sell';
-  // const typeBuy: string = 'buy';
-
   const axios = axiosInstance;
-  useEffect(() => {});
   const { _id } = useParams();
+  const navigate = useNavigate();
 
+  // 상품의 정보 흭득
   const postNum: number = Number(_id);
-  const { data, isLoading, isError } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['products', _id],
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => res.data,
     staleTime: 1000 * 10,
   });
 
-  const navigate = useNavigate();
+  // 주문 상태 확인
+  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+    queryKey: ['isLogin', data?.item?.name],
+    queryFn: () => {
+      const response = axios
+        .get(`/orders?keyword=${data.item.name}`)
+        .catch(() => {
+          console.log('미 로그인 사용자 접근');
+        });
+      return response;
+    },
+    select: (res) => {
+      if (res?.data.item.length != 0) setIsBuy(true);
+      return res?.data;
+    },
+    enabled: !!data?.item?.name,
+    staleTime: 1000 * 10,
+  });
+
+  // 공구 하기 기능
+  const addRecruit = useMutation({
+    mutationFn: async () => {
+      const body = {
+        products: [
+          {
+            _id: data.item._id,
+            quantity: 1,
+          },
+        ],
+      };
+      return await axios.post('/orders', body);
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success('공구하기가 완료 되었습니다.');
+      setViewPayment(false);
+      reCheckOrder();
+    },
+    onError: (err) => {
+      if (err.response.status === 401) {
+        alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
+        navigate(`/login`);
+      } else if (err.response.status === 422) {
+        alert('인원 모집이 완료되어 공구가 불가능합니다.');
+        setViewPayment(false);
+      } else alert('잠시 후 다시 시도해주세요.');
+    },
+  });
 
   // 관심 및 댓글의 수
   const [interest, setInterest] = useState(0);
 
+  // 모달 나타나는 여부, true일 경우 출력
   const [viewPayment, setViewPayment] = useState(false);
 
   // counter 상태 관리
   const [num, setNum] = useState(0);
+
+  // 구매 여부 확인
+  const [isBuy, setIsBuy] = useState(false);
+  // if (checkOrder.item.length != 0) setIsBuy(true);
+
+  // 글 작성자인지 확인
+  const [isEditor, setIsEditor] = useState(false);
 
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
@@ -59,13 +112,12 @@ const Detail = () => {
     return <div>로딩중...</div>;
   }
 
-  console.log(data);
   const productType: string = data.item.extra.type;
   const priceTrim = data.item.price
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  // console.log('Updated user:', useAuthStore.getState().user);
+  console.log(isBuy);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen">
@@ -112,16 +164,16 @@ const Detail = () => {
         {/* 공구일 경우 아래 내용 출력 */}
         {productType === 'buy' && (
           <div className="board-transinfo flex flex-col gap-[10px]">
-            <div>
+            <div className="border-l-2">
               <Tag
                 children={data.item.extra.subLocation}
                 tagName={'location'}
               />
             </div>
-            <div>
+            <div className="border-l-2">
               <Tag children={data.item.extra.meetingTime} tagName={'time'} />
             </div>
-            <div>
+            <div className="border-l-2">
               <Tag
                 children={`${data.item.buyQuantity} / ${data.item.quantity}`}
                 tagName={'member'}
@@ -156,12 +208,17 @@ const Detail = () => {
 
         <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
-        <Total interest={interest} setInterest={setInterest} data={data} />
+        <Total
+          interest={interest}
+          setInterest={setInterest}
+          data={data}
+          onRefetch={refetch}
+        />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
           <Comment replies={data.item.replies} />
-          <CommentAdd />
+          <CommentAdd _id={_id} onRefetch={refetch} />
           <Button
             height="40px"
             text="text-sm"
@@ -169,13 +226,15 @@ const Detail = () => {
             color="white"
             onClick={() => handleModal(productType)}
           >
-            공구하기
+            {isBuy == false && '공구하기'}
+            {isBuy == true && '공구취소'}
           </Button>
         </div>
 
         {viewPayment && (
           <Modal setViewPayment={setViewPayment}>
             {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
+            {/* '공구하기'의 경우 나타나는 모달의 형식 */}
             {content === 'buy' && (
               <div>
                 <h2 className="mb-5 font-semibold">
@@ -186,11 +245,19 @@ const Detail = () => {
                   <Tag tagName="time">{data.item.extra.meetingTime}</Tag>
                   <Tag tagName="member">{`${data.item.buyQuantity} / ${data.item.quantity}`}</Tag>
                 </div>
-                <Button bg="main" color="white" height="40px" text="text-sm">
+                <Button
+                  bg="main"
+                  color="white"
+                  height="40px"
+                  text="text-sm"
+                  onClick={() => addRecruit.mutate()}
+                >
                   공구하기
                 </Button>
               </div>
             )}
+
+            {/* '판매하기'의 경우 나타나는 모달의 형식 */}
             {content === 'sell' && (
               <div>
                 <h2 className="mb-5 font-semibold">
@@ -201,9 +268,10 @@ const Detail = () => {
                   <Tag tagName="location">
                     공릉2동 주공아파트 3단지 놀이터 앞
                   </Tag>
-                  <Tag tagName="item">
-                    구매 개수 <Counter num={num} setNum={setNum}></Counter>
-                  </Tag>
+                  <div className="flex gap-3">
+                    <Tag tagName="item">구매 개수</Tag>
+                    <Counter num={num} setNum={setNum}></Counter>
+                  </div>
                   <Tag tagName="time">10:00</Tag>
                 </div>
                 <Button bg="main" color="white" height="40px" text="text-sm">
