@@ -39,7 +39,7 @@ const Write = () => {
 
   const navigate = useNavigate();
 
-  const [num, setNum] = useState(0);
+  const [num, setNum] = useState(1);
 
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
@@ -183,15 +183,8 @@ const Write = () => {
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
                 <p className="font-semibold">모집 인원</p>
-                <Counter
-                  num={num}
-                  setNum={setNum}
-                  {...register('quantity', {
-                    required: '* 한 명 이상의 모집 인원을 선택해 주세요',
-                  })}
-                />
+                <Counter num={num} setNum={setNum} {...register('quantity')} />
               </div>
-              {num === 0 && <Error>{errors.quantity?.message}</Error>}
             </div>
 
             <div className="info-time">
@@ -214,8 +207,6 @@ const Write = () => {
             <div className="info-content mt-[20px] mb-[10px]">
               <h1 className="font-semibold">내용</h1>
               <textarea
-                name=""
-                id=""
                 className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
                 placeholder="상품에 대한 설명을 적어주세요!"
                 {...register('content', { required: '* 내용은 필수입니다' })}
@@ -314,15 +305,8 @@ const Write = () => {
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
                 <p className="font-semibold">판매 개수</p>
-                <Counter
-                  num={num}
-                  setNum={setNum}
-                  {...register('quantity', {
-                    required: '* 판매 개수를 입력해주세요',
-                  })}
-                />
+                <Counter num={num} setNum={setNum} {...register('quantity')} />
               </div>
-              {num === 0 && <Error>{errors.quantity?.message}</Error>}
             </div>
 
             <div className="info-time">
@@ -345,8 +329,6 @@ const Write = () => {
             <div className="info-content mt-[20px] mb-[10px]">
               <h1 className="font-semibold">내용</h1>
               <textarea
-                name=""
-                id=""
                 className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
                 placeholder="상품에 대한 설명을 적어주세요!"
                 {...register('content', { required: '* 내용은 필수입니다' })}
