@@ -15,15 +15,15 @@ import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 
 interface FormData {
-  price: number;
-  quantity: number;
-  name: string;
-  content: string;
+  price: number; // 상품 가격
+  quantity: number; // 모집인원 or 판매 상품 개수
+  name: string; // 게시글 제목
+  content: string; // 게시글 내용
   extra: {
-    location: string;
-    subLocation: string;
-    meetingTime: string;
-    type: string;
+    location: string; // 공구, 판매 지역
+    subLocation: string; // 공구, 판매 상세 지역
+    meetingTime: string; // 공구 마감 시간 or 판매 시간
+    type: string; // 판매글 타입
   };
 }
 
@@ -57,6 +57,8 @@ const Write = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+
+      // 서버 전송 성공 시 입력값 초기화
       reset();
       setNum(1);
     },
@@ -78,8 +80,10 @@ const Write = () => {
         message: '* 위치를 선택해주세요',
       });
     }
-    data.extra.location = location;
+
+    // 전송 값이 input이 아닌 경우 추가
     data.quantity = num;
+    data.extra.location = location;
     data.extra.type = productsType;
     addPost.mutate(data);
   };
@@ -107,6 +111,7 @@ const Write = () => {
           setProductsType={setProductsType}
         />
 
+        {/* 같이 사요 UI */}
         {productsType === 'buy' && (
           <form
             className="flex flex-col gap-[8px] text-[13px]"
@@ -229,6 +234,7 @@ const Write = () => {
           </form>
         )}
 
+        {/* 팔아요 UI */}
         {productsType === 'sell' && (
           <form
             className="flex flex-col gap-[8px] text-[13px]"
