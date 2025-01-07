@@ -23,7 +23,7 @@ interface FormData {
     location: string;
     subLocation: string;
     meetingTime: string;
-    type?: string;
+    type: string;
   };
 }
 
@@ -80,6 +80,7 @@ const Write = () => {
     }
     data.extra.location = location;
     data.quantity = num;
+    data.extra.type = productsType;
     addPost.mutate(data);
   };
 
