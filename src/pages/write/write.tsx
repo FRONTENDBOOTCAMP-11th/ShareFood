@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
+import { AxiosError } from 'axios';
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
@@ -35,6 +36,7 @@ const Write = () => {
     setValue,
     setError,
     clearErrors,
+    reset,
   } = useForm<FormData>();
 
   const navigate = useNavigate();
@@ -55,9 +57,16 @@ const Write = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+      reset();
+      setNum(1);
     },
     onError: (err) => {
-      console.error(err);
+      const axiosError = err as AxiosError;
+      if (axiosError.response) {
+        console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+      } else {
+        console.error('Unexpected Error:', err); // 기타 에러
+      }
     },
   });
 
