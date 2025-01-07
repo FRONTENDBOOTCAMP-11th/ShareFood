@@ -130,9 +130,12 @@ const Write = () => {
                   type="text"
                   className="outline-none grow"
                   placeholder="가격을 입력해주세요"
-                  {...register('price')}
+                  {...register('price', {
+                    required: '* 가격은 필수입니다',
+                  })}
                 />
               </div>
+              <Error>{errors.price?.message}</Error>
             </div>
 
             <div className="info-location">
@@ -180,8 +183,15 @@ const Write = () => {
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
                 <p className="font-semibold">모집 인원</p>
-                <Counter num={num} setNum={setNum} {...register('quantity')} />
+                <Counter
+                  num={num}
+                  setNum={setNum}
+                  {...register('quantity', {
+                    required: '* 한 명 이상의 모집 인원을 선택해 주세요',
+                  })}
+                />
               </div>
+              {num === 0 && <Error>{errors.quantity?.message}</Error>}
             </div>
 
             <div className="info-time">
@@ -251,9 +261,12 @@ const Write = () => {
                   type="text"
                   className="outline-none grow"
                   placeholder="가격을 입력해주세요"
-                  {...register('price')}
+                  {...register('price', {
+                    required: '* 가격은 필수입니다',
+                  })}
                 />
               </div>
+              <Error>{errors.price?.message}</Error>
             </div>
 
             <div className="info-location">
@@ -301,8 +314,15 @@ const Write = () => {
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
                 <p className="font-semibold">판매 개수</p>
-                <Counter num={num} setNum={setNum} {...register('quantity')} />
+                <Counter
+                  num={num}
+                  setNum={setNum}
+                  {...register('quantity', {
+                    required: '* 판매 개수를 입력해주세요',
+                  })}
+                />
               </div>
+              {num === 0 && <Error>{errors.quantity?.message}</Error>}
             </div>
 
             <div className="info-time">
