@@ -8,8 +8,8 @@ interface CountProps {
 // <Counter num={num} setNum={setNum}/>
 function Counter({ num, setNum }: CountProps) {
   const handleDown = () => {
-    if (num <= 0) {
-      alert('0보다 작은 수는 입력할 수 없습니다.');
+    if (num <= 1) {
+      alert('1보다 작은 수는 입력할 수 없습니다.');
     } else if (num > 0) {
       setNum(num - 1);
     }
