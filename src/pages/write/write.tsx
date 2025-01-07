@@ -11,6 +11,7 @@ import Select from '../../components/Select';
 import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
+import Counter from '../../components/Counter';
 
 interface FormData {
   price: number;
@@ -37,6 +38,8 @@ const Write = () => {
   } = useForm<FormData>();
 
   const navigate = useNavigate();
+
+  const [num, setNum] = useState(0);
 
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
@@ -77,6 +80,7 @@ const Write = () => {
     addPost.mutate(transformData);
   };
 
+  console.log(productsType);
   return (
     <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
       <Header>
@@ -119,6 +123,17 @@ const Write = () => {
             <Error>{errors.name?.message}</Error>
           </div>
 
+          <div className="info-price">
+            <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+              <p className="font-semibold">가격</p>
+              <input
+                type="text"
+                className="outline-none grow"
+                placeholder="가격을 입력해주세요"
+              />
+            </div>
+          </div>
+
           <div className="info-location">
             <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
               <p className="font-semibold">공구 위치 </p>
@@ -159,6 +174,13 @@ const Write = () => {
             {errors.extra?.subLocation && (
               <Error>{errors.extra.subLocation?.message}</Error>
             )}
+          </div>
+
+          <div className="info-quantity">
+            <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+              <p className="font-semibold">구입인원</p>
+              <Counter num={num} setNum={setNum}></Counter>
+            </div>
           </div>
 
           <div className="info-time">
