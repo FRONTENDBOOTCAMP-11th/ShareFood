@@ -105,7 +105,7 @@ const MyPage = () => {
           <p
             className={`text-[13px] ${showSoldOut ? 'text-main' : 'text-font2'}`}
           >
-            거래 완료 된 상품 보기
+            거래 완료 된 상품도 보기
           </p>
         </button>
 

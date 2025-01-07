@@ -6,7 +6,7 @@ import Main from './pages/main/main';
 import MyPage from './pages/myPage/myPage';
 import Detail from './pages/detail/detail';
 import Write from './pages/write/write';
-import UserInfo from './pages/myPage/UserInfo';
+import UserInfo from './pages/myPage/modifiyInfo';
 import SplashTransition from './pages/splash/splashTransition';
 import SearchPage from './pages/search/searchPage';
 

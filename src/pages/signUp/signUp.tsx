@@ -10,7 +10,7 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import Button from '../../components/Button';
 import Error from '../../components/Error';
 import LoginSignupTitle from '../../components/LoginSignupTitle';
-import UserInfo from '../myPage/UserInfo';
+import UserInfo from '../myPage/modifiyInfo';
 
 // 서버에 넘길 데이터
 interface UserInfo {
@@ -18,7 +18,7 @@ interface UserInfo {
   password: string; // 비밀번호
   name: string; // 닉네임
   phone: string; // 전화번호
-  type?: string; // data 타입 => user로 지정
+  type?: string; // data 타입 => seller로 지정
 }
 
 const SignUp: React.FC = () => {
@@ -61,7 +61,7 @@ const SignUp: React.FC = () => {
 
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
-      userInfo.type = 'user'; // 데이터 타입 지정
+      userInfo.type = 'seller'; // 데이터 타입 지정
 
       // API 호출
       const res = await axiosInstance.post('/users', userInfo);
