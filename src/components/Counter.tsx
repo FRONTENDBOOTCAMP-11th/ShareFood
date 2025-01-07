@@ -1,22 +1,27 @@
 interface CountProps {
   num: number;
   setNum: React.Dispatch<React.SetStateAction<number>>;
+  maxNum: number;
 }
 
 // 컴포넌트의 매개변수로 state(number), setter 함수를 전달 해줘야 합니다
 // ex) const [num, setNum] = useState(0);
 // <Counter num={num} setNum={setNum}/>
-function Counter({ num, setNum }: CountProps) {
+function Counter({ num, setNum, maxNum }: CountProps) {
   const handleDown = () => {
-    if (num <= 0) {
-      alert('0보다 작은 수는 입력할 수 없습니다.');
+    if (num <= 1) {
+      alert('1보다 작은 수는 입력할 수 없습니다.');
     } else if (num > 0) {
       setNum(num - 1);
     }
   };
 
   const handleUp = () => {
-    setNum(num + 1);
+    if (num >= maxNum) {
+      alert('구매 가능 개수를 초과해 구매할 수 없습니다.');
+    } else if (num < maxNum) {
+      setNum(num + 1);
+    }
   };
 
   return (

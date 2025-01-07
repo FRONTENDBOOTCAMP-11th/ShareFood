@@ -30,9 +30,10 @@ const Button: React.FC<Props> = ({
   // 버튼 배경색
   const bgColor: { [key: string]: string } = {
     main: 'bg-main',
-    second: 'bg-second',
+    second: 'bg-font2',
     white: 'bg-white',
     kakao: 'bg-[#FFE500]',
+    sub: 'bg-sub',
   };
 
   // 버튼 글자색
