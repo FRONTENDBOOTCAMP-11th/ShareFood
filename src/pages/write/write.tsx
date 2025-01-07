@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { AxiosError } from 'axios';
+
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
 import Select from '../../components/Select';
-
 import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
@@ -41,6 +41,7 @@ const Write = () => {
 
   const navigate = useNavigate();
 
+  // counter 컴포넌트 기본값 : 1
   const [num, setNum] = useState(1);
 
   // TypeSelector : 기본값 'buy'
@@ -77,7 +78,7 @@ const Write = () => {
     // 전체지역
     if (location === '전체지역') {
       setError('extra.location', {
-        message: '* 위치를 선택해주세요',
+        message: '* 지역을 선택해주세요',
       });
     }
 
