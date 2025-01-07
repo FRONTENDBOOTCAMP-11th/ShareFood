@@ -56,7 +56,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
 
   return (
     <div>
-      <h2 className="mb-3">구매 신청자 목록</h2>
+      <h2 className="mb-3">신청자 목록</h2>
       <div className="flex flex-col gap-5">
         <Tag tagName="member">{`${data.item.buyQuantity} / ${data.item.quantity}`}</Tag>
         <ul className="flex flex-col gap-3 px-[10px]">{OrderList}</ul>

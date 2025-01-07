@@ -26,7 +26,7 @@ function CheckBuyListItem({
         <p className="grow text-left max-w-[200px] mr-auto">{name}</p>
         <div className="min-w-[70.92px]">
           <Tag tagName="item">
-            {quantity}/{totalQuantity}
+            {quantity} / {totalQuantity}
           </Tag>
         </div>
       </li>
