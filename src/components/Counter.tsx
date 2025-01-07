@@ -7,7 +7,7 @@ interface CountProps {
 // 컴포넌트의 매개변수로 state(number), setter 함수를 전달 해줘야 합니다
 // ex) const [num, setNum] = useState(0);
 // <Counter num={num} setNum={setNum}/>
-function Counter({ num, setNum, maxNum }: CountProps) {
+function Counter({ num, setNum, maxNum = 999 }: CountProps) {
   const handleDown = () => {
     if (num <= 1) {
       alert('1보다 작은 수는 입력할 수 없습니다.');
