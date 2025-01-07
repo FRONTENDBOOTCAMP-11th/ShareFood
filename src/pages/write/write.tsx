@@ -3,26 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
+import { AxiosError } from 'axios';
+
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
 import Select from '../../components/Select';
-
 import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 
 interface FormData {
-  price: number;
-  quantity: number;
-  name: string;
-  content: string;
+  price: number; // 상품 가격
+  quantity: number; // 모집인원 or 판매 상품 개수
+  name: string; // 게시글 제목
+  content: string; // 게시글 내용
+  mainImages: {
+    path: string;
+  };
   extra: {
-    location: string;
-    subLocation: string;
-    meetingTime: string;
-    type?: string;
+    location: string; // 공구, 판매 지역
+    subLocation: string; // 공구, 판매 상세 지역
+    meetingTime: string; // 공구 마감 시간 or 판매 시간
+    type: string; // 판매글 타입
   };
 }
 
@@ -35,10 +39,12 @@ const Write = () => {
     setValue,
     setError,
     clearErrors,
+    reset,
   } = useForm<FormData>();
 
   const navigate = useNavigate();
 
+  // counter 컴포넌트 기본값 : 1
   const [num, setNum] = useState(1);
 
   // TypeSelector : 기본값 'buy'
@@ -55,9 +61,18 @@ const Write = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+
+      // 서버 전송 성공 시 입력값 초기화
+      reset();
+      setNum(1);
     },
     onError: (err) => {
-      console.error(err);
+      const axiosError = err as AxiosError;
+      if (axiosError.response) {
+        console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+      } else {
+        console.error('Unexpected Error:', err); // 기타 에러
+      }
     },
   });
 
@@ -66,18 +81,21 @@ const Write = () => {
     // 전체지역
     if (location === '전체지역') {
       setError('extra.location', {
-        message: '* 위치를 선택해주세요',
+        message: '* 지역을 선택해주세요',
       });
     }
-    data.extra.location = location;
 
-    const transformData = {
-      ...data,
-      price: 3000,
-      quantity: 7,
-    };
-    console.log(transformData);
-    addPost.mutate(transformData);
+    // 전송 값이 input이 아닌 경우 추가
+    data.quantity = num;
+    data.extra.location = location;
+    data.extra.type = productsType;
+
+    // 이미지 업로드 안되면 대체 이미지 추가
+    if (!data.mainImages?.path) {
+      data.mainImages = { path: '/images/chef/forkChef_back.svg' };
+    }
+
+    addPost.mutate(data);
   };
 
   return (
@@ -103,6 +121,7 @@ const Write = () => {
           setProductsType={setProductsType}
         />
 
+        {/* 같이 사요 UI */}
         {productsType === 'buy' && (
           <form
             className="flex flex-col gap-[8px] text-[13px]"
@@ -225,6 +244,7 @@ const Write = () => {
           </form>
         )}
 
+        {/* 팔아요 UI */}
         {productsType === 'sell' && (
           <form
             className="flex flex-col gap-[8px] text-[13px]"
