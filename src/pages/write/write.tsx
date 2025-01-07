@@ -13,12 +13,14 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 
 interface FormData {
-  title: string;
-  location: string;
-  detail: string;
-  time: string;
-  text: string;
-  type?: string;
+  name: string;
+  content: string;
+  extra: {
+    location: string;
+    subLocation: string;
+    meetingTime: string;
+    type?: string;
+  };
 }
 
 const Write = () => {
@@ -38,12 +40,11 @@ const Write = () => {
   const [productsType, setProductsType] = useState('buy');
 
   // Selector : 기본값 '전체지역'
-  const location = watch('location', '전체지역');
+  const location = watch('extra.location', '전체지역');
 
   // 상품 게시글 등록
   const addPost = useMutation({
     mutationFn: async (formData: FormData) => {
-      formData.type = 'product';
       const res = await axiosInstance.post('/seller/products', formData);
       return res.data;
     },
@@ -59,11 +60,14 @@ const Write = () => {
   const onSubmit = (data: FormData) => {
     // 전체지역
     if (location === '전체지역') {
-      setError('location', {
+      setError('extra.location', {
         message: '* 공구 위치를 선택해주세요',
       });
     }
-    data.location = location;
+    data.extra.location = location;
+
+    console.log(data);
+
     addPost.mutate(data);
   };
 
@@ -101,12 +105,12 @@ const Write = () => {
                 type="text"
                 className="outline-none grow"
                 placeholder="제목을 입력해주세요."
-                {...register('title', {
+                {...register('name', {
                   required: '* 제목은 필수입니다',
                 })}
               />
             </div>
-            <Error>{errors.title?.message}</Error>
+            <Error>{errors.name?.message}</Error>
           </div>
 
           <div className="info-location">
@@ -115,21 +119,23 @@ const Write = () => {
               <Select
                 meetingLocation={location}
                 setMeetingLocation={(value) => {
-                  setValue('location', value);
+                  setValue('extra.location', value);
                   if (value !== '전체지역') {
-                    clearErrors('location');
+                    clearErrors('extra.location');
                   } else {
-                    setError('location', {
+                    setError('extra.location', {
                       message: '* 공구 위치를 선택해주세요.',
                     });
                   }
                 }}
-                {...register('location', {
+                {...register('extra.location', {
                   required: '*공구 위치를 선택해주세요',
                 })}
               />
             </div>
-            {errors.location && <Error>{errors.location?.message}</Error>}
+            {errors.extra?.location && (
+              <Error>{errors.extra.location?.message}</Error>
+            )}
           </div>
 
           <div className="info-location-detail">
@@ -139,12 +145,14 @@ const Write = () => {
                 type="text"
                 className="outline-none text-xs grow"
                 placeholder="거래 상세 위치를 입력해주세요."
-                {...register('detail', {
+                {...register('extra.subLocation', {
                   required: '* 상세 위치는 필수입니다.',
                 })}
               />
             </div>
-            <Error>{errors.detail?.message}</Error>
+            {errors.extra?.subLocation && (
+              <Error>{errors.extra.subLocation?.message}</Error>
+            )}
           </div>
 
           <div className="info-time">
@@ -154,10 +162,14 @@ const Write = () => {
                 type="text"
                 className="outline-none text-xs grow"
                 placeholder="마감 시간을 입력해주세요."
-                {...register('time', { required: '* 마감시간은 필수입니다' })}
+                {...register('extra.meetingTime', {
+                  required: '* 마감시간은 필수입니다',
+                })}
               />
             </div>
-            <Error>{errors.time?.message}</Error>
+            {errors.extra?.meetingTime && (
+              <Error>{errors.extra.meetingTime?.message}</Error>
+            )}
           </div>
 
           <div className="info-content mt-[20px] mb-[10px]">
@@ -167,9 +179,9 @@ const Write = () => {
               id=""
               className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
               placeholder="상품에 대한 설명을 적어주세요!"
-              {...register('text', { required: '* 내용은 필수입니다' })}
+              {...register('content', { required: '* 내용은 필수입니다' })}
             />
-            <Error>{errors.title?.message}</Error>
+            <Error>{errors.content?.message}</Error>
           </div>
           <Button
             type="submit"
