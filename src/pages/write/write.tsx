@@ -19,6 +19,9 @@ interface FormData {
   quantity: number; // 모집인원 or 판매 상품 개수
   name: string; // 게시글 제목
   content: string; // 게시글 내용
+  mainImages: {
+    path: string;
+  };
   extra: {
     location: string; // 공구, 판매 지역
     subLocation: string; // 공구, 판매 상세 지역
@@ -86,6 +89,12 @@ const Write = () => {
     data.quantity = num;
     data.extra.location = location;
     data.extra.type = productsType;
+
+    // 이미지 업로드 안되면 대체 이미지 추가
+    if (!data.mainImages?.path) {
+      data.mainImages = { path: '/images/chef/forkChef_back.svg' };
+    }
+
     addPost.mutate(data);
   };
 
