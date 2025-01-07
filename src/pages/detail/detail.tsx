@@ -18,6 +18,7 @@ import basicImage from '/images/chef/drawingChef.svg';
 import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Counter from '../../components/Counter';
 import { toast } from 'react-toastify';
+import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
 
 const Detail = () => {
   const axios = axiosInstance;
@@ -152,6 +153,8 @@ const Detail = () => {
   const priceTrim = data.item.price
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // console.log(data.item);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
@@ -360,10 +363,13 @@ const Detail = () => {
                   거래 가격, 장소, 개수를 확인하세요
                 </h2>
                 <div className="flex flex-col gap-4 mb-8">
-                  <Tag tagName="cash">총가격 : 9,000원</Tag>
-                  <Tag tagName="location">
-                    공릉2동 주공아파트 3단지 놀이터 앞
+                  <Tag tagName="cash">
+                    총 가격 :{' '}
+                    {(data.item.price * num)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   </Tag>
+                  <Tag tagName="location">{data.item.extra.subLocation}</Tag>
                   <div className="flex gap-3">
                     <Tag tagName="item">구매 개수</Tag>
                     <Counter
@@ -372,7 +378,7 @@ const Detail = () => {
                       maxNum={data.item.quantity - data.item.buyQuantity}
                     ></Counter>
                   </div>
-                  <Tag tagName="time">10:00</Tag>
+                  <Tag tagName="time">{data.item.extra.meetingTime}</Tag>
                 </div>
                 <Button
                   bg="main"
@@ -389,64 +395,10 @@ const Detail = () => {
             {/* 구매자 늘어나면 스크롤 넣어야 될것 같습니다. */}
             {/* 로그인한 사용자가 접근 시 modal */}
             {content === 'sell' && isEditor == true && (
-              <div>
-                <h2 className="mb-3">구매 신청자 목록</h2>
-                <div className="flex flex-col gap-5">
-                  <Tag tagName="member">{`${data.item.buyQuantity} / ${data.item.quantity}`}</Tag>
-                  <ul className="mr-7 flex flex-col gap-3">
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">장유진</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">이선재</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">이현종</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">김건우</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <CheckBuyList data={data} setViewPayment={setViewPayment} />
             )}
             {content === 'buy' && isEditor == true && (
-              <div>
-                <h2 className="mb-3">구매 신청자 목록</h2>
-                <div className="flex flex-col gap-5">
-                  <Tag tagName="member">{`${data.item.buyQuantity} / ${data.item.quantity}`}</Tag>
-                  <ul className="mr-7 flex flex-col gap-3">
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">장유진</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">이선재</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">이현종</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <img src="images/chef/greenChef.svg" />
-                      <p className="grow text-left">김건우</p>
-                      <Tag tagName="item">1/6</Tag>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <CheckBuyList data={data} setViewPayment={setViewPayment} />
             )}
           </Modal>
         )}
