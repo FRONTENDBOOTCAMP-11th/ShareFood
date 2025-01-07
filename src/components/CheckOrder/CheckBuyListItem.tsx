@@ -23,7 +23,7 @@ function CheckBuyListItem({
           alt="프로필 사진"
           className="max-w-[27px] max-h-[27px] rounded-full"
         />
-        <p className="grow text-left max-w-[200px] mr-auto">{name}</p>
+        <p className="grow text-left w-[180px] max-w-[180px]">{name}</p>
         <div className="min-w-[70.92px]">
           <Tag tagName="item">
             {quantity} / {totalQuantity}
