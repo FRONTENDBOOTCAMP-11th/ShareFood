@@ -70,14 +70,8 @@ const Write = () => {
       });
     }
     data.extra.location = location;
-
-    const transformData = {
-      ...data,
-      price: 3000,
-      quantity: 7,
-    };
-    console.log(transformData);
-    addPost.mutate(transformData);
+    data.quantity = num;
+    addPost.mutate(data);
   };
 
   return (
