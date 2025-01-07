@@ -130,6 +130,7 @@ const Write = () => {
                   type="text"
                   className="outline-none grow"
                   placeholder="가격을 입력해주세요"
+                  {...register('price')}
                 />
               </div>
             </div>
@@ -178,8 +179,8 @@ const Write = () => {
 
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                <p className="font-semibold">구입 인원</p>
-                <Counter num={num} setNum={setNum}></Counter>
+                <p className="font-semibold">모집 인원</p>
+                <Counter num={num} setNum={setNum} {...register('quantity')} />
               </div>
             </div>
 
@@ -250,6 +251,7 @@ const Write = () => {
                   type="text"
                   className="outline-none grow"
                   placeholder="가격을 입력해주세요"
+                  {...register('price')}
                 />
               </div>
             </div>
@@ -299,19 +301,19 @@ const Write = () => {
             <div className="info-quantity">
               <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
                 <p className="font-semibold">판매 개수</p>
-                <Counter num={num} setNum={setNum}></Counter>
+                <Counter num={num} setNum={setNum} {...register('quantity')} />
               </div>
             </div>
 
             <div className="info-time">
               <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">시간 </p>
+                <p className="font-semibold">거래 시간 </p>
                 <input
                   type="text"
                   className="outline-none text-xs grow"
-                  placeholder="시간을 입력해주세요."
+                  placeholder="거래 시간을 입력해주세요."
                   {...register('extra.meetingTime', {
-                    required: '* 시간은 필수입니다',
+                    required: '* 거래 시간은 필수입니다',
                   })}
                 />
               </div>
