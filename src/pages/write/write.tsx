@@ -13,6 +13,8 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 
 interface FormData {
+  price: number;
+  quantity: number;
   name: string;
   content: string;
   extra: {
@@ -66,9 +68,13 @@ const Write = () => {
     }
     data.extra.location = location;
 
-    console.log(data);
-
-    addPost.mutate(data);
+    const transformData = {
+      ...data,
+      price: 3000,
+      quantity: 7,
+    };
+    console.log(transformData);
+    addPost.mutate(transformData);
   };
 
   return (
