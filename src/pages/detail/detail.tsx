@@ -27,7 +27,12 @@ const Detail = () => {
 
   // 사용자 로그인 정보
   const loginInfo = localStorage.getItem('user');
-  const loginId = JSON.parse(loginInfo).state?.user?._id || null;
+  let loginId = '';
+  if (loginInfo) {
+    loginId = JSON.parse(loginInfo).state?.user?._id;
+  } else {
+    console.log('미 로그인 사용자 접근');
+  }
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
@@ -154,7 +159,7 @@ const Detail = () => {
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  // console.log(data.item);
+  console.log(loginId);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
