@@ -20,19 +20,15 @@ type modifyInfoTypes = {
 
 const UserInfo = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
-  const [isChangeName, setIsChangeName] = useState(false);
+  const [isNameChecked, setIsNameChecked] = useState(false);
   const [isChangeInfo, setIsChangeInfo] = useState(false);
-
   const [nameValue, setNameValue] = useState<string | null>(null);
-  const [phoneValue, setPhoneValue] = useState<string | null>(null);
+  const [phoneValue, setPhoneValue] = useState<string>('');
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   // 회원 정보 조회
   const { data: userInfo } = useGetUserInfo(1);
-  useEffect(() => {
-    setImgUrl(userInfo.item.image);
-  }, [userInfo]);
 
   // use-hook-form
   const {
@@ -50,34 +46,43 @@ const UserInfo = () => {
     },
   });
 
+  // 초기 값 설정
+  useEffect(() => {
+    setImgUrl(userInfo.item.image);
+    setPhoneValue(userInfo.item.phone);
+    setNameValue(userInfo.item.name);
+    setIsChangeInfo(false);
+  }, [userInfo]);
+
+  // 닉네임 및 전화번호 변경 여부 확인
+  useEffect(() => {
+    const hasChanged =
+      nameValue !== userInfo.item.name || phoneValue !== userInfo.item.phone;
+
+    if (hasChanged && !errors.phone && isNameChecked) {
+      setIsChangeInfo(true);
+    } else {
+      setIsChangeInfo(false);
+    }
+  }, [nameValue, phoneValue, isNameChecked, errors.phone, userInfo]);
+
   // 닉네임 중복 검사
   const handleCheckName = async () => {
     if (nameValue) {
       const result = await isDuplicate('name', nameValue);
       if (!result) {
-        setIsChangeInfo(false);
         setError('name', { message: '중복된 닉네임 입니다' });
+        setIsNameChecked(false);
       } else {
         clearErrors('name');
+        setIsNameChecked(true);
       }
     }
   };
 
-  // 제출 활성화
-  useEffect(() => {
-    if (
-      nameValue !== userInfo.item.name ||
-      phoneValue !== userInfo.item.phone
-    ) {
-      setIsChangeInfo(true);
-    } else {
-      setIsChangeInfo(false);
-    }
-  }, [nameValue, phoneValue, userInfo]);
-
-  // 이미지 업로드 통신 + 이미지 src 바꿔 렌더링
+  // 이미지 업로드 핸들러
   const handleImgChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -105,7 +110,6 @@ const UserInfo = () => {
           <button onClick={() => navigate(-1)} className="mr-auto">
             <img src={arrow} />
           </button>
-
           <h1 className="mr-auto text-font1 font-bold text-[15px]">
             회원 정보 수정
           </h1>
@@ -121,7 +125,6 @@ const UserInfo = () => {
               alt="Profile"
               className="rounded-full w-full h-full"
             />
-
             <button
               type="button"
               onClick={(e) => {
@@ -157,12 +160,7 @@ const UserInfo = () => {
               {...register('name', { required: '닉네임을 입력해주세요.' })}
               onChange={(e) => {
                 setNameValue(e.target.value);
-                if (e.target.value === userInfo.item.name) {
-                  setIsChangeName(false);
-                } else {
-                  if (e.target.value) setIsChangeName(true);
-                  else setIsChangeName(false);
-                }
+                setIsNameChecked(false); // 값 변경 시 중복 검사 초기화
               }}
               type="text"
               id="nickname"
@@ -173,7 +171,7 @@ const UserInfo = () => {
               <p className="text-error text-[10px]">{errors.name.message}</p>
             )}
             <div className="absolute right-0 top-[60%] transform -translate-y-1/2">
-              {isChangeName ? (
+              {nameValue !== userInfo.item.name ? (
                 <Button
                   bg="main"
                   color="white"
@@ -200,19 +198,6 @@ const UserInfo = () => {
             </div>
           </div>
 
-          {/* 이메일(수정 불가) */}
-          <div className="flex flex-col gap-[5px]">
-            <label
-              htmlFor="email"
-              className="text-[13px] font-semibold text-font1"
-            >
-              이메일
-            </label>
-            <p className="border-b text-[13px] py-[3px] text-font2" id="email">
-              {userInfo.item.email}
-            </p>
-          </div>
-
           {/* 휴대전화 번호 */}
           <div className="flex flex-col gap-[5px] mb-[50px]">
             <label
@@ -228,20 +213,29 @@ const UserInfo = () => {
                   value: /^[0-9]{10,11}$/,
                   message: '유효한 전화번호를 입력해주세요.',
                 },
+                onChange: (e) => {
+                  setPhoneValue(e.target.value);
+                  if (!/^[0-9]{10,11}$/.test(e.target.value)) {
+                    setError('phone', {
+                      message: '유효한 전화번호를 입력해주세요.',
+                    });
+                  } else {
+                    clearErrors('phone');
+                  }
+                },
               })}
-              onChange={(e) => setPhoneValue(e.target.value)}
               type="text"
               id="phone"
               placeholder="휴대전화 번호"
               className="border-b text-[13px] py-[3px]"
-              value={userInfo.item.phone}
+              value={phoneValue}
             />
-
             {errors.phone && (
               <p className="text-error text-[10px]">{errors.phone.message}</p>
             )}
           </div>
 
+          {/* 정보 수정 버튼 */}
           {isChangeInfo ? (
             <Button
               height="40px"
