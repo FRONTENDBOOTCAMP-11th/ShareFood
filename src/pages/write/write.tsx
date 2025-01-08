@@ -94,7 +94,7 @@ const Write = () => {
 
     // 이미지 업로드 안되면 대체 이미지 추가
     if (!data.mainImages?.path) {
-      data.mainImages = { path: '/images/chef/forkChef_back.svg' };
+      data.mainImages = { path: '/images/chef/greenChef.svg' };
     }
 
     addPost.mutate(data);
