@@ -75,15 +75,11 @@ const UserInfo = () => {
       if (!result) {
         setError('name', { message: '중복된 닉네임 입니다' });
         setIsNameChecked(false);
-        toast.error('이미 존재하는 닉네임입니다.');
+        alert('이미 존재하는 닉네임입니다.');
       } else {
         clearErrors('name');
         setIsNameChecked(true);
-        toast.success('정보 수정을 성공했습니다.', {
-          onClose: () => {
-            navigate('/mypage');
-          },
-        });
+        alert('사용가능한 닉네임입니다.');
       }
     }
   };
@@ -117,8 +113,11 @@ const UserInfo = () => {
       // 서버에 요청 보내기
       const result = await axiosInstance.patch(`/users/1`, updatedData);
       console.log('수정 완료:', result.data);
+      alert('수정이 완료되었습니다.');
+      navigate('/mypage');
     } catch (error) {
       console.error('수정 중 오류 발생:', error);
+      alert('수정에 실패했습니다.');
     }
   };
 
