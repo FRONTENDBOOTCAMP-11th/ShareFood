@@ -27,11 +27,10 @@ const SearchPage: React.FC = () => {
     useSearchFilterStateStore();
 
   // 최근 검색어: localStorage에서 불러오거나 초기화함
-  const [recentKeywords, setRecentKeywords] = useState<string[]>(() => {
+  function getRecentKeywords(): string[] {
     const savedKeywords = localStorage.getItem('recentKeywords');
     return savedKeywords ? JSON.parse(savedKeywords) : [];
-  });
-
+  }
   // useGetList 활용
   const { data, refetch } = useGetList(soldout, type, location, finalKeyword);
 
@@ -62,17 +61,15 @@ const SearchPage: React.FC = () => {
     // 최근 검색어 업데이트
     // 이전 상태값을 prev로 받아 리스트 생성
     // filter를 사용해서 중복 키워드는 리스트에서 제거
-    setRecentKeywords((prev) => {
-      const updatedKeywords = [
-        keyword,
-        ...prev.filter((k) => k !== keyword),
-      ].slice(0, 10);
-      // localStorage 업데이트
-      // 리스트를 JSON 문자열로 변환해서 localStorage에 저장
-      // 키 값: 'recentKeywords', 값은 updatedKeywords
-      localStorage.setItem('recentKeywords', JSON.stringify(updatedKeywords));
-      return updatedKeywords;
-    });
+
+    const updatedKeywords = [
+      keyword,
+      ...getRecentKeywords().filter((k) => k !== keyword),
+    ].slice(0, 10);
+    // localStorage 업데이트
+    // 리스트를 JSON 문자열로 변환해서 localStorage에 저장
+    // 키 값: 'recentKeywords', 값은 updatedKeywords
+    localStorage.setItem('recentKeywords', JSON.stringify(updatedKeywords));
   };
 
   return (
@@ -93,6 +90,7 @@ const SearchPage: React.FC = () => {
               className="flex-1 ml-2 text-5 placeholder-font2 text-font1 focus:outline-none"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
           <button

@@ -3,26 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
+import { AxiosError } from 'axios';
+import { Slide, toast, ToastContainer } from 'react-toastify';
+
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
 import ImageUpload from '../../components/ImageUpload';
 import Select from '../../components/Select';
-
 import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 
 interface FormData {
-  price: number;
-  quantity: number;
-  name: string;
-  content: string;
+  price: number; // 상품 가격
+  quantity: number; // 모집인원 or 판매 상품 개수
+  name: string; // 게시글 제목
+  content: string; // 게시글 내용
+  mainImages: {
+    path: string;
+  };
   extra: {
-    location: string;
-    subLocation: string;
-    meetingTime: string;
-    type?: string;
+    location: string; // 공구, 판매 지역
+    subLocation: string; // 공구, 판매 상세 지역
+    meetingTime: string; // 공구 마감 시간 or 판매 시간
+    type: string; // 판매글 타입
   };
 }
 
@@ -35,10 +40,12 @@ const Write = () => {
     setValue,
     setError,
     clearErrors,
+    reset,
   } = useForm<FormData>();
 
   const navigate = useNavigate();
 
+  // counter 컴포넌트 기본값 : 1
   const [num, setNum] = useState(1);
 
   // TypeSelector : 기본값 'buy'
@@ -55,9 +62,19 @@ const Write = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+
+      // 서버 전송 성공 시 입력값 초기화
+      reset();
+      setNum(1);
+      toast.success('게시글이 등록되었습니다');
     },
     onError: (err) => {
-      console.error(err);
+      const axiosError = err as AxiosError;
+      if (axiosError.response) {
+        console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+      } else {
+        console.error('Unexpected Error:', err); // 기타 에러
+      }
     },
   });
 
@@ -66,288 +83,316 @@ const Write = () => {
     // 전체지역
     if (location === '전체지역') {
       setError('extra.location', {
-        message: '* 위치를 선택해주세요',
+        message: '* 지역을 선택해주세요',
       });
     }
-    data.extra.location = location;
 
-    const transformData = {
-      ...data,
-      price: 3000,
-      quantity: 7,
-    };
-    console.log(transformData);
-    addPost.mutate(transformData);
+    // 전송 값이 input이 아닌 경우 추가
+    data.quantity = num;
+    data.extra.location = location;
+    data.extra.type = productsType;
+
+    // 이미지 업로드 안되면 대체 이미지 추가
+    if (!data.mainImages?.path) {
+      data.mainImages = { path: 'files/final07/mandarin.png' };
+    }
+
+    addPost.mutate(data);
   };
 
   return (
-    <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
-      <Header>
-        <div className="flex items-center">
-          <h1 className="text-[15px] font-bold text-font1">글 작성하기</h1>
-        </div>
-        <button className="fixed right-[17px]">
-          <img
-            onClick={() => navigate('/main')}
-            src={close}
-            alt="Close Icon"
-            className="w-5 h-5"
+    <>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
+      <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
+        <Header>
+          <div className="flex items-center">
+            <h1 className="text-[15px] font-bold text-font1">글 작성하기</h1>
+          </div>
+          <button className="fixed right-[17px]">
+            <img
+              onClick={() => navigate('/main')}
+              src={close}
+              alt="Close Icon"
+              className="w-5 h-5"
+            />
+          </button>
+        </Header>
+
+        <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
+          <ImageUpload />
+          <TypeSelector
+            productsType={productsType}
+            setProductsType={setProductsType}
           />
-        </button>
-      </Header>
 
-      <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-        <ImageUpload />
-        <TypeSelector
-          productsType={productsType}
-          setProductsType={setProductsType}
-        />
-
-        {productsType === 'buy' && (
-          <form
-            className="flex flex-col gap-[8px] text-[13px]"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="info-title">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">제목 </p>
-                <input
-                  type="text"
-                  className="outline-none grow"
-                  placeholder="제목을 입력해주세요."
-                  {...register('name', {
-                    required: '* 제목은 필수입니다',
-                  })}
-                />
-              </div>
-              <Error>{errors.name?.message}</Error>
-            </div>
-
-            <div className="info-price">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">가격</p>
-                <input
-                  type="text"
-                  className="outline-none grow"
-                  placeholder="가격을 입력해주세요"
-                  {...register('price', {
-                    required: '* 가격은 필수입니다',
-                  })}
-                />
-              </div>
-              <Error>{errors.price?.message}</Error>
-            </div>
-
-            <div className="info-location">
-              <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                <p className="font-semibold">공구 위치 </p>
-                <Select
-                  meetingLocation={location}
-                  setMeetingLocation={(value) => {
-                    setValue('extra.location', value);
-                    if (value !== '전체지역') {
-                      clearErrors('extra.location');
-                    } else {
-                      setError('extra.location', {
-                        message: '* 공구 위치를 선택해주세요.',
-                      });
-                    }
-                  }}
-                  {...register('extra.location', {
-                    required: '*공구 위치를 선택해주세요',
-                  })}
-                />
-              </div>
-              {errors.extra?.location && (
-                <Error>{errors.extra.location?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-location-detail">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">공구 상세 위치 </p>
-                <input
-                  type="text"
-                  className="outline-none text-xs grow"
-                  placeholder="거래 상세 위치를 입력해주세요."
-                  {...register('extra.subLocation', {
-                    required: '* 상세 위치는 필수입니다.',
-                  })}
-                />
-              </div>
-              {errors.extra?.subLocation && (
-                <Error>{errors.extra.subLocation?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-quantity">
-              <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                <p className="font-semibold">모집 인원</p>
-                <Counter num={num} setNum={setNum} {...register('quantity')} />
-              </div>
-            </div>
-
-            <div className="info-time">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">마감시간 </p>
-                <input
-                  type="text"
-                  className="outline-none text-xs grow"
-                  placeholder="마감 시간을 입력해주세요."
-                  {...register('extra.meetingTime', {
-                    required: '* 마감시간은 필수입니다',
-                  })}
-                />
-              </div>
-              {errors.extra?.meetingTime && (
-                <Error>{errors.extra.meetingTime?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-content mt-[20px] mb-[10px]">
-              <h1 className="font-semibold">내용</h1>
-              <textarea
-                className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                placeholder="상품에 대한 설명을 적어주세요!"
-                {...register('content', { required: '* 내용은 필수입니다' })}
-              />
-              <Error>{errors.content?.message}</Error>
-            </div>
-            <Button
-              type="submit"
-              bg="main"
-              color="white"
-              height="40px"
-              text="text-sm"
+          {/* 같이 사요 UI */}
+          {productsType === 'buy' && (
+            <form
+              className="flex flex-col gap-[8px] text-[13px]"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              작성 완료
-            </Button>
-          </form>
-        )}
+              <div className="info-title">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">제목 </p>
+                  <input
+                    type="text"
+                    className="outline-none grow"
+                    placeholder="제목을 입력해주세요."
+                    {...register('name', {
+                      required: '* 제목은 필수입니다',
+                    })}
+                  />
+                </div>
+                <Error>{errors.name?.message}</Error>
+              </div>
 
-        {productsType === 'sell' && (
-          <form
-            className="flex flex-col gap-[8px] text-[13px]"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="info-title">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">제목 </p>
-                <input
-                  type="text"
-                  className="outline-none grow"
-                  placeholder="제목을 입력해주세요."
-                  {...register('name', {
-                    required: '* 제목은 필수입니다',
-                  })}
+              <div className="info-price">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">가격</p>
+                  <input
+                    type="text"
+                    className="outline-none grow"
+                    placeholder="가격을 입력해주세요"
+                    {...register('price', {
+                      required: '* 가격은 필수입니다',
+                    })}
+                  />
+                </div>
+                <Error>{errors.price?.message}</Error>
+              </div>
+
+              <div className="info-location">
+                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">공구 위치 </p>
+                  <Select
+                    meetingLocation={location}
+                    setMeetingLocation={(value) => {
+                      setValue('extra.location', value);
+                      if (value !== '전체지역') {
+                        clearErrors('extra.location');
+                      } else {
+                        setError('extra.location', {
+                          message: '* 공구 위치를 선택해주세요.',
+                        });
+                      }
+                    }}
+                    {...register('extra.location', {
+                      required: '*공구 위치를 선택해주세요',
+                    })}
+                  />
+                </div>
+                {errors.extra?.location && (
+                  <Error>{errors.extra.location?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-location-detail">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">공구 상세 위치 </p>
+                  <input
+                    type="text"
+                    className="outline-none text-xs grow"
+                    placeholder="거래 상세 위치를 입력해주세요."
+                    {...register('extra.subLocation', {
+                      required: '* 상세 위치는 필수입니다.',
+                    })}
+                  />
+                </div>
+                {errors.extra?.subLocation && (
+                  <Error>{errors.extra.subLocation?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-quantity">
+                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">모집 인원</p>
+                  <Counter
+                    num={num}
+                    setNum={setNum}
+                    {...register('quantity')}
+                  />
+                </div>
+              </div>
+
+              <div className="info-time">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">마감시간 </p>
+                  <input
+                    type="text"
+                    className="outline-none text-xs grow"
+                    placeholder="마감 시간을 입력해주세요."
+                    {...register('extra.meetingTime', {
+                      required: '* 마감시간은 필수입니다',
+                    })}
+                  />
+                </div>
+                {errors.extra?.meetingTime && (
+                  <Error>{errors.extra.meetingTime?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-content mt-[20px] mb-[10px]">
+                <h1 className="font-semibold">내용</h1>
+                <textarea
+                  className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
+                  placeholder="상품에 대한 설명을 적어주세요!"
+                  {...register('content', { required: '* 내용은 필수입니다' })}
                 />
+                <Error>{errors.content?.message}</Error>
               </div>
-              <Error>{errors.name?.message}</Error>
-            </div>
+              <Button
+                type="submit"
+                bg="main"
+                color="white"
+                height="40px"
+                text="text-sm"
+              >
+                작성 완료
+              </Button>
+            </form>
+          )}
 
-            <div className="info-price">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">가격</p>
-                <input
-                  type="text"
-                  className="outline-none grow"
-                  placeholder="가격을 입력해주세요"
-                  {...register('price', {
-                    required: '* 가격은 필수입니다',
-                  })}
-                />
-              </div>
-              <Error>{errors.price?.message}</Error>
-            </div>
-
-            <div className="info-location">
-              <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                <p className="font-semibold">판매 위치</p>
-                <Select
-                  meetingLocation={location}
-                  setMeetingLocation={(value) => {
-                    setValue('extra.location', value);
-                    if (value !== '전체지역') {
-                      clearErrors('extra.location');
-                    } else {
-                      setError('extra.location', {
-                        message: '* 판매 위치를 선택해주세요.',
-                      });
-                    }
-                  }}
-                  {...register('extra.location', {
-                    required: '*판매 위치를 선택해주세요',
-                  })}
-                />
-              </div>
-              {errors.extra?.location && (
-                <Error>{errors.extra.location?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-location-detail">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">판매 상세 위치 </p>
-                <input
-                  type="text"
-                  className="outline-none text-xs grow"
-                  placeholder="거래 상세 위치를 입력해주세요."
-                  {...register('extra.subLocation', {
-                    required: '* 상세 위치는 필수입니다.',
-                  })}
-                />
-              </div>
-              {errors.extra?.subLocation && (
-                <Error>{errors.extra.subLocation?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-quantity">
-              <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                <p className="font-semibold">판매 개수</p>
-                <Counter num={num} setNum={setNum} {...register('quantity')} />
-              </div>
-            </div>
-
-            <div className="info-time">
-              <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                <p className="font-semibold">거래 시간 </p>
-                <input
-                  type="text"
-                  className="outline-none text-xs grow"
-                  placeholder="거래 시간을 입력해주세요."
-                  {...register('extra.meetingTime', {
-                    required: '* 거래 시간은 필수입니다',
-                  })}
-                />
-              </div>
-              {errors.extra?.meetingTime && (
-                <Error>{errors.extra.meetingTime?.message}</Error>
-              )}
-            </div>
-
-            <div className="info-content mt-[20px] mb-[10px]">
-              <h1 className="font-semibold">내용</h1>
-              <textarea
-                className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                placeholder="상품에 대한 설명을 적어주세요!"
-                {...register('content', { required: '* 내용은 필수입니다' })}
-              />
-              <Error>{errors.content?.message}</Error>
-            </div>
-            <Button
-              type="submit"
-              bg="main"
-              color="white"
-              height="40px"
-              text="text-sm"
+          {/* 팔아요 UI */}
+          {productsType === 'sell' && (
+            <form
+              className="flex flex-col gap-[8px] text-[13px]"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              작성 완료
-            </Button>
-          </form>
-        )}
+              <div className="info-title">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">제목 </p>
+                  <input
+                    type="text"
+                    className="outline-none grow"
+                    placeholder="제목을 입력해주세요."
+                    {...register('name', {
+                      required: '* 제목은 필수입니다',
+                    })}
+                  />
+                </div>
+                <Error>{errors.name?.message}</Error>
+              </div>
+
+              <div className="info-price">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">가격</p>
+                  <input
+                    type="text"
+                    className="outline-none grow"
+                    placeholder="가격을 입력해주세요"
+                    {...register('price', {
+                      required: '* 가격은 필수입니다',
+                    })}
+                  />
+                </div>
+                <Error>{errors.price?.message}</Error>
+              </div>
+
+              <div className="info-location">
+                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">판매 위치</p>
+                  <Select
+                    meetingLocation={location}
+                    setMeetingLocation={(value) => {
+                      setValue('extra.location', value);
+                      if (value !== '전체지역') {
+                        clearErrors('extra.location');
+                      } else {
+                        setError('extra.location', {
+                          message: '* 판매 위치를 선택해주세요.',
+                        });
+                      }
+                    }}
+                    {...register('extra.location', {
+                      required: '*판매 위치를 선택해주세요',
+                    })}
+                  />
+                </div>
+                {errors.extra?.location && (
+                  <Error>{errors.extra.location?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-location-detail">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">판매 상세 위치 </p>
+                  <input
+                    type="text"
+                    className="outline-none text-xs grow"
+                    placeholder="거래 상세 위치를 입력해주세요."
+                    {...register('extra.subLocation', {
+                      required: '* 상세 위치는 필수입니다.',
+                    })}
+                  />
+                </div>
+                {errors.extra?.subLocation && (
+                  <Error>{errors.extra.subLocation?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-quantity">
+                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">판매 개수</p>
+                  <Counter
+                    num={num}
+                    setNum={setNum}
+                    {...register('quantity')}
+                  />
+                </div>
+              </div>
+
+              <div className="info-time">
+                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                  <p className="font-semibold">거래 시간 </p>
+                  <input
+                    type="text"
+                    className="outline-none text-xs grow"
+                    placeholder="거래 시간을 입력해주세요."
+                    {...register('extra.meetingTime', {
+                      required: '* 거래 시간은 필수입니다',
+                    })}
+                  />
+                </div>
+                {errors.extra?.meetingTime && (
+                  <Error>{errors.extra.meetingTime?.message}</Error>
+                )}
+              </div>
+
+              <div className="info-content mt-[20px] mb-[10px]">
+                <h1 className="font-semibold">내용</h1>
+                <textarea
+                  className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
+                  placeholder="상품에 대한 설명을 적어주세요!"
+                  {...register('content', { required: '* 내용은 필수입니다' })}
+                />
+                <Error>{errors.content?.message}</Error>
+              </div>
+              <Button
+                type="submit"
+                bg="main"
+                color="white"
+                height="40px"
+                text="text-sm"
+              >
+                작성 완료
+              </Button>
+            </form>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
