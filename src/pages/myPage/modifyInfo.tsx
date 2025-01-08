@@ -10,6 +10,7 @@ import gallery from '/images/icons/gallery.svg';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { uploadImg } from '../../hooks/useUploadImg';
+import { isDuplicate } from '../../hooks/isDuplicate';
 
 type modifyInfoTypes = {
   name: string;
@@ -19,13 +20,17 @@ type modifyInfoTypes = {
 
 const UserInfo = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [isChangeName, setIsChangeName] = useState(false);
+  const [isChangeInfo, setIsChangeInfo] = useState(false);
+
+  const [nameValue, setNameValue] = useState<string | null>(null);
+  const [phoneValue, setPhoneValue] = useState<string | null>(null);
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   // 회원 정보 조회
   const { data: userInfo } = useGetUserInfo(1);
   useEffect(() => {
-    console.log(userInfo.item.image);
     setImgUrl(userInfo.item.image);
   }, [userInfo]);
 
@@ -34,6 +39,8 @@ const UserInfo = () => {
     register,
     handleSubmit,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<modifyInfoTypes>({
     defaultValues: {
@@ -42,6 +49,31 @@ const UserInfo = () => {
       phone: userInfo.item.phone,
     },
   });
+
+  // 닉네임 중복 검사
+  const handleCheckName = async () => {
+    if (nameValue) {
+      const result = await isDuplicate('name', nameValue);
+      if (!result) {
+        setIsChangeInfo(false);
+        setError('name', { message: '중복된 닉네임 입니다' });
+      } else {
+        clearErrors('name');
+      }
+    }
+  };
+
+  // 제출 활성화
+  useEffect(() => {
+    if (
+      nameValue !== userInfo.item.name ||
+      phoneValue !== userInfo.item.phone
+    ) {
+      setIsChangeInfo(true);
+    } else {
+      setIsChangeInfo(false);
+    }
+  }, [nameValue, phoneValue, userInfo]);
 
   // 이미지 업로드 통신 + 이미지 src 바꿔 렌더링
   const handleImgChange = async (
@@ -123,6 +155,15 @@ const UserInfo = () => {
             </label>
             <input
               {...register('name', { required: '닉네임을 입력해주세요.' })}
+              onChange={(e) => {
+                setNameValue(e.target.value);
+                if (e.target.value === userInfo.item.name) {
+                  setIsChangeName(false);
+                } else {
+                  if (e.target.value) setIsChangeName(true);
+                  else setIsChangeName(false);
+                }
+              }}
               type="text"
               id="nickname"
               placeholder="닉네임"
@@ -132,16 +173,30 @@ const UserInfo = () => {
               <p className="text-error text-[10px]">{errors.name.message}</p>
             )}
             <div className="absolute right-0 top-[60%] transform -translate-y-1/2">
-              <Button
-                bg="main"
-                color="white"
-                text="text-[10px]"
-                width="60px"
-                height="25px"
-                type="button"
-              >
-                중복체크
-              </Button>
+              {isChangeName ? (
+                <Button
+                  bg="main"
+                  color="white"
+                  text="text-[10px]"
+                  width="60px"
+                  height="25px"
+                  type="button"
+                  onClick={handleCheckName}
+                >
+                  중복체크
+                </Button>
+              ) : (
+                <Button
+                  bg="inActive"
+                  color="white"
+                  text="text-[10px]"
+                  width="60px"
+                  height="25px"
+                  type="button"
+                >
+                  중복체크
+                </Button>
+              )}
             </div>
           </div>
 
@@ -153,7 +208,7 @@ const UserInfo = () => {
             >
               이메일
             </label>
-            <p className="border-b text-[13px] py-[3px]" id="email">
+            <p className="border-b text-[13px] py-[3px] text-font2" id="email">
               {userInfo.item.email}
             </p>
           </div>
@@ -174,26 +229,40 @@ const UserInfo = () => {
                   message: '유효한 전화번호를 입력해주세요.',
                 },
               })}
+              onChange={(e) => setPhoneValue(e.target.value)}
               type="text"
               id="phone"
               placeholder="휴대전화 번호"
               className="border-b text-[13px] py-[3px]"
               value={userInfo.item.phone}
             />
+
             {errors.phone && (
               <p className="text-error text-[10px]">{errors.phone.message}</p>
             )}
           </div>
 
-          <Button
-            height="40px"
-            text="text-sm"
-            bg="main"
-            color="white"
-            type="submit"
-          >
-            정보 수정
-          </Button>
+          {isChangeInfo ? (
+            <Button
+              height="40px"
+              text="text-sm"
+              bg="main"
+              color="white"
+              type="submit"
+            >
+              정보 수정
+            </Button>
+          ) : (
+            <Button
+              height="40px"
+              text="text-sm"
+              bg="inActive"
+              color="white"
+              type="submit"
+            >
+              정보 수정
+            </Button>
+          )}
         </form>
       </Layout>
     </div>

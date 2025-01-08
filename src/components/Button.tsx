@@ -33,6 +33,7 @@ const Button: React.FC<Props> = ({
     second: 'bg-second',
     white: 'bg-white',
     kakao: 'bg-[#FFE500]',
+    inActive: 'bg-line1'
   };
 
   // 버튼 글자색
