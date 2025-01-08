@@ -47,7 +47,7 @@ export const useGetMyList = (showSoldOut: boolean) => {
 };
 
 // 북마크 목록
-export const useGetLikeList = (showSoldOut: boolean, id: string) => {
+export const useGetLikeList = (showSoldOut: boolean, id: string | undefined) => {
   return useQuery({
     queryKey: ['likeProducts', showSoldOut, id],
     queryFn: () =>

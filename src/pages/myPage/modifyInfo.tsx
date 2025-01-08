@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 
 import Button from '../../components/Button';
@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { uploadImg } from '../../hooks/useUploadImg';
 import { isDuplicate } from '../../hooks/isDuplicate';
 import { axiosInstance } from '../../hooks/axiosInstance';
-import { toast } from 'react-toastify';
 
 type modifyInfoTypes = {
   name: string;
@@ -28,9 +27,10 @@ const UserInfo = () => {
   const [phoneValue, setPhoneValue] = useState<string>('');
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
+  const { _id } = useParams<{ _id: string }>();
 
   // 회원 정보 조회
-  const { data: userInfo } = useGetUserInfo(1);
+  const { data: userInfo } = useGetUserInfo(_id);
 
   // use-hook-form
   const {
@@ -114,7 +114,7 @@ const UserInfo = () => {
       const result = await axiosInstance.patch(`/users/1`, updatedData);
       console.log('수정 완료:', result.data);
       alert('수정이 완료되었습니다.');
-      navigate('/mypage');
+      navigate(`/mypage/${_id}`);
     } catch (error) {
       console.error('수정 중 오류 발생:', error);
       alert('수정에 실패했습니다.');

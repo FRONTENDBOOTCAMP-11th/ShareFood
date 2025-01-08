@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import {
   useGetBuyList,
@@ -20,6 +20,8 @@ const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_BASE_URL;
+  const { _id } = useParams<{ _id: string }>();
+  console.log(_id);
 
   // 게시물 토글 유지
   const tabs = [
@@ -30,23 +32,21 @@ const MyPage = () => {
   const { list, setList } = useMyListStateStore();
 
   // 회원정보 조회
-  const { data: userInfo } = useGetUserInfo(1);
+  const { data: userInfo } = useGetUserInfo(_id);
 
   // 내 작성글 조회
   const { data: myList } = useGetMyList(showSoldOut);
 
   // 내가 좋아요한 글 조회
-  const { data: myLikeList } = useGetLikeList(showSoldOut, '1');
+  const { data: myLikeList } = useGetLikeList(showSoldOut, _id);
 
   // 거래 신청 글 조회
   const { data: myBuyList } = useGetBuyList(showSoldOut);
 
   // 로그아웃
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
 
     // 로그아웃 후 리다이렉트
     window.location.href = '/';
@@ -69,7 +69,7 @@ const MyPage = () => {
             <p className="text-[13px] text-font1">{userInfo.item.email}</p>
           </div>
           <button
-            onClick={() => navigate('/userinfo')}
+            onClick={() => navigate(`/userinfo/${_id}`)}
             className="text-line1 rounded-[6px] border border-line1 ml-auto px-2 py-1 h-fit text-[15px]"
           >
             수정
@@ -137,20 +137,22 @@ const MyPage = () => {
         {list === '좋아요한글' && (
           <div className="flex flex-col gap-[10px]">
             {myLikeList ? (
-              myLikeList.item.product.map((products: LikeProducts, index: number) => (
-                <List
-                  id={products.product._id}
-                  key={index}
-                  title={products.product.name}
-                  type={products.product.extra?.type}
-                  total={products.product.quantity}
-                  remain={products.product.buyQuantity}
-                  location={products.product.extra.subLocation}
-                  due={products.product.extra?.meetingTime}
-                  price={products.product.price}
-                  imageScr={products?.product.mainImages[0]?.path || ''}
-                />
-              ))
+              myLikeList.item.product.map(
+                (products: LikeProducts, index: number) => (
+                  <List
+                    id={products.product._id}
+                    key={index}
+                    title={products.product.name}
+                    type={products.product.extra?.type}
+                    total={products.product.quantity}
+                    remain={products.product.buyQuantity}
+                    location={products.product.extra.subLocation}
+                    due={products.product.extra?.meetingTime}
+                    price={products.product.price}
+                    imageScr={products?.product.mainImages[0]?.path || ''}
+                  />
+                ),
+              )
             ) : (
               <div>작성글이 없습니다.</div>
             )}

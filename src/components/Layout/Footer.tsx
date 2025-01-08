@@ -1,8 +1,42 @@
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Footer() {
+  const [userId, setUserId] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 사용자 데이터 가져오기 함수
+  function getUserData() {
+    let userDataString = localStorage.getItem('user');
+
+    if (!userDataString) {
+      userDataString = sessionStorage.getItem('user');
+    }
+
+    // 데이터가 있으면 파싱하여 반환, 없으면 null 반환
+    if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        return userData.state.user;
+      } catch (error) {
+        console.error('JSON 파싱 오류:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // 컴포넌트가 마운트될 때 사용자 ID 추출
+  useEffect(() => {
+    const userData = getUserData();
+    if (userData) {
+      setUserId(userData._id || '');
+      console.log(userId)
+    } else {
+      console.log('user 데이터가 없습니다.');
+    }
+  }, []);
 
   const footerItems = [
     {
@@ -21,7 +55,7 @@ export default function Footer() {
       label: '마이페이지',
       iconSrc: '/images/icons/myPage.svg',
       activeIconSrc: '/images/icons/myPage-active.svg',
-      route: '/mypage',
+      route: `/mypage/${userId}`,
     },
   ];
 
