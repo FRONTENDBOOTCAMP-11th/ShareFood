@@ -46,7 +46,7 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
   });
 
   return (
-    <div className="my-[18px]">
+    <div className="mt-[18px] mb-[35px]">
       <form onSubmit={handleSubmit(addComment.mutate)} className="flex">
         <input
           type="text"
