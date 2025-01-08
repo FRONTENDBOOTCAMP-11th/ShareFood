@@ -66,7 +66,13 @@ const Write = () => {
       // 서버 전송 성공 시 입력값 초기화
       reset();
       setNum(1);
-      toast.success('게시글이 등록되었습니다');
+      toast.success('게시글이 등록되었습니다', {
+        onClose: () => {
+          // toast 닫히면 해당 페이지로 이동
+          console.log(data.item._id);
+          navigate(`/detail/${data.item._id}`);
+        },
+      });
     },
     onError: (err) => {
       const axiosError = err as AxiosError;
