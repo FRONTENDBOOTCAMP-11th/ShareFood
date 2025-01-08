@@ -47,7 +47,7 @@ const Detail = () => {
   });
 
   // 주문 상태 확인
-  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+  const { refetch: reCheckOrder } = useQuery({
     queryKey: ['isLogin', data?.item?.name],
     queryFn: () => {
       const response = axios
@@ -155,9 +155,8 @@ const Detail = () => {
   }
 
   const productType: string = data.item.extra.type;
-  const priceTrim = data.item.price
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const priceTrim =
+    data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
   console.log(loginId);
 
@@ -372,7 +371,7 @@ const Detail = () => {
                     총 가격 :{' '}
                     {(data.item.price * num)
                       .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원'}
                   </Tag>
                   <Tag tagName="location">{data.item.extra.subLocation}</Tag>
                   <div className="flex gap-3">
