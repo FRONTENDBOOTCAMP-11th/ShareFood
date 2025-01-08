@@ -10,7 +10,7 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import Button from '../../components/Button';
 import Error from '../../components/Error';
 import LoginSignupTitle from '../../components/LoginSignupTitle';
-import UserInfo from '../myPage/modifiyInfo';
+import UserInfo from '../myPage/modifyInfo';
 
 // 서버에 넘길 데이터
 interface UserInfo {
