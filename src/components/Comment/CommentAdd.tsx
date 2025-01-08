@@ -54,7 +54,12 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
           required
           placeholder="댓글을 입력하세요."
           className="border-b-2 w-full pl-1.5 py-1.5 text-sm outline-none"
-          {...register('content', { required: '내용을 입력해주세요.' })}
+          {...register('content', {
+            maxLength: {
+              value: 50,
+              message: '50자까지 입력할 수 있습니다.',
+            },
+          })}
         />
         <button
           type="submit"
@@ -63,6 +68,9 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
           등록
         </button>
       </form>
+      {errors.content && (
+        <p className="text-sm text-error">{errors.content.message}</p>
+      )}
     </div>
   );
 }

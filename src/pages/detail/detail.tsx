@@ -32,6 +32,7 @@ const Detail = () => {
     loginId = JSON.parse(loginInfo).state?.user?._id;
   } else {
     console.log('미 로그인 사용자 접근');
+    // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
   }
 
   // 상품의 정보 흭득
@@ -157,8 +158,6 @@ const Detail = () => {
   const productType: string = data.item.extra.type;
   const priceTrim =
     data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
-
-  console.log(loginId);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
