@@ -1,7 +1,7 @@
 interface CountProps {
   num: number;
   setNum: React.Dispatch<React.SetStateAction<number>>;
-  maxNum: number;
+  maxNum?: number;
 }
 
 // 컴포넌트의 매개변수로 state(number), setter 함수를 전달 해줘야 합니다
