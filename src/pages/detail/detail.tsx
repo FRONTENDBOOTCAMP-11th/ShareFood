@@ -27,7 +27,13 @@ const Detail = () => {
 
   // 사용자 로그인 정보
   const loginInfo = localStorage.getItem('user');
-  const loginId = JSON.parse(loginInfo).state?.user?._id || null;
+  let loginId = '';
+  if (loginInfo) {
+    loginId = JSON.parse(loginInfo).state?.user?._id;
+  } else {
+    console.log('미 로그인 사용자 접근');
+    // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
+  }
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
@@ -42,7 +48,7 @@ const Detail = () => {
   });
 
   // 주문 상태 확인
-  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+  const { refetch: reCheckOrder } = useQuery({
     queryKey: ['isLogin', data?.item?.name],
     queryFn: () => {
       const response = axios
@@ -150,11 +156,8 @@ const Detail = () => {
   }
 
   const productType: string = data.item.extra.type;
-  const priceTrim = data.item.price
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  // console.log(data.item);
+  const priceTrim =
+    data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
@@ -262,71 +265,83 @@ const Detail = () => {
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="main"
-              color="white"
-              onClick={() => handleModal(productType)}
-            >
-              공구하기
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="main"
+                color="white"
+                onClick={() => handleModal(productType)}
+              >
+                공구하기
+              </Button>
+            </div>
           )}
           {productType == 'buy' && isBuy == true && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="second"
-              color="white"
-              // onClick={() => handleModal(productType)}
-            >
-              공구 신청 완료
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="second"
+                color="white"
+                // onClick={() => handleModal(productType)}
+              >
+                공구 신청 완료
+              </Button>
+            </div>
           )}
           {isEditor == false && productType == 'sell' && isBuy == false && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="main"
-              color="white"
-              onClick={() => handleModal(productType)}
-            >
-              구매하기
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="main"
+                color="white"
+                onClick={() => handleModal(productType)}
+              >
+                구매하기
+              </Button>
+            </div>
           )}
           {productType == 'sell' && isBuy == true && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="second"
-              color="white"
-              // onClick={() => handleModal(productType)}
-            >
-              구매 신청 완료
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="second"
+                color="white"
+                // onClick={() => handleModal(productType)}
+              >
+                구매 신청 완료
+              </Button>
+            </div>
           )}
           {/* 글 작성자의 경우 버튼 변경 */}
           {productType == 'buy' && isEditor == true && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="sub"
-              color="white"
-              onClick={() => handleModal(productType)}
-            >
-              공구 신청자 확인
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="sub"
+                color="white"
+                onClick={() => handleModal(productType)}
+              >
+                공구 신청자 확인
+              </Button>
+            </div>
           )}
           {productType == 'sell' && isEditor == true && (
-            <Button
-              height="40px"
-              text="text-sm"
-              bg="sub"
-              color="white"
-              onClick={() => handleModal(productType)}
-            >
-              구매 신청자 확인
-            </Button>
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+              <Button
+                height="40px"
+                text="text-sm"
+                bg="sub"
+                color="white"
+                onClick={() => handleModal(productType)}
+              >
+                구매 신청자 확인
+              </Button>
+            </div>
           )}
         </div>
 
@@ -367,7 +382,7 @@ const Detail = () => {
                     총 가격 :{' '}
                     {(data.item.price * num)
                       .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원'}
                   </Tag>
                   <Tag tagName="location">{data.item.extra.subLocation}</Tag>
                   <div className="flex gap-3">
