@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { uploadImg } from '../../hooks/useUploadImg';
 import { isDuplicate } from '../../hooks/isDuplicate';
+import { axiosInstance } from '../../hooks/axiosInstance';
+import { toast } from 'react-toastify';
 
 type modifyInfoTypes = {
   name: string;
@@ -73,16 +75,22 @@ const UserInfo = () => {
       if (!result) {
         setError('name', { message: '중복된 닉네임 입니다' });
         setIsNameChecked(false);
+        toast.error('이미 존재하는 닉네임입니다.');
       } else {
         clearErrors('name');
         setIsNameChecked(true);
+        toast.success('정보 수정을 성공했습니다.', {
+          onClose: () => {
+            navigate('/mypage');
+          },
+        });
       }
     }
   };
 
   // 이미지 업로드 핸들러
   const handleImgChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -97,8 +105,21 @@ const UserInfo = () => {
   };
 
   // 제출
-  const onSubmit = (data: modifyInfoTypes) => {
-    console.log(data);
+  const onSubmit = async () => {
+    try {
+      // 변경된 데이터를 동적으로 병합
+      const updatedData = {
+        phone: phoneValue || userInfo.item.phone,
+        name: nameValue || userInfo.item.name,
+        image: imgUrl || userInfo.item.image,
+      };
+
+      // 서버에 요청 보내기
+      const result = await axiosInstance.patch(`/users/1`, updatedData);
+      console.log('수정 완료:', result.data);
+    } catch (error) {
+      console.error('수정 중 오류 발생:', error);
+    }
   };
 
   if (!userInfo) return <div>Loading...</div>;
