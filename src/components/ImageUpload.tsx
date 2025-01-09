@@ -72,6 +72,7 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
         const currentImageUrl = URL.createObjectURL(imageLists[i]);
         imageUrlLists.push(currentImageUrl);
 
+        // 서버 업로드
         const formData = new FormData();
         formData.append('attach', imageLists[i]);
 
@@ -86,8 +87,8 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
 
           imageUpload.push(imagePath);
 
-          console.log(imagePath);
-          console.log(currentImageUrl);
+          console.log(currentImageUrl); // 화면 출력용 경로
+          console.log(imagePath); // 서버 업로드되는 경로
 
           // 상대 경로의 리스트를 저장
           setShowImages(imageUrlLists);
