@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import dayjs from 'dayjs';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -102,6 +103,10 @@ const Write = () => {
     data.quantity = num;
     data.extra.location = location;
     data.extra.type = productsType;
+
+    data.extra.meetingTime = dayjs(data.extra.meetingTime).format(
+      'YYYY.MM.DD HH:MM',
+    );
 
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages = uploadImg
