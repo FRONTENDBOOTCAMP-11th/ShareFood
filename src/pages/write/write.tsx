@@ -279,6 +279,11 @@ const Write = () => {
                     placeholder="마감 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 마감시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>
