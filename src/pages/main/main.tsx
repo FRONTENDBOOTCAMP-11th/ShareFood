@@ -30,19 +30,19 @@ const Main = () => {
   const [page, setPage] = useState<number>(1);
   const [items, setItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
   // 게시글 불러오기
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
   useEffect(() => {
     if (data) {
-      // 필터 조건에 맞는 새로운 데이터만 반영
       if (page === 1) {
-        console.log(data);
-        setItems(data.item);
+        setItems(data.item); // 첫 페이지 데이터
       } else {
         setItems((prevItems) => [...prevItems, ...data.item]); // 다음 페이지 데이터 추가
       }
+      setTotalItems(data.pagination.total); // 전체 게시물 수 설정
     }
     setIsLoading(false);
   }, [data]);
@@ -153,15 +153,17 @@ const Main = () => {
             ))}
             {isLoading && <div>로딩중...</div>}
             {/* 더보기 버튼 */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                loadMore();
-              }}
-              className="mt-5 p-2 bg-main text-white rounded-md"
-            >
-              더보기
-            </button>
+            {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  loadMore();
+                }}
+                className="mt-5 p-2 bg-main text-white rounded-md"
+              >
+                더보기
+              </button>
+            )}
           </div>
         ) : (
           <div>게시물이 없습니다.</div>
