@@ -19,7 +19,12 @@ import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Counter from '../../components/Counter';
 import { toast } from 'react-toastify';
 import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
-import { viewPaymentStore } from '../../store/detailStore';
+import {
+  contentStore,
+  isBuyStore,
+  isEditorStore,
+  viewPaymentStore,
+} from '../../store/detailStore';
 import Loading from '../../components/Loading';
 
 const Detail = () => {
@@ -136,15 +141,16 @@ const Detail = () => {
   const [num, setNum] = useState(1);
 
   // 구매 여부 확인
-  const [isBuy, setIsBuy] = useState(false);
+  const { isBuy, setIsBuy } = isBuyStore();
 
   // 글 작성자인지 확인
-  const [isEditor, setIsEditor] = useState(false);
+  const { isEditor, setIsEditor } = isEditorStore();
 
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  const [content, setContent] = useState<string>();
+  // const [content, setContent] = useState<string>();
+  const { content, setContent } = contentStore();
 
   const handleModal = (contentType: string) => {
     setContent(contentType);
