@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
@@ -22,25 +22,28 @@ import banner2 from '/images/banner/banner2.png';
 
 const Main = () => {
   // 필터링 상태
-  const {
-    soldout,
-    setSoldout,
-    location,
-    setLocation,
-    type,
-    setType,
-  } = useFilterStateStore();
+  const { soldout, setSoldout, location, setLocation, type, setType } =
+    useFilterStateStore();
 
   const navigate = useNavigate();
+  const [page, setPage] = useState<number>(1);
+  const [items, setItems] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   //게시글 불러오기
-  const { data } = useGetList(soldout, type, location);
+  const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 5);
 
   useEffect(() => {
     if (data) {
-      console.log(data.item);
+      setItems((prevItems) => [...prevItems, ...data.item]);
     }
+    setIsLoading(false);
   }, [data]);
+
+  const loadMore = () => {
+    setIsLoading(true);
+    setPage((prevPage) => prevPage + 1);
+  };
 
   // 배너
   const images = [banner1, banner2, banner1, banner2];
@@ -110,15 +113,12 @@ const Main = () => {
               setMeetingLocation={setLocation}
             />
           </div>
-          <TypeSelector
-            setProductsType={setType}
-            productsType={type}
-          />
+          <TypeSelector setProductsType={setType} productsType={type} />
         </div>
 
         {data ? (
           <div className="flex flex-col gap-[10px]">
-            {data.item.map((products: Product, index: number) => (
+            {items.map((products: Product, index: number) => (
               <List
                 id={products._id}
                 key={index}
@@ -135,6 +135,14 @@ const Main = () => {
                 imageScr={products?.mainImages[0]?.path || ''}
               />
             ))}
+            {isLoading && <div>로딩중...</div>}
+            {/* 더보기 버튼 */}
+            <button
+              onClick={loadMore}
+              className="mt-5 p-2 bg-main text-white rounded-md"
+            >
+              더보기
+            </button>
           </div>
         ) : (
           <div>로딩중...</div>

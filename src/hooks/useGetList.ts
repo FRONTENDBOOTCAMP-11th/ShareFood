@@ -5,6 +5,8 @@ interface ParamsType {
   showSoldOut: boolean;
   custom: string;
   keyword?: string;
+  page?: number;
+  limit?: number;
 }
 
 // 게시물 목록
@@ -13,13 +15,29 @@ export const useGetList = (
   productsType: string,
   meetingLocation?: string,
   keyword?: string,
+  page?: number,
+  limit?: number,
 ) => {
+  // 기본값 설정
+  const resolvedPage = page ?? 1;
+  const resolvedLimit = limit ?? 5;
+
   return useQuery({
-    queryKey: ['products', showSoldOut, productsType, meetingLocation, keyword],
+    queryKey: [
+      'products',
+      showSoldOut,
+      productsType,
+      meetingLocation,
+      keyword,
+      resolvedPage,
+      resolvedLimit,
+    ],
     queryFn: () => {
       const baseParams: ParamsType = {
         showSoldOut,
         keyword: keyword ?? '',
+        page: resolvedPage,
+        limit: resolvedLimit,
         custom: JSON.stringify({
           'extra.type': productsType,
           ...(meetingLocation &&
@@ -47,7 +65,10 @@ export const useGetMyList = (showSoldOut: boolean) => {
 };
 
 // 북마크 목록
-export const useGetLikeList = (showSoldOut: boolean, id: string | undefined) => {
+export const useGetLikeList = (
+  showSoldOut: boolean,
+  id: string | undefined,
+) => {
   return useQuery({
     queryKey: ['likeProducts', showSoldOut, id],
     queryFn: () =>
@@ -56,13 +77,11 @@ export const useGetLikeList = (showSoldOut: boolean, id: string | undefined) => 
   });
 };
 
-
 // 거래신청글
 export const useGetBuyList = (showSoldOut: boolean) => {
   return useQuery({
     queryKey: ['nuyProducts', showSoldOut],
-    queryFn: () =>
-      axiosInstance.get(`/orders`).then((res) => res.data),
+    queryFn: () => axiosInstance.get(`/orders`).then((res) => res.data),
     staleTime: 1000 * 10,
   });
-}
+};
