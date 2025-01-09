@@ -136,8 +136,8 @@ const Write = () => {
         }))
       : [
           {
-            path: `files/final07/default${randomNum}.png`,
-            name: `default${randomNum}`,
+            path: `/files/final07/default${randomNum}.png`,
+            name: `/default${randomNum}`,
           },
         ]; // 이미지 업로드 안되면 대체 이미지 추가
 
