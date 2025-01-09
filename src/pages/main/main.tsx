@@ -21,28 +21,44 @@ import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
 
 const Main = () => {
+  const navigate = useNavigate();
+
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
 
-  const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const [items, setItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  //게시글 불러오기
-  const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 5);
+  // 게시글 불러오기
+  const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
   useEffect(() => {
     if (data) {
-      setItems((prevItems) => [...prevItems, ...data.item]);
+      // 필터 조건에 맞는 새로운 데이터만 반영
+      if (page === 1) {
+        console.log(data);
+        setItems(data.item);
+      } else {
+        setItems((prevItems) => [...prevItems, ...data.item]); // 다음 페이지 데이터 추가
+      }
     }
     setIsLoading(false);
   }, [data]);
 
+  useEffect(() => {
+    // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
+    setItems([]);
+    setPage(1);
+  }, [soldout, type, location]);
+
+  // 게시글 더 불러오기
   const loadMore = () => {
-    setIsLoading(true);
-    setPage((prevPage) => prevPage + 1);
+    if (!isLoading) {
+      setIsLoading(true);
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   // 배너
@@ -116,7 +132,7 @@ const Main = () => {
           <TypeSelector setProductsType={setType} productsType={type} />
         </div>
 
-        {data ? (
+        {items.length > 0 ? (
           <div className="flex flex-col gap-[10px]">
             {items.map((products: Product, index: number) => (
               <List
@@ -138,14 +154,17 @@ const Main = () => {
             {isLoading && <div>로딩중...</div>}
             {/* 더보기 버튼 */}
             <button
-              onClick={loadMore}
+              onClick={(e) => {
+                e.preventDefault();
+                loadMore();
+              }}
               className="mt-5 p-2 bg-main text-white rounded-md"
             >
               더보기
             </button>
           </div>
         ) : (
-          <div>로딩중...</div>
+          <div>게시물이 없습니다.</div>
         )}
       </div>
     </div>

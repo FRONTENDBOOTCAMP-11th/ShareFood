@@ -59,7 +59,7 @@ export const useGetMyList = (showSoldOut: boolean) => {
   return useQuery({
     queryKey: ['myProducts', showSoldOut],
     queryFn: () =>
-      axiosInstance.get(`/seller/products`).then((res) => res.data),
+      axiosInstance.get('/seller/products').then((res) => res.data),
     staleTime: 1000 * 10,
   });
 };
