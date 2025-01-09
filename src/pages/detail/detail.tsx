@@ -126,9 +126,6 @@ const Detail = () => {
     },
   });
 
-  // 관심 및 댓글의 수
-  const [interest, setInterest] = useState(0);
-
   // 모달 나타나는 여부, true일 경우 출력
   const [viewPayment, setViewPayment] = useState(false);
 
@@ -252,12 +249,7 @@ const Detail = () => {
 
         <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
 
-        <Total
-          interest={interest}
-          setInterest={setInterest}
-          data={data}
-          onRefetch={refetch}
-        />
+        <Total data={data} onRefetch={refetch} />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
@@ -344,7 +336,6 @@ const Detail = () => {
             </div>
           )}
         </div>
-
         {viewPayment && (
           <Modal setViewPayment={setViewPayment}>
             {/* content에 입력된 정보에 따라서 modal 내용이 변경될 수 있게 */}
