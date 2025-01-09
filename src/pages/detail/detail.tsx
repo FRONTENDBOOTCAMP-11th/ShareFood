@@ -20,6 +20,7 @@ import Counter from '../../components/Counter';
 import { toast } from 'react-toastify';
 import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
 import { viewPaymentStore } from '../../store/detailStore';
+import Loading from '../../components/Loading';
 
 const Detail = () => {
   const axios = axiosInstance;
@@ -40,7 +41,8 @@ const Detail = () => {
   const postNum: number = Number(_id);
   const { data, refetch } = useQuery({
     queryKey: ['products', _id],
-    queryFn: () => axios.get(`/products/${postNum}`),
+    queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
+    // queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => {
       if (res.data.item.seller_id == loginId) setIsEditor(true);
       return res.data;
@@ -151,7 +153,7 @@ const Detail = () => {
   };
 
   if (!data) {
-    return <div>로딩중...</div>;
+    return <Loading />;
   }
 
   const productType: string = data.item.extra.type;
