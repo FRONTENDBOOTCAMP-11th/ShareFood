@@ -124,7 +124,7 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
     >
       {showImages.map((image, id) => (
         <div key={id} className="relative">
-          <img src={image} className="min-w-[100px] min-h-[100px]" />
+          <img src={image} className="w-[100px] h-[100px]" />
           <button
             data-id={id}
             onClick={handleDeleteImage}
