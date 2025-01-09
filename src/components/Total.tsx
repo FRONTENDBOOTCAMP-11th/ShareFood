@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import emptyHeart from '/images/icons/heart.svg';
 import fullHeart from '/images/icons/full_heart.svg';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../hooks/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import { interestStore } from '../store/detailStore';
 
 interface TotalProps {
-  interest: number;
-  setInterest: React.Dispatch<React.SetStateAction<number>>;
+  // interest: number;
+  // setInterest: React.Dispatch<React.SetStateAction<number>>;
   data: Data;
   onRefetch: (options?: {
     throwOnError?: boolean;
@@ -27,10 +28,13 @@ interface Item {
 }
 
 // 매개변수로 관심 수 state, 관심 setter, 댓글 수 state 필요
-function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
+// { interest, setInterest, data, onRefetch }
+function Total({ data, onRefetch }: TotalProps) {
   // 버튼 클릭 시 이미지 버튼을 위한 state
   const [imageSrc, setImageSrc] = useState(emptyHeart);
   const [isClicked, setIsClicked] = useState(false);
+  const { interest, increaseInterest, decreaseInterest, setInterest } =
+    interestStore();
 
   const navigate = useNavigate();
 
@@ -48,7 +52,8 @@ function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
     onSuccess: () => {
       onRefetch();
       toast.success('관심이 추가 되었습니다.');
-      setInterest((n) => n + 1);
+      // setInterest((n) => n + 1);
+      increaseInterest();
       setIsClicked(true);
       setImageSrc(fullHeart);
     },
@@ -71,7 +76,8 @@ function Total({ interest, setInterest, data, onRefetch }: TotalProps) {
       toast.success('관심이 삭제 되었습니다.');
       setImageSrc(emptyHeart);
       setIsClicked(false);
-      setInterest((n) => n - 1);
+      decreaseInterest();
+      // setInterest((n) => n - 1);
     },
     onError: (err) => {
       if (err.response.status === 401) {
