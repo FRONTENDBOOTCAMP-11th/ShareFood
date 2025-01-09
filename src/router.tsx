@@ -6,7 +6,7 @@ import Main from './pages/main/main';
 import MyPage from './pages/myPage/myPage';
 import Detail from './pages/detail/detail';
 import Write from './pages/write/write';
-import UserInfo from './pages/myPage/modifiyInfo';
+import UserInfo from './pages/myPage/modifyInfo';
 import SplashTransition from './pages/splash/splashTransition';
 import SearchPage from './pages/search/searchPage';
 
@@ -33,11 +33,11 @@ export const router = createBrowserRouter(
           element: <Main />,
         },
         {
-          path: 'mypage',
+          path: 'mypage/:_id',
           element: <MyPage />,
         },
         {
-          path: 'userinfo',
+          path: 'userinfo/:_id',
           element: <UserInfo />,
         },
         {

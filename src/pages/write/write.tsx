@@ -22,7 +22,8 @@ interface FormData {
   content: string; // 게시글 내용
   mainImages: {
     path: string;
-  };
+    name: string;
+  }[];
   extra: {
     location: string; // 공구, 판매 지역
     subLocation: string; // 공구, 판매 상세 지역
@@ -51,6 +52,10 @@ const Write = () => {
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
 
+  const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
+    [],
+  );
+
   // Selector : 기본값 '전체지역'
   const location = watch('extra.location', '전체지역');
 
@@ -66,7 +71,13 @@ const Write = () => {
       // 서버 전송 성공 시 입력값 초기화
       reset();
       setNum(1);
-      toast.success('게시글이 등록되었습니다');
+      toast.success('게시글이 등록되었습니다', {
+        onClose: () => {
+          // toast 닫히면 해당 페이지로 이동
+          console.log(data.item._id);
+          navigate(`/detail/${data.item._id}`);
+        },
+      });
     },
     onError: (err) => {
       const axiosError = err as AxiosError;
@@ -92,10 +103,13 @@ const Write = () => {
     data.extra.location = location;
     data.extra.type = productsType;
 
-    // 이미지 업로드 안되면 대체 이미지 추가
-    if (!data.mainImages?.path) {
-      data.mainImages = { path: 'files/final07/mandarin.png' };
-    }
+    // 서버에 저장된 이미지 경로 받아서 다시 저장
+    data.mainImages = uploadImg
+      ? uploadImg.map((image) => ({
+          path: image.path,
+          name: image.path.split('/').pop() || '', // 파일명 추출
+        }))
+      : [{ path: 'files/final07/mandarin.png', name: 'mandarin' }]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
@@ -131,7 +145,15 @@ const Write = () => {
         </Header>
 
         <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-          <ImageUpload />
+          <ImageUpload
+            onChange={(images) => {
+              const formattedImages = images.map((image) => ({
+                path: image,
+                name: image.split('/').pop() || '',
+              }));
+              setUploadImg(formattedImages);
+            }}
+          />
           <TypeSelector
             productsType={productsType}
             setProductsType={setProductsType}

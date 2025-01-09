@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import photo from '/images/photo.svg';
+import { axiosInstance } from '../hooks/axiosInstance';
 
-function ImageUpload() {
+function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
   const [showImages, setShowImages] = useState<string[]>([]);
   const [imageCount, setImageCount] = useState<number>(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -51,11 +52,16 @@ function ImageUpload() {
   const onThrottleDragMove = throttle(onDragMove, delay);
 
   // 이미지 상대경로 저장
-  const handleAddImages = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddImages = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     // 파일의 정보를 불러옴
     const imageLists = event.target.files;
     // 파일의 정보를 react 상태 관리
     const imageUrlLists: Array<string> = [...showImages];
+    // 서버에 보낼 이미지
+    const imageUpload: Array<string> = [];
+
     if (imageLists) {
       if (showImages.length + imageLists.length > 5) {
         alert('5장까지 첨부가 가능합니다.');
@@ -65,12 +71,36 @@ function ImageUpload() {
         // 상대 경로만 반환 받아서 변수에 할당
         const currentImageUrl = URL.createObjectURL(imageLists[i]);
         imageUrlLists.push(currentImageUrl);
+
+        // 서버 업로드
+        const formData = new FormData();
+        formData.append('attach', imageLists[i]);
+
+        try {
+          const res = await axiosInstance.post('/files', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          const imagePath = res.data.item[0].path;
+
+          imageUpload.push(imagePath);
+
+          console.log(currentImageUrl); // 화면 출력용 경로
+          console.log(imagePath); // 서버 업로드되는 경로
+
+          // 상대 경로의 리스트를 저장
+          setShowImages(imageUrlLists);
+
+          setImageCount(imageUrlLists.length);
+
+          // 이미지 경로 전달
+          onChange(imageUpload);
+        } catch (error) {
+          console.error(error);
+        }
       }
-
-      // 상대 경로의 리스트를 저장
-      setShowImages(imageUrlLists);
-
-      setImageCount(imageUrlLists.length);
     }
   };
 
@@ -80,6 +110,7 @@ function ImageUpload() {
   ) => {
     const id = Number(event.currentTarget.dataset.id); // data-id 속성에서 ID를 가져옴
     setShowImages(showImages.filter((_, index) => index !== id));
+    onChange(showImages.filter((_, index) => index !== id)); // 변경된 이미지 경로 전달
     setImageCount(imageCount - 1);
   };
 
@@ -94,7 +125,7 @@ function ImageUpload() {
     >
       {showImages.map((image, id) => (
         <div key={id} className="relative">
-          <img src={image} className="min-w-[100px] min-h-[100px]" />
+          <img src={image} className="w-[100px] h-[100px]" />
           <button
             data-id={id}
             onClick={handleDeleteImage}
