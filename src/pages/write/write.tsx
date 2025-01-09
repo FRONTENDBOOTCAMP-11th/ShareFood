@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import dayjs from 'dayjs';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -102,6 +103,27 @@ const Write = () => {
     data.quantity = num;
     data.extra.location = location;
     data.extra.type = productsType;
+
+    // 입력한 시간 값 가져옴
+    const dateTime = dayjs(data.extra.meetingTime);
+
+    // 입력값이 날짜+시간 인지 날짜 인지 검증
+    if (dateTime.isValid()) {
+      const hour = dateTime.hour();
+      const minute = dateTime.minute();
+
+      // 날짜만 있는 경우 시간 추가
+      if (hour === 0 && minute === 0) {
+        data.extra.meetingTime = dateTime
+          .hour(23)
+          .minute(59)
+          .format('YYYY.MM.DD HH:mm');
+      }
+      // 날짜 + 시간의 경우 그대로 추가
+      else {
+        data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
+      }
+    }
 
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages = uploadImg
@@ -257,6 +279,11 @@ const Write = () => {
                     placeholder="마감 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 마감시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>
