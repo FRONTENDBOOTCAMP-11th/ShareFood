@@ -125,13 +125,21 @@ const Write = () => {
       }
     }
 
+    const randomNum = Math.floor(Math.random() * 4) + 1;
+    console.log(randomNum);
+
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages = uploadImg
       ? uploadImg.map((image) => ({
           path: image.path,
           name: image.path.split('/').pop() || '', // 파일명 추출
         }))
-      : [{ path: 'files/final07/mandarin.png', name: 'mandarin' }]; // 이미지 업로드 안되면 대체 이미지 추가
+      : [
+          {
+            path: `files/final07/default${randomNum}.png`,
+            name: `default${randomNum}`,
+          },
+        ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
