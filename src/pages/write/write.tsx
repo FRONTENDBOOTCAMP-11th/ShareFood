@@ -104,18 +104,23 @@ const Write = () => {
     data.extra.location = location;
     data.extra.type = productsType;
 
+    // 입력한 시간 값 가져옴
     const dateTime = dayjs(data.extra.meetingTime);
 
+    // 입력값이 날짜+시간 인지 날짜 인지 검증
     if (dateTime.isValid()) {
       const hour = dateTime.hour();
       const minute = dateTime.minute();
 
+      // 날짜만 있는 경우 시간 추가
       if (hour === 0 && minute === 0) {
         data.extra.meetingTime = dateTime
           .hour(23)
           .minute(59)
           .format('YYYY.MM.DD HH:mm');
-      } else {
+      }
+      // 날짜 + 시간의 경우 그대로 추가
+      else {
         data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
       }
     }
