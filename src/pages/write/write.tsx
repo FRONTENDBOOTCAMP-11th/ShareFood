@@ -104,9 +104,21 @@ const Write = () => {
     data.extra.location = location;
     data.extra.type = productsType;
 
-    data.extra.meetingTime = dayjs(data.extra.meetingTime).format(
-      'YYYY.MM.DD HH:MM',
-    );
+    const dateTime = dayjs(data.extra.meetingTime);
+
+    if (dateTime.isValid()) {
+      const hour = dateTime.hour();
+      const minute = dateTime.minute();
+
+      if (hour === 0 && minute === 0) {
+        data.extra.meetingTime = dateTime
+          .hour(23)
+          .minute(59)
+          .format('YYYY.MM.DD HH:mm');
+      } else {
+        data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
+      }
+    }
 
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages = uploadImg
