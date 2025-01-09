@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
@@ -21,26 +21,45 @@ import banner1 from '/images/banner/banner1.png';
 import banner2 from '/images/banner/banner2.png';
 
 const Main = () => {
-  // 필터링 상태
-  const {
-    soldout,
-    setSoldout,
-    location,
-    setLocation,
-    type,
-    setType,
-  } = useFilterStateStore();
-
   const navigate = useNavigate();
 
-  //게시글 불러오기
-  const { data } = useGetList(soldout, type, location);
+  // 필터링 상태
+  const { soldout, setSoldout, location, setLocation, type, setType } =
+    useFilterStateStore();
+
+  const [page, setPage] = useState<number>(1);
+  const [items, setItems] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalItems, setTotalItems] = useState<number>(0);
+
+  // 게시글 불러오기
+  const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
   useEffect(() => {
     if (data) {
-      console.log(data.item);
+      if (page === 1) {
+        setItems(data.item); // 첫 페이지 데이터
+      } else {
+        setItems((prevItems) => [...prevItems, ...data.item]); // 다음 페이지 데이터 추가
+      }
+      setTotalItems(data.pagination.total); // 전체 게시물 수 설정
     }
+    setIsLoading(false);
   }, [data]);
+
+  useEffect(() => {
+    // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
+    setItems([]);
+    setPage(1);
+  }, [soldout, type, location]);
+
+  // 게시글 더 불러오기
+  const loadMore = () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   // 배너
   const images = [banner1, banner2, banner1, banner2];
@@ -110,15 +129,12 @@ const Main = () => {
               setMeetingLocation={setLocation}
             />
           </div>
-          <TypeSelector
-            setProductsType={setType}
-            productsType={type}
-          />
+          <TypeSelector setProductsType={setType} productsType={type} />
         </div>
 
-        {data ? (
+        {items.length > 0 ? (
           <div className="flex flex-col gap-[10px]">
-            {data.item.map((products: Product, index: number) => (
+            {items.map((products: Product, index: number) => (
               <List
                 id={products._id}
                 key={index}
@@ -135,9 +151,22 @@ const Main = () => {
                 imageScr={products?.mainImages[0]?.path || ''}
               />
             ))}
+            {isLoading && <div>로딩중...</div>}
+            {/* 더보기 버튼 */}
+            {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  loadMore();
+                }}
+                className="mt-5 p-2 bg-main text-white rounded-md"
+              >
+                더보기
+              </button>
+            )}
           </div>
         ) : (
-          <div>로딩중...</div>
+          <div>게시물이 없습니다.</div>
         )}
       </div>
     </div>
