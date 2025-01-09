@@ -19,6 +19,7 @@ import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Counter from '../../components/Counter';
 import { toast } from 'react-toastify';
 import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
+import { viewPaymentStore } from '../../store/detailStore';
 
 const Detail = () => {
   const axios = axiosInstance;
@@ -127,7 +128,7 @@ const Detail = () => {
   });
 
   // 모달 나타나는 여부, true일 경우 출력
-  const [viewPayment, setViewPayment] = useState(false);
+  const { viewPayment, setViewPayment } = viewPaymentStore();
 
   // counter 상태 관리
   const [num, setNum] = useState(1);
@@ -146,6 +147,7 @@ const Detail = () => {
   const handleModal = (contentType: string) => {
     setContent(contentType);
     setViewPayment(true);
+    console.log(viewPayment);
   };
 
   if (!data) {

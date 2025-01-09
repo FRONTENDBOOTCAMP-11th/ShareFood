@@ -1,5 +1,6 @@
 interface props {
-  setViewPayment: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewPayment: (viewPayment: boolean) => void;
+  // setViewPayment: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
 }
 
