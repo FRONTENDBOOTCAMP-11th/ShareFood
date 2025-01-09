@@ -41,8 +41,8 @@ const Detail = () => {
   const postNum: number = Number(_id);
   const { data, refetch } = useQuery({
     queryKey: ['products', _id],
-    queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
-    // queryFn: () => axios.get(`/products/${postNum}`),
+    // queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
+    queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => {
       if (res.data.item.seller_id == loginId) setIsEditor(true);
       return res.data;
