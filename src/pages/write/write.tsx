@@ -411,6 +411,11 @@ const Write = () => {
                     placeholder="거래 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 거래 시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>
