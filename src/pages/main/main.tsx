@@ -11,17 +11,16 @@ import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
+import Loading from '../../components/Loading';
+
+// constants
+import { BANNERS, BANNERS_LINKS } from '../../constants/banner';
 
 // images
 import greenchef from '/images/chef/greenChef.svg';
 import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
-import banner1 from '/images/banner/banner1.png';
-import banner2 from '/images/banner/banner2.png';
-import banner3 from '/images/banner/banner3.png';
-import banner4 from '/images/banner/banner4.png';
-import banner5 from '/images/banner/banner5.png';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -29,6 +28,7 @@ const Main = () => {
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
+  console.log(soldout, location, type);
 
   const [page, setPage] = useState<number>(1);
   const [items, setItems] = useState<Product[]>([]);
@@ -40,12 +40,13 @@ const Main = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       if (page === 1) {
-        setItems(data.item); // 첫 페이지 데이터
+        setItems(data.item);
       } else {
-        setItems((prevItems) => [...prevItems, ...data.item]); // 다음 페이지 데이터 추가
+        setItems((prevItems) => [...prevItems, ...data.item]);
       }
-      setTotalItems(data.pagination.total); // 전체 게시물 수 설정
+      setTotalItems(data.pagination.total);
     }
     setIsLoading(false);
   }, [data]);
@@ -64,38 +65,14 @@ const Main = () => {
     }
   };
 
-  // 배너
-  const images = [banner1, banner2, banner3, banner4, banner5];
-  const handleImage1Click = () => {
-    window.open(
-      'https://www.notion.so/06761b0eb7f24f178fdaacd3157ea551',
-      '_blank',
-    );
+  // 배너 클릭 이벤트
+  const BannerClick = (index: number) => {
+    const link = BANNERS_LINKS[index];
+    if (link) {
+      window.open(link, '_blank');
+    }
   };
-  const handleImage2Click = () => {
-    window.open(
-      'https://blog.naver.com/kies84/223697413966?trackingCode=external',
-      '_blank',
-    );
-  };
-  const handleImage3Click = () => {
-    window.open(
-      'https://blog.naver.com/baby0817/223388009261',
-    );
-  };
-  const handleImage4Click = () => {
-    window.open(
-      'https://blog.naver.com/duldwl90/223577542563',
-      '_blank',
-    );
-  };
-  const handleImage5Click = () => {
-    window.open(
-      'https://blog.naver.com/minively_bb/223139500248',
-      '_blank',
-    );
-  };
-  
+  const BannerClickHandler = BANNERS_LINKS.map((_, index) => () => BannerClick(index));
 
   return (
     <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
@@ -116,15 +93,9 @@ const Main = () => {
 
       {/* 이미지 슬라이드 */}
       <ImageSlide
-        imageList={images}
+        imageList={BANNERS}
         autoSlide={true}
-        onClickHandler={[
-          handleImage1Click,
-          handleImage2Click,
-          handleImage3Click,
-          handleImage4Click,
-          handleImage5Click
-        ]}
+        onClickHandler={BannerClickHandler}
       />
 
       {/* 게시글 목록 */}
@@ -176,7 +147,7 @@ const Main = () => {
                 imageScr={products?.mainImages[0]?.path || ''}
               />
             ))}
-            {isLoading && <div>로딩중...</div>}
+            {isLoading && <Loading />}
             {/* 더보기 버튼 */}
             {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
               <button

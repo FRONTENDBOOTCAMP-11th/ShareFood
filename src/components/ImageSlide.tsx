@@ -59,7 +59,7 @@ const ImageSlide = ({
 
   return (
     <div className="flex flex-col items-center bg-back1">
-      <div className="relative w-full max-w-[2000px] overflow-hidden max-h-[375px]">
+      <div className="relative w-full max-w-[2000px] overflow-hidden max-h-[220px]">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
@@ -92,7 +92,7 @@ const ImageSlide = ({
             ></button>
           </>
         )}
-        <div className="flex gap-2 absolute bottom-[14px] left-1/2 transform -translate-x-1/2">
+        <div className="flex gap-2 absolute bottom-[15px] left-1/2 transform -translate-x-1/2">
           {imageList.map((_, index) => (
             <div
               key={index}
