@@ -303,7 +303,7 @@ const Write = () => {
                     label={'마감 시간을 선택주세요'}
                     value={selectDate}
                     onChange={(value) => setSelectDate(value)}
-                    format="YYYY.MM.DD hh:mm"
+                    format="YYYY.MM.DD HH:mm"
                     minDate={dayjs('2025.01.01')}
                     ampm={false}
                     slotProps={{
