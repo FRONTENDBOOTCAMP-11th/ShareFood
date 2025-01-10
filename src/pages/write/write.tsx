@@ -109,7 +109,7 @@ const Write = () => {
     data.extra.type = productsType;
 
     // 입력한 시간 값 가져옴
-    const dateTime = dayjs(data.extra.meetingTime);
+    const dateTime = dayjs(selectDate);
 
     // 입력값이 날짜+시간 인지 날짜 인지 검증
     if (dateTime.isValid()) {
@@ -303,27 +303,28 @@ const Write = () => {
                     label={'마감 시간을 선택주세요'}
                     value={selectDate}
                     onChange={(value) => setSelectDate(value)}
-                    format="YYYY/MM/DD hh:mm"
+                    format="YYYY.MM.DD hh:mm"
+                    minDate={dayjs('2025.01.01')}
                     ampm={false}
                     slotProps={{
                       textField: {
                         sx: {
                           '& .MuiOutlinedInput-root': {
                             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#4CAF50', // 포커스 시 테두리 색상 (파란색)
+                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
                               borderWidth: '2px',
                             },
                           },
                           '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#4CAF50', // 테두리 색상
+                            borderColor: '#BDBDBD', // 테두리 색상
                           },
                           '& .MuiSvgIcon-root': {
                             color: '#4CAF50', // 아이콘 색상
                           },
                           '& .MuiInputLabel-root': {
-                            color: '#757575', // 기본 라벨 색상 (회색)
+                            color: '#757575', // 기본 라벨 색상
                             '&.Mui-focused': {
-                              color: '#4CAF50', // 포커스 시 라벨 색상 (파란색)
+                              color: '#4CAF50', // 포커스 시 라벨 색상
                             },
                           },
                         },
