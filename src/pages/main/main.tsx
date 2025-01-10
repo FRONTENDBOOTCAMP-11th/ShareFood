@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
+
+//store
 import { useFilterStateStore } from '../../store/listStateStore';
+import { useListStateStore } from '../../store/listStateStore';
 
 // components
 import Header from '../../components/Layout/Header';
@@ -11,7 +14,7 @@ import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
-import Loading from '../../components/Loading';
+import { NoData } from '../../components/NoData';
 
 // constants
 import { BANNERS, BANNERS_LINKS } from '../../constants/banner';
@@ -21,50 +24,74 @@ import greenchef from '/images/chef/greenChef.svg';
 import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
-import { NoData } from '../../components/NoData';
+import Loading from '../../components/Loading';
 
 const Main = () => {
   const navigate = useNavigate();
-
-  const [page, setPage] = useState<number>(1);
-  const [items, setItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [totalItems, setTotalItems] = useState<number>(0);
+  const prevFilters = useRef({
+    soldout: true,
+    type: 'buy',
+    location: '전체지역',
+  });
+  const resetCalled = useRef(false);
 
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
+  const {
+    items,
+    setItems,
+    addItems,
+    page,
+    setPage,
+    totalItems,
+    setTotalItems,
+    resetList,
+  } = useListStateStore();
 
   // 게시글 불러오기
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
   // 게시글 추가하기
   useEffect(() => {
-    if (data) {
-      console.log(data);
+    if (data && data.item.length > 0) {
       if (page === 1) {
         setItems(data.item);
       } else {
-        setItems((prevItems) => [...prevItems, ...data.item]);
+        addItems(data.item);
       }
       setTotalItems(data.pagination.total);
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [data]);
+  }, [data, page]);
 
+  // 필터 조건 변경 시 상태 초기화
   useEffect(() => {
-    // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
-    setItems([]);
-    setPage(1);
-    console.log(222, items);
-  }, [soldout, type, location]);
+    // 상태가 변경된 경우에만 resetList 호출
+    if (
+      !resetCalled.current &&
+      (prevFilters.current.soldout !== soldout ||
+        prevFilters.current.type !== type ||
+        prevFilters.current.location !== location)
+    ) {
+      resetList();
+      resetCalled.current = true;
+    }
+
+    // 이전 상태를 현재 상태로 업데이트
+    prevFilters.current = { soldout, type, location };
+
+    // 컴포넌트가 언마운트될 때 플래그 초기화
+    if (items.length === 0) {
+      resetCalled.current = false;
+    }
+  }, [soldout, type, location, resetList]);
 
   // 게시글 더 불러오기
   const loadMore = () => {
-    if (!isLoading) {
-      setIsLoading(true);
-      setPage((prevPage) => prevPage + 1);
-    }
+    setIsLoading(true);
+    setPage(page + 1);
   };
 
   // 배너 클릭 이벤트
