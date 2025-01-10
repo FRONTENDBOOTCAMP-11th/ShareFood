@@ -71,7 +71,7 @@ const ImageSlide = ({
               key={index}
               src={image}
               alt={`slide-${index}`}
-              className="w-full h-full max-h-[375px] object-cover"
+              className="w-full h-full max-h-[375px] object-cover min-w-[448px]"
               onClick={
                 onClickHandler && onClickHandler[index]
                   ? onClickHandler[index]
@@ -80,7 +80,7 @@ const ImageSlide = ({
             />
           ))}
         </div>
-        {imageList.length > 2 && (
+        {imageList.length >= 2 && (
           <>
             <button
               onClick={handlePrev}
