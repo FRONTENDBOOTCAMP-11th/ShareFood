@@ -22,6 +22,11 @@ const SearchPage: React.FC = () => {
   const [isSearch, setIsSearch] = useState(false);
   const { data } = useGetList(soldout, type, location, keyword, 1, 0, isSearch); // 기존 `useGetList` 활용
 
+  const handleClickKeyword = (clickedKeyword: string) => {
+    setKeyword(clickedKeyword); // 입력창에 검색어 표시
+    setIsSearch(true); // 검색 상태 활성화
+  };
+
   // 로컬스토리지에서 검색어 불러오기
   useEffect(() => {
     const storedKeywords = localStorage.getItem('recentKeywords');
@@ -102,7 +107,7 @@ const SearchPage: React.FC = () => {
               전체삭제
             </button>
           </div>
-          <Search recentKeywords={keywords} handleDeleteKeyword={handleDeleteKeyword} />
+          <Search recentKeywords={keywords} handleDeleteKeyword={handleDeleteKeyword} handleClickKeyword={handleClickKeyword} />
         </>
       ) : !isSearch ? '' : (
         <>
