@@ -13,10 +13,12 @@
     "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-query-devtools": "^5.62.8",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.1",
     "react-router-dom": "^7.1.0",
+    "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.2",
     "zustand": "^5.0.2"
   },

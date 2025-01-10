@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import dayjs from 'dayjs';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -22,7 +23,8 @@ interface FormData {
   content: string; // 게시글 내용
   mainImages: {
     path: string;
-  };
+    name: string;
+  }[];
   extra: {
     location: string; // 공구, 판매 지역
     subLocation: string; // 공구, 판매 상세 지역
@@ -50,6 +52,10 @@ const Write = () => {
 
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
+
+  const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
+    [],
+  );
 
   // Selector : 기본값 '전체지역'
   const location = watch('extra.location', '전체지역');
@@ -98,10 +104,43 @@ const Write = () => {
     data.extra.location = location;
     data.extra.type = productsType;
 
-    // 이미지 업로드 안되면 대체 이미지 추가
-    if (!data.mainImages?.path) {
-      data.mainImages = { path: 'files/final07/mandarin.png' };
+    // 입력한 시간 값 가져옴
+    const dateTime = dayjs(data.extra.meetingTime);
+
+    // 입력값이 날짜+시간 인지 날짜 인지 검증
+    if (dateTime.isValid()) {
+      const hour = dateTime.hour();
+      const minute = dateTime.minute();
+
+      // 날짜만 있는 경우 시간 추가
+      if (hour === 0 && minute === 0) {
+        data.extra.meetingTime = dateTime
+          .hour(23)
+          .minute(59)
+          .format('YYYY.MM.DD HH:mm');
+      }
+      // 날짜 + 시간의 경우 그대로 추가
+      else {
+        data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
+      }
     }
+
+    const randomNum = Math.floor(Math.random() * 4) + 1;
+    console.log(randomNum);
+
+    // 서버에 저장된 이미지 경로 받아서 다시 저장
+    data.mainImages =
+      uploadImg.length > 0
+        ? uploadImg.map((image) => ({
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
+        : [
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
@@ -137,7 +176,15 @@ const Write = () => {
         </Header>
 
         <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-          <ImageUpload />
+          <ImageUpload
+            onChange={(images) => {
+              const formattedImages = images.map((image) => ({
+                path: image,
+                name: image.split('/').pop() || '',
+              }));
+              setUploadImg(formattedImages);
+            }}
+          />
           <TypeSelector
             productsType={productsType}
             setProductsType={setProductsType}
@@ -241,6 +288,11 @@ const Write = () => {
                     placeholder="마감 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 마감시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>
@@ -368,6 +420,11 @@ const Write = () => {
                     placeholder="거래 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 거래 시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>
