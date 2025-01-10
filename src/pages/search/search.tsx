@@ -2,10 +2,11 @@ import React from 'react';
 
 interface SearchProps {
   recentKeywords: string[];
-  handleDeleteKeyword: (keywordToDelete: string) => void; // 추가
+  handleDeleteKeyword: (keywordToDelete: string) => void;
+  handleClickKeyword: (keyword: string) => void;
 }
 
-const Search: React.FC<SearchProps> = ({ recentKeywords, handleDeleteKeyword }) => {
+const Search: React.FC<SearchProps> = ({ recentKeywords, handleDeleteKeyword, handleClickKeyword }) => {
 
   return (
     <div>
@@ -15,12 +16,15 @@ const Search: React.FC<SearchProps> = ({ recentKeywords, handleDeleteKeyword }) 
             {recentKeywords.map((keyword) => (
               <div
                 key={keyword}
-                className="flex items-center px-4 h-[26px] rounded-[20px] text-black text-sm border line1 overflow-hidden whitespace-nowrap text-ellipsis"
+                className="flex items-center px-4 h-[26px] rounded-[20px] text-black text-sm border line1 overflow-hidden whitespace-nowrap text-ellipsis" onClick={() => handleClickKeyword(keyword)}
               >
                 <span>{keyword}</span>
                 <button
                   type="button"
-                  onClick={() => handleDeleteKeyword(keyword)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 클릭 이벤트 버블링 방지
+                    handleDeleteKeyword(keyword);
+                  }}
                   className="ml-2 text-line1"
                   aria-label={`${keyword} 삭제`}
                 >
