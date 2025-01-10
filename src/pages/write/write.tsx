@@ -286,19 +286,6 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  {/* <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="마감 시간을 입력해주세요."
-                    {...register('extra.meetingTime', {
-                      required: '* 마감시간은 필수입니다',
-                      pattern: {
-                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
-                        message:
-                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
-                      },
-                    })}
-                  /> */}
                   <DateTimePicker
                     label={'마감 시간을 선택주세요'}
                     value={selectDate}
@@ -466,19 +453,6 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
-                  {/* <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="거래 시간을 입력해주세요."
-                    {...register('extra.meetingTime', {
-                      required: '* 거래 시간은 필수입니다',
-                      pattern: {
-                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
-                        message:
-                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
-                      },
-                    })}
-                  /> */}
                   <DateTimePicker
                     label={'거래 시간을 선택해주세요'}
                     value={selectDate}
