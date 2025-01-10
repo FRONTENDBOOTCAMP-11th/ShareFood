@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
+
 import { useSearchFilterStateStore } from '../../store/listStateStore'; // 필터링 상태 관리
 import { useGetList } from '../../hooks/useGetList';
+
+// 컴포넌트
 import Header from '../../components/Layout/Header';
 import TypeSelector from '../../components/TypeSelector';
 import Select from '../../components/Select';
 import Search from './search';
 import SearchList from './searchList';
 import SearchNoResult from './searchNoResult';
+
+// 이미지
 import SearchActiveIcon from '/images/icons/search-active.svg';
 import SearchIcon from '/images/icons/search.svg'
 
