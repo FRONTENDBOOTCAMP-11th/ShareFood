@@ -17,6 +17,7 @@ export const useGetList = (
   keyword?: string,
   page?: number,
   limit?: number,
+  enabled?: boolean
 ) => {
   // 기본값 설정
   const resolvedPage = page ?? 1;
@@ -51,6 +52,7 @@ export const useGetList = (
     },
     select: (res) => res.data,
     staleTime: 1000 * 10,
+    enabled: enabled ?? true
   });
 };
 

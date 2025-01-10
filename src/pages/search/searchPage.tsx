@@ -7,13 +7,15 @@ import Select from '../../components/Select';
 import Search from './search';
 import SearchList from './searchList';
 import SearchNoResult from './searchNoResult';
+import SearchActiveIcon from '/images/icons/search-active.svg';
+import SearchIcon from '/images/icons/search.svg'
 
 const SearchPage: React.FC = () => {
   const [keyword, setKeyword] = useState<string>(''); // 실시간 입력 키워드
   const [keywords, setKeywords] = useState<string[]>([]); // 최근 검색어 목록
-  const [finalKeyword, setFinalKeyword] = useState<string>(''); // 최종 검색어
   const { soldout, setSoldout, location, setLocation, type, setType } = useSearchFilterStateStore(); // 필터링 상태
-  const { data, refetch } = useGetList(soldout, type, location, finalKeyword); // 기존 `useGetList` 활용
+  const [isSearch, setIsSearch] = useState(false);
+  const { data } = useGetList(soldout, type, location, keyword, 1, 0, isSearch); // 기존 `useGetList` 활용
 
   // 로컬스토리지에서 검색어 불러오기
   useEffect(() => {
@@ -23,21 +25,6 @@ const SearchPage: React.FC = () => {
     }
   }, []);
 
-  // // 키워드가 비어 있을때는 검색 결과 초기화
-  // useEffect(() => {
-  //   if (keyword.trim().length === 0) {
-  //     setFinalKeyword(''); // 입력 중일 때 검색 결과 초기화
-  //   }
-  // }, [keyword]);
-
-  // finalKeyword 변경 시 데이터 요청
-  useEffect(() => {
-    if (finalKeyword.trim()) {
-      console.log('Final Keyword for refetch:', finalKeyword); // 디버깅용 출력
-      refetch();
-    }
-  }, [finalKeyword, refetch]);
-
   // 검색 실행
   const handleSearch = () => {
     if (!keyword.trim()) {
@@ -46,15 +33,12 @@ const SearchPage: React.FC = () => {
     }
 
     // 최종 검색어 설정
-    setFinalKeyword(keyword);
+    setIsSearch(true);
 
     // 최근 검색어 업데이트
     const updatedKeywords = [keyword, ...keywords.filter((k) => k !== keyword)].slice(0, 10);
     setKeywords(updatedKeywords);
     localStorage.setItem('recentKeywords', JSON.stringify(updatedKeywords));
-
-    // 입력창 초기화
-    setKeyword('');
   };
 
   // 검색어 개별 삭제
@@ -70,6 +54,11 @@ const SearchPage: React.FC = () => {
     localStorage.removeItem('recentKeywords');
   };
 
+  function handleSetKeyword(keyword: string) {
+    setIsSearch(false);
+    setKeyword(keyword);
+  }
+
   return (
     <div className="pt-14 pb-[100px] px-[18px] bg-back1 min-h-screen flex flex-col">
       {/* 헤더 */}
@@ -83,7 +72,7 @@ const SearchPage: React.FC = () => {
               placeholder="검색어를 입력하세요."
               className="flex-1 ml-2 text-5 placeholder-font2 text-font1 focus:outline-none"
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => handleSetKeyword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
@@ -92,15 +81,15 @@ const SearchPage: React.FC = () => {
               src="/images/icons/search.svg"
               alt="Search Icon"
               className="w-6 h-6"
-              onMouseEnter={(e) => (e.currentTarget.src = '/images/icons/search-active.svg')}
-              onMouseLeave={(e) => (e.currentTarget.src = '/images/icons/search.svg')}
+              onMouseEnter={(e) => (e.currentTarget.src = SearchActiveIcon)}
+              onMouseLeave={(e) => (e.currentTarget.src = SearchIcon)}
             />
           </button>
         </div>
       </Header>
 
       {/* 검색 전 상태 */}
-      {finalKeyword === '' ? (
+      {keyword === '' ? (
         <>
           <div className="flex items-center justify-between mb-2 py-3">
             <span className="text-black text-sm">최근 검색어</span>
@@ -110,7 +99,7 @@ const SearchPage: React.FC = () => {
           </div>
           <Search recentKeywords={keywords} handleDeleteKeyword={handleDeleteKeyword} />
         </>
-      ) : (
+      ) : !isSearch ? '' : (
         <>
           {/* 필터 */}
           <div className="flex flex-col mt-[18px] gap-[15px]">
