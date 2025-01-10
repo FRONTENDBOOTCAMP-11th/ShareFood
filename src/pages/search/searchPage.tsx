@@ -103,7 +103,7 @@ const SearchPage: React.FC = () => {
         <>
           <div className="flex items-center justify-between mb-2 py-3">
             <span className="text-black text-sm">최근 검색어</span>
-            <button type="button" onClick={handleDeleteAll} className="text-line1 text-sm">
+            <button type="button" onClick={handleDeleteAll} className="text-line1 text-sm hover:text-main">
               전체삭제
             </button>
           </div>
