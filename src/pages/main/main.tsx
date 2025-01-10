@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
+
+//store
 import { useFilterStateStore } from '../../store/listStateStore';
+import { useListStateStore } from '../../store/listStateStore';
 
 // components
 import Header from '../../components/Layout/Header';
@@ -11,67 +14,96 @@ import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
+import { NoData } from '../../components/NoData';
+
+// constants
+import { BANNERS, BANNERS_LINKS } from '../../constants/banner';
 
 // images
 import greenchef from '/images/chef/greenChef.svg';
 import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
-import banner1 from '/images/banner/banner1.png';
-import banner2 from '/images/banner/banner2.png';
+import Loading from '../../components/Loading';
 
 const Main = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const prevFilters = useRef({
+    soldout: true,
+    type: 'buy',
+    location: '전체지역',
+  });
+  const resetCalled = useRef(false);
 
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
-
-  const [page, setPage] = useState<number>(1);
-  const [items, setItems] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalItems, setTotalItems] = useState<number>(0);
+  const {
+    items,
+    setItems,
+    addItems,
+    page,
+    setPage,
+    totalItems,
+    setTotalItems,
+    resetList,
+  } = useListStateStore();
 
   // 게시글 불러오기
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
+  // 게시글 추가하기
   useEffect(() => {
-    if (data) {
+    if (data && data.item.length > 0) {
       if (page === 1) {
-        setItems(data.item); // 첫 페이지 데이터
+        setItems(data.item);
       } else {
-        setItems((prevItems) => [...prevItems, ...data.item]); // 다음 페이지 데이터 추가
+        addItems(data.item);
       }
-      setTotalItems(data.pagination.total); // 전체 게시물 수 설정
+      setTotalItems(data.pagination.total);
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [data]);
+  }, [data, page]);
 
+  // 필터 조건 변경 시 상태 초기화
   useEffect(() => {
-    // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
-    setItems([]);
-    setPage(1);
-  }, [soldout, type, location]);
+    // 상태가 변경된 경우에만 resetList 호출
+    if (
+      !resetCalled.current &&
+      (prevFilters.current.soldout !== soldout ||
+        prevFilters.current.type !== type ||
+        prevFilters.current.location !== location)
+    ) {
+      resetList();
+      resetCalled.current = true;
+    }
+
+    // 이전 상태를 현재 상태로 업데이트
+    prevFilters.current = { soldout, type, location };
+
+    // 컴포넌트가 언마운트될 때 플래그 초기화
+    if (items.length === 0) {
+      resetCalled.current = false;
+    }
+  }, [soldout, type, location, resetList]);
 
   // 게시글 더 불러오기
   const loadMore = () => {
-    if (!isLoading) {
-      setIsLoading(true);
-      setPage((prevPage) => prevPage + 1);
-    }
+    setIsLoading(true);
+    setPage(page + 1);
   };
 
-  // 배너
-  const images = [banner1, banner2, banner1, banner2];
-  const handleImage1Click = () => alert('Image 1 Clicked!');
-  const handleImage2Click = () => {
-    window.open(
-      'https://blog.naver.com/kies84/223697413966?trackingCode=external',
-      '_blank',
-    );
+  // 배너 클릭 이벤트
+  const BannerClick = (index: number) => {
+    const link = BANNERS_LINKS[index];
+    if (link) {
+      window.open(link, '_blank');
+    }
   };
-  const handleImage3Click = () => alert('Image 3 Clicked!');
-  const handleImage4Click = () => alert('Image 4 Clicked!');
+  const BannerClickHandler = BANNERS_LINKS.map(
+    (_, index) => () => BannerClick(index),
+  );
 
   return (
     <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
@@ -92,14 +124,9 @@ const Main = () => {
 
       {/* 이미지 슬라이드 */}
       <ImageSlide
-        imageList={images}
+        imageList={BANNERS}
         autoSlide={true}
-        onClickHandler={[
-          handleImage1Click,
-          handleImage2Click,
-          handleImage3Click,
-          handleImage4Click,
-        ]}
+        onClickHandler={BannerClickHandler}
       />
 
       {/* 게시글 목록 */}
@@ -108,7 +135,10 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setSoldout((prev) => !prev)}
+              onClick={(e) => {
+                e.preventDefault();
+                setSoldout((prev) => !prev);
+              }}
               className="flex items-center gap-[5px]"
             >
               <img
@@ -151,7 +181,7 @@ const Main = () => {
                 imageScr={products?.mainImages[0]?.path || ''}
               />
             ))}
-            {isLoading && <div>로딩중...</div>}
+            {isLoading && <Loading />}
             {/* 더보기 버튼 */}
             {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
               <button
@@ -166,7 +196,7 @@ const Main = () => {
             )}
           </div>
         ) : (
-          <div>게시물이 없습니다.</div>
+          <NoData />
         )}
       </div>
     </div>
