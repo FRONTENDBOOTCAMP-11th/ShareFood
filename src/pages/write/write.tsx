@@ -5,7 +5,9 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '../../hooks/axiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
-import dayjs from 'dayjs';
+
+import dayjs, { Dayjs } from 'dayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -52,6 +54,8 @@ const Write = () => {
 
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
+
+  const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
@@ -280,9 +284,9 @@ const Write = () => {
               </div>
 
               <div className="info-time">
-                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  <input
+                  {/* <input
                     type="text"
                     className="outline-none text-xs grow"
                     placeholder="마감 시간을 입력해주세요."
@@ -294,6 +298,53 @@ const Write = () => {
                           '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
                       },
                     })}
+                  /> */}
+                  <DateTimePicker
+                    label={'마감 시간을 선택주세요'}
+                    value={selectDate}
+                    onChange={(value) => setSelectDate(value)}
+                    format="YYYY/MM/DD hh:mm"
+                    ampm={false}
+                    slotProps={{
+                      textField: {
+                        sx: {
+                          '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#4CAF50', // 포커스 시 테두리 색상 (파란색)
+                              borderWidth: '2px',
+                            },
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#4CAF50', // 테두리 색상
+                          },
+                          '& .MuiSvgIcon-root': {
+                            color: '#4CAF50', // 아이콘 색상
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#757575', // 기본 라벨 색상 (회색)
+                            '&.Mui-focused': {
+                              color: '#4CAF50', // 포커스 시 라벨 색상 (파란색)
+                            },
+                          },
+                        },
+                      },
+                      popper: {
+                        sx: {
+                          '& .Mui-selected': {
+                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
+                            color: '#fff',
+                          },
+                          '& .MuiPaper-root': {
+                            display: 'flex',
+                            width: 470, // 팝업(달력+시간 선택창) 너비
+                            height: 400, // 팝업 높이
+                          },
+                          '& .MuiMultiSectionDigitalClockSection-root': {
+                            width: 80,
+                          },
+                        },
+                      },
+                    }}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
