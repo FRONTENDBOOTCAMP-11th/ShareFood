@@ -1,3 +1,5 @@
+import image from '/images/chef/cryingChef.svg';
+
 import CommentItem from './CommentItem';
 
 interface CommentProps {
@@ -17,6 +19,7 @@ interface Reply {
 }
 
 function Comment({ replies }: CommentProps) {
+  let isAttach = false;
   const CommentList = replies.map((value) => {
     // console.log(value.user.name); // 이선재, 이현종, 이현종
     // console.log(value.content); // 내용들
@@ -32,7 +35,19 @@ function Comment({ replies }: CommentProps) {
       />
     );
   });
-  return <div className="flex flex-col gap-[16px]">{CommentList}</div>;
+
+  if (CommentList.length > 0) isAttach = true;
+
+  if (isAttach) {
+    return <div className="flex flex-col gap-[16px]">{CommentList}</div>;
+  } else {
+    return (
+      <div className="w-fit mx-auto my-[35px]">
+        <img src={image} alt="기본 이미지" className="mx-auto rounded-full" />
+        <p className="mt-[30px]">등록된 댓글이 없습니다</p>
+      </div>
+    );
+  }
 }
 
 export default Comment;

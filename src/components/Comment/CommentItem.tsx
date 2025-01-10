@@ -13,9 +13,7 @@ function CommentItem({ name, content, createdAt, image }: CommentItemProps) {
     <div>
       <div className="flex leading-7">
         <img
-          src={
-            image ? `https://11.fesp.shop/files/final07/${image}` : basicImage
-          }
+          src={image ? `https://11.fesp.shop/${image}` : basicImage}
           alt="프로필 사진"
           className="max-w-[29px] max-h-[29px] rounded-full"
         />

@@ -15,12 +15,17 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
 
-import { ImageSlideDetail } from '../../components/ImageSlideDetail';
 import Counter from '../../components/Counter';
 import { toast } from 'react-toastify';
 import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
-import { viewPaymentStore } from '../../store/detailStore';
+import {
+  contentStore,
+  isBuyStore,
+  isEditorStore,
+  viewPaymentStore,
+} from '../../store/detailStore';
 import Loading from '../../components/Loading';
+import ImageSlide from '../../components/ImageSlide';
 
 const Detail = () => {
   const axios = axiosInstance;
@@ -136,15 +141,16 @@ const Detail = () => {
   const [num, setNum] = useState(1);
 
   // 구매 여부 확인
-  const [isBuy, setIsBuy] = useState(false);
+  const { isBuy, setIsBuy } = isBuyStore();
 
   // 글 작성자인지 확인
-  const [isEditor, setIsEditor] = useState(false);
+  const { isEditor, setIsEditor } = isEditorStore();
 
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  const [content, setContent] = useState<string>();
+  // const [content, setContent] = useState<string>();
+  const { content, setContent } = contentStore();
 
   const handleModal = (contentType: string) => {
     setContent(contentType);
@@ -160,6 +166,13 @@ const Detail = () => {
   const priceTrim =
     data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
+  // 이미지 가공
+  const imageList = data.item.mainImages.map((value) => {
+    return `https://11.fesp.shop` + value.path;
+  });
+
+  console.log(imageList);
+
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
       <Header>
@@ -174,9 +187,7 @@ const Detail = () => {
       </Header>
 
       {/* 이미지 슬라이드 */}
-      <div className="max-w-[448px] min-h-[212px] overflow-hidden">
-        <ImageSlideDetail imageList={data.item.mainImages} autoSlide={false} />
-      </div>
+      <ImageSlide imageList={imageList} autoSlide={false} />
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
@@ -261,7 +272,10 @@ const Detail = () => {
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div
+              className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white
+            px-6"
+            >
               <Button
                 height="40px"
                 text="text-sm"
@@ -274,7 +288,7 @@ const Detail = () => {
             </div>
           )}
           {productType == 'buy' && isBuy == true && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white px-6">
               <Button
                 height="40px"
                 text="text-sm"
@@ -287,7 +301,7 @@ const Detail = () => {
             </div>
           )}
           {isEditor == false && productType == 'sell' && isBuy == false && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white px-6">
               <Button
                 height="40px"
                 text="text-sm"
@@ -300,7 +314,7 @@ const Detail = () => {
             </div>
           )}
           {productType == 'sell' && isBuy == true && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white px-6">
               <Button
                 height="40px"
                 text="text-sm"
@@ -314,7 +328,7 @@ const Detail = () => {
           )}
           {/* 글 작성자의 경우 버튼 변경 */}
           {productType == 'buy' && isEditor == true && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white px-6">
               <Button
                 height="40px"
                 text="text-sm"
@@ -327,7 +341,7 @@ const Detail = () => {
             </div>
           )}
           {productType == 'sell' && isEditor == true && (
-            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white">
+            <div className="fixed bottom-[85px] left-1/2 transform -translate-x-1/2 max-w-md w-full h-[60px] py-2 bg-white px-6">
               <Button
                 height="40px"
                 text="text-sm"
