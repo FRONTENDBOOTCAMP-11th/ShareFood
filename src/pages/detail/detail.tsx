@@ -33,8 +33,10 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const loginInfo = localStorage.getItem('user');
+  const loginInfo =
+    localStorage.getItem('user') || sessionStorage.getItem('user');
   let loginId = '';
+  console.log(loginInfo);
   if (loginInfo) {
     loginId = JSON.parse(loginInfo).state?.user?._id;
   } else {
@@ -62,7 +64,7 @@ const Detail = () => {
       const response = axios
         .get(`/orders?keyword=${data.item.name}`)
         .catch(() => {
-          console.log('미 로그인 사용자 접근');
+          console.error('주문하지 않은 사용자');
         });
       return response;
     },
@@ -170,8 +172,6 @@ const Detail = () => {
   const imageList = data.item.mainImages.map((value) => {
     return `https://11.fesp.shop` + value.path;
   });
-
-  console.log(imageList);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
