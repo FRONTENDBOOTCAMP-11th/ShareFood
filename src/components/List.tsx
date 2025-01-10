@@ -69,15 +69,15 @@ const List = ({
           {type === 'buy' ? (
             <div className="border-l-2">
               <Tag tagName={'time'}>
-                <p className="text-[13px]">
-                  <strong className="text-main">{due}</strong> 까지
+                <p className="text-[12px]">
+                  ~ <strong className="text-main text-[13px]">{due}</strong>
                 </p>
               </Tag>
             </div>
           ) : (
             <div className='border-l-2'>
               <Tag tagName={'price'}>
-                <p className="text-[13px]">{price}원</p>
+                <p className="text-[12px]">{price}원</p>
               </Tag>
             </div>
           )}

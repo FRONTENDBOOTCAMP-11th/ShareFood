@@ -75,6 +75,7 @@ const Main = () => {
         prevFilters.current.type !== type ||
         prevFilters.current.location !== location)
     ) {
+      console.log('초기화');
       resetList();
       resetCalled.current = true;
     }
