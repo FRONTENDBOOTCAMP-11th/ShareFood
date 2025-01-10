@@ -480,7 +480,7 @@ const Write = () => {
                     })}
                   /> */}
                   <DateTimePicker
-                    label={'마감 시간을 선택주세요'}
+                    label={'거래 시간을 선택해주세요'}
                     value={selectDate}
                     onChange={(value) => setSelectDate(value)}
                     format="YYYY.MM.DD HH:mm"
