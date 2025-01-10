@@ -117,7 +117,7 @@ const Main = () => {
       {/* 이미지 슬라이드 */}
       <ImageSlide
         imageList={images}
-        autoSlide={false}
+        autoSlide={true}
         onClickHandler={[
           handleImage1Click,
           handleImage2Click,
