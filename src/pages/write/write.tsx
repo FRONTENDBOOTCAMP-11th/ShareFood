@@ -125,13 +125,22 @@ const Write = () => {
       }
     }
 
+    const randomNum = Math.floor(Math.random() * 4) + 1;
+    console.log(randomNum);
+
     // 서버에 저장된 이미지 경로 받아서 다시 저장
-    data.mainImages = uploadImg
-      ? uploadImg.map((image) => ({
-          path: image.path,
-          name: image.path.split('/').pop() || '', // 파일명 추출
-        }))
-      : [{ path: 'files/final07/mandarin.png', name: 'mandarin' }]; // 이미지 업로드 안되면 대체 이미지 추가
+    data.mainImages =
+      uploadImg.length > 0
+        ? uploadImg.map((image) => ({
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
+        : [
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
@@ -280,7 +289,7 @@ const Write = () => {
                     {...register('extra.meetingTime', {
                       required: '* 마감시간은 필수입니다',
                       pattern: {
-                        value: new RegExp('^[0-9\\-\\./:]+$'),
+                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
                         message:
                           '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
                       },
@@ -411,6 +420,11 @@ const Write = () => {
                     placeholder="거래 시간을 입력해주세요."
                     {...register('extra.meetingTime', {
                       required: '* 거래 시간은 필수입니다',
+                      pattern: {
+                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
+                        message:
+                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                      },
                     })}
                   />
                 </div>

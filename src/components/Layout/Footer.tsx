@@ -32,7 +32,6 @@ export default function Footer() {
     const userData = getUserData();
     if (userData) {
       setUserId(userData._id || '');
-      console.log(userId)
     } else {
       console.log('user 데이터가 없습니다.');
     }

@@ -15,6 +15,7 @@ import Button from '../../components/Button';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
+import Loading from '../../components/Loading';
 
 const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
@@ -52,7 +53,7 @@ const MyPage = () => {
     window.location.href = '/';
   };
 
-  if (!userInfo) return <div>Loading...</div>;
+  if (!userInfo) return <Loading />;
 
   return (
     <div className="pt-[24px] pb-[100px] px-[17px] bg-back1 flex flex-col gap-[13px] min-h-screen">

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { Product } from '../types/productsTypes';
 
 type ListState = {
   list: string;
@@ -24,6 +25,7 @@ type FilterState = {
   setLocation: (location: string) => void;
   type: string;
   setType: (type: string) => void;
+  // items: string[]
   setInitial: (soldout: boolean, location: string, type: string) => void;
 };
 
@@ -57,4 +59,27 @@ export const useSearchFilterStateStore = create<FilterState>((set) => ({
   type: 'buy',
   setType: (type) => set({ type }),
   setInitial: (soldout, location, type) => set({ soldout, location, type }),
+}));
+
+interface ListStoreState {
+  items: Product[];
+  page: number;
+  totalItems: number;
+  setItems: (items: Product[]) => void;
+  addItems: (newItems: Product[]) => void;
+  setPage: (page: number) => void;
+  setTotalItems: (total: number) => void;
+  resetList: () => void;
+}
+
+export const useListStateStore = create<ListStoreState>((set) => ({
+  items: [],
+  page: 1,
+  totalItems: 0,
+  setItems: (items) => set({ items }),
+  addItems: (newItems) =>
+    set((state) => ({ items: [...state.items, ...newItems] })),
+  setPage: (page) => set({ page }),
+  setTotalItems: (total) => set({ totalItems: total }),
+  resetList: () => set({ items: [], page: 1, totalItems: 0 }),
 }));
