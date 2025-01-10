@@ -24,6 +24,7 @@ type FilterState = {
   setLocation: (location: string) => void;
   type: string;
   setType: (type: string) => void;
+  // items: string[]
   setInitial: (soldout: boolean, location: string, type: string) => void;
 };
 

@@ -9,6 +9,6 @@ export const BANNERS_LINKS = [
   'https://www.notion.so/06761b0eb7f24f178fdaacd3157ea551',
   'https://blog.naver.com/kies84/223697413966?trackingCode=external',
   'https://blog.naver.com/baby0817/223388009261',
+  'https://blog.naver.com/minively_bb/223139500248',
   'https://blog.naver.com/duldwl90/223577542563',
-  'https://blog.naver.com/minively_bb/223139500248'
 ];

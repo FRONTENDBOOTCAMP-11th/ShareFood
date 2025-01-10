@@ -21,23 +21,24 @@ import greenchef from '/images/chef/greenChef.svg';
 import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
+import { NoData } from '../../components/NoData';
 
 const Main = () => {
   const navigate = useNavigate();
-
-  // 필터링 상태
-  const { soldout, setSoldout, location, setLocation, type, setType } =
-    useFilterStateStore();
-  console.log(soldout, location, type);
 
   const [page, setPage] = useState<number>(1);
   const [items, setItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalItems, setTotalItems] = useState<number>(0);
+  
+  // 필터링 상태
+  const { soldout, setSoldout, location, setLocation, type, setType } =
+    useFilterStateStore();
 
   // 게시글 불러오기
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
+  // 게시글 추가하기
   useEffect(() => {
     if (data) {
       console.log(data);
@@ -55,6 +56,7 @@ const Main = () => {
     // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
     setItems([]);
     setPage(1);
+    console.log(222, items)
   }, [soldout, type, location]);
 
   // 게시글 더 불러오기
@@ -162,7 +164,7 @@ const Main = () => {
             )}
           </div>
         ) : (
-          <div>게시물이 없습니다.</div>
+          <NoData />
         )}
       </div>
     </div>
