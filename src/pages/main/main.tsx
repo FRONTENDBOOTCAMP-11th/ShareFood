@@ -30,7 +30,7 @@ const Main = () => {
   const [items, setItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalItems, setTotalItems] = useState<number>(0);
-  
+
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
@@ -56,7 +56,7 @@ const Main = () => {
     // 필터 조건 변경 시 `items` 초기화 및 첫 페이지로 설정
     setItems([]);
     setPage(1);
-    console.log(222, items)
+    console.log(222, items);
   }, [soldout, type, location]);
 
   // 게시글 더 불러오기
@@ -74,7 +74,9 @@ const Main = () => {
       window.open(link, '_blank');
     }
   };
-  const BannerClickHandler = BANNERS_LINKS.map((_, index) => () => BannerClick(index));
+  const BannerClickHandler = BANNERS_LINKS.map(
+    (_, index) => () => BannerClick(index),
+  );
 
   return (
     <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
@@ -106,7 +108,10 @@ const Main = () => {
           <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={() => setSoldout((prev) => !prev)}
+              onClick={(e) => {
+                e.preventDefault();
+                setSoldout((prev) => !prev);
+              }}
               className="flex items-center gap-[5px]"
             >
               <img

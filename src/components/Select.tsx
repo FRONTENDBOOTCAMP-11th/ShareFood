@@ -41,7 +41,10 @@ const Select = ({ meetingLocation, setMeetingLocation }: SelectTypes) => {
     >
       <button
         className="py-[8px] text-[15px]"
-        onClick={() => handleSelectLocation(item)}
+        onClick={(e) => {
+          e.preventDefault();
+          handleSelectLocation(item);
+        }}
       >
         {item}
       </button>
