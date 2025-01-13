@@ -245,6 +245,7 @@ const SignUp: React.FC = () => {
               className="w-full border-b-[1px] border-line2 mt-2 mb-1"
               type="text"
               placeholder="휴대전화 번호"
+              maxLength={13}
               onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const phoneNumber = e.currentTarget;
                 phoneNumber.value = phoneNumber.value
