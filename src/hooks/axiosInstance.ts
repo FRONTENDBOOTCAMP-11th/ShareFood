@@ -15,17 +15,22 @@ export const axiosInstance = axios.create({
 // Axios 요청 인터셉터 설정
 axiosInstance.interceptors.request.use(
   (config) => {
+    // const userData =
+    //   localStorage.getItem('user') || sessionStorage.getItem('user');
+
     const userData =
-      localStorage.getItem('user') || sessionStorage.getItem('user');
+      localStorage.getItem('accessToken') ||
+      sessionStorage.getItem('accessToken');
 
     let token = null;
 
     if (userData) {
       try {
-        const parsedData = JSON.parse(userData);
+        // const parsedData = JSON.parse(userData);
+        // token = parsedData?.state?.accessToken || null;
 
         // accessToken 값 추출 후 token 변수에 저장
-        token = parsedData?.state?.user?.accessToken || null;
+        token = userData || null;
       } catch (error) {
         console.error('JSON 파싱 오류:', error);
       }
