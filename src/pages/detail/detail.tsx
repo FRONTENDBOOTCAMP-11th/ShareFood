@@ -33,7 +33,8 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const loginInfo = localStorage.getItem('user');
+  const loginInfo =
+    localStorage.getItem('user') || sessionStorage.getItem('user');
   let loginId = '';
   if (loginInfo) {
     loginId = JSON.parse(loginInfo).state?.user?._id;
@@ -56,18 +57,24 @@ const Detail = () => {
   });
 
   // 주문 상태 확인
-  const { refetch: reCheckOrder } = useQuery({
-    queryKey: ['isLogin', data?.item?.name],
+  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+    queryKey: ['name', data?.item?.name],
     queryFn: () => {
-      const response = axios
-        .get(`/orders?keyword=${data.item.name}`)
-        .catch(() => {
-          console.log('미 로그인 사용자 접근');
-        });
+      const response = axios.get(`/orders`).catch(() => {
+        console.error('주문하지 않은 사용자');
+      });
+      // const encodedKeyword = encodeURIComponent(data.item.name);
+      // const response = axios
+      //   .get(`/orders?keword=${encodedKeyword}`)
+      //   .catch(() => {
+      //     console.error('주문하지 않은 사용자');
+      //   });
       return response;
     },
     select: (res) => {
-      if (res?.data.item.length != 0) setIsBuy(true);
+      res?.data.item.forEach((value) => {
+        if (value.products[0]._id == data.item._id) setIsBuy(true);
+      });
       return res?.data;
     },
     enabled: !!data?.item?.name,
@@ -171,7 +178,9 @@ const Detail = () => {
     return `https://11.fesp.shop` + value.path;
   });
 
-  console.log(imageList);
+  // console.log('상품의 유형 : ', productType);
+  // console.log('주문 여부 : ', isBuy);
+  // console.log('작성자 여부 : ', isEditor);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
