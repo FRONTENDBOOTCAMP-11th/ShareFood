@@ -249,12 +249,12 @@ const SignUp: React.FC = () => {
                 const phoneNumber = e.currentTarget;
                 phoneNumber.value = phoneNumber.value
                   .replace(/[^0-9]/g, '')
-                  .replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+                  .replace(/(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
               }}
               {...register('phone', {
                 required: '휴대전화 번호를 입력해 주세요.',
                 pattern: {
-                  value: /^(\d{2,3})-(\d{3,4})-(\d{4})$/,
+                  value: /^01\d-(\d{3,4})-(\d{4})$/,
                   message: '휴대전화 번호 형식으로 입력해 주세요.',
                 },
               })}
