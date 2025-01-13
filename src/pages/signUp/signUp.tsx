@@ -36,9 +36,6 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  // 전화번호 확인
-  const [phone, setPhone] = useState('휴대전화 번호');
-
   // 아이디, 닉네임 중복 확인
   const [emailDuplicationError, setEmailDuplicationError] = useState('');
   const [nameDuplicationError, setNameDuplicationError] = useState('');
@@ -120,18 +117,6 @@ const SignUp: React.FC = () => {
       setConfirmPassword(value);
     }
   };
-
-  // 휴대전화 번호 자동 하이픈
-  // const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   let value = e.target.value;
-  //   value = value
-  //     .replace(/[^0-9]/g, '')
-  //     .replace(/(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
-
-  //   setPhone(value);
-  //   e.target.value = value;
-  //   clearErrors('phone');
-  // };
 
   // 서버에서 데이터 받아와서 중복 확인
   const duplication = async (type: 'email' | 'name') => {
@@ -259,7 +244,7 @@ const SignUp: React.FC = () => {
             <input
               className="w-full border-b-[1px] border-line2 mt-2 mb-1"
               type="text"
-              placeholder={phone}
+              placeholder="휴대전화 번호"
               onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const phoneNumber = e.currentTarget;
                 phoneNumber.value = phoneNumber.value
