@@ -30,7 +30,11 @@ export const useSessionStorage = () => {
     sessionStorage.setItem(key, value ?? '');
   };
 
-  return { setItem };
+  const getItem = (key: string) => {
+    return sessionStorage.getItem(key);
+  };
+
+  return { setItem, getItem };
 };
 
 export const useLocalStorage = () => {
@@ -38,5 +42,9 @@ export const useLocalStorage = () => {
     localStorage.setItem(key, value ?? '');
   };
 
-  return { setItem };
+  const getItem = (key: string) => {
+    return sessionStorage.getItem(key);
+  };
+
+  return { setItem, getItem };
 };
