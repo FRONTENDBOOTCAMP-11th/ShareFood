@@ -57,14 +57,17 @@ const Detail = () => {
 
   // 사용자 로그인 정보
   const loginInfo =
-    localStorage.getItem('user') || sessionStorage.getItem('user');
-  let loginId = '';
-  if (loginInfo) {
-    loginId = JSON.parse(loginInfo).state?.user?._id;
-  } else {
-    console.log('미 로그인 사용자 접근');
-    // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
-  }
+    localStorage.getItem('_id') || sessionStorage.getItem('_id');
+  console.log(loginInfo);
+  // const loginInfo =
+  //   localStorage.getItem('user') || sessionStorage.getItem('user');
+  // let loginId = '';
+  // if (loginInfo) {
+  //   loginId = JSON.parse(loginInfo).state?.user?._id;
+  // } else {
+  //   console.log('미 로그인 사용자 접근');
+  //   // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
+  // }
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
@@ -73,7 +76,7 @@ const Detail = () => {
     // queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => {
-      if (res.data.item.seller_id == loginId) setIsEditor(true);
+      if (res.data.item.seller_id == loginInfo) setIsEditor(true);
       return res.data;
     },
     staleTime: 1000 * 10,
@@ -201,9 +204,8 @@ const Detail = () => {
     return `https://11.fesp.shop` + value.path;
   });
 
-  // console.log('상품의 유형 : ', productType);
-  // console.log('주문 여부 : ', isBuy);
-  // console.log('작성자 여부 : ', isEditor);
+  console.log('주문 여부 : ', isBuy);
+  console.log('작성자 여부 : ', isEditor);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
