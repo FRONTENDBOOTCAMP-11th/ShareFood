@@ -3,12 +3,30 @@ import { axiosInstance } from '../../hooks/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import {
+  RefetchOptions,
+  RefetchQueryFilters,
+  QueryObserverResult,
+} from '@tanstack/react-query';
 
 interface CommentAddProps {
   _id: string | undefined;
-  onRefetch: (options?: {
-    throwOnError?: boolean;
-  }) => Promise<QueryObserverResult<MyData, MyError>>;
+  onRefetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>,
+  ) => Promise<QueryObserverResult<object, Error>>;
+  // object가 안 된다면 any로..
+}
+
+interface FormData {
+  content: string;
+}
+
+interface CustomErr {
+  response: Response;
+}
+
+interface Response {
+  status: number;
 }
 
 function CommentAdd({ _id, onRefetch }: CommentAddProps) {
@@ -17,13 +35,13 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
     handleSubmit,
     resetField,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormData>();
 
   const axios = axiosInstance;
   const navigate = useNavigate();
 
   const addComment = useMutation({
-    mutationFn: (formData) => {
+    mutationFn: (formData: FormData) => {
       const body = {
         order_id: Number(_id),
         product_id: Number(_id),
@@ -37,7 +55,7 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
       toast.success('댓글이 추가 되었습니다.');
       resetField('content');
     },
-    onError: (err) => {
+    onError: (err: CustomErr) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
         navigate(`/login`);
@@ -47,7 +65,10 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
 
   return (
     <div className="mt-[18px] mb-[35px]">
-      <form onSubmit={handleSubmit(addComment.mutate)} className="flex">
+      <form
+        onSubmit={handleSubmit((data) => addComment.mutate(data))}
+        className="flex"
+      >
         <input
           type="text"
           id="content"

@@ -27,6 +27,29 @@ import {
 import Loading from '../../components/Loading';
 import ImageSlide from '../../components/ImageSlide';
 
+// 주문 상태 확인을 위한 타입 명시
+interface OrderItem {
+  products: Product[];
+}
+
+interface Product {
+  _id: number;
+}
+
+// 이미지 가공을 위한 타입 명시
+interface ImageItem {
+  path: string;
+}
+
+// 에러 타입 명시
+interface CustomErr {
+  response: Response;
+}
+
+interface Response {
+  status: number;
+}
+
 const Detail = () => {
   const axios = axiosInstance;
   const { _id } = useParams();
@@ -57,7 +80,7 @@ const Detail = () => {
   });
 
   // 주문 상태 확인
-  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+  const { refetch: reCheckOrder } = useQuery({
     queryKey: ['name', data?.item?.name],
     queryFn: () => {
       const response = axios.get(`/orders`).catch(() => {
@@ -72,7 +95,7 @@ const Detail = () => {
       return response;
     },
     select: (res) => {
-      res?.data.item.forEach((value) => {
+      res?.data.item.forEach((value: OrderItem) => {
         if (value.products[0]._id == data.item._id) setIsBuy(true);
       });
       return res?.data;
@@ -100,7 +123,7 @@ const Detail = () => {
       setViewPayment(false);
       reCheckOrder();
     },
-    onError: (err) => {
+    onError: (err: CustomErr) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
         navigate(`/login`);
@@ -130,7 +153,7 @@ const Detail = () => {
       setViewPayment(false);
       reCheckOrder();
     },
-    onError: (err) => {
+    onError: (err: CustomErr) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
         navigate(`/login`);
@@ -174,7 +197,7 @@ const Detail = () => {
     data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
   // 이미지 가공
-  const imageList = data.item.mainImages.map((value) => {
+  const imageList = data.item.mainImages.map((value: ImageItem) => {
     return `https://11.fesp.shop` + value.path;
   });
 
