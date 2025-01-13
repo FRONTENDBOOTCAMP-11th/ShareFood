@@ -124,7 +124,9 @@ const SignUp: React.FC = () => {
   // 휴대전화 번호 자동 하이픈
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    value = value.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    value = value
+      .replace(/[^0-9]/g, '')
+      .replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3');
 
     setPhone(value);
     e.target.value = value;
