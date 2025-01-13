@@ -21,6 +21,17 @@ interface Item {
   quantity: number;
 }
 
+interface Order {
+  _id: number;
+  user: {
+    name: string;
+    image: string;
+  };
+  products: {
+    quantity: number;
+  }[];
+}
+
 function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
   const axios = axiosInstance;
   const { data: checkBuy } = useQuery({
@@ -43,7 +54,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
     // console.log(checkBuy[0].user.name); // 김건우
     // console.log(checkBuy[0].user.image); // 파일 경로
     // console.log(checkBuy[0].products[0].quantity); // 구매 개수
-    OrderList = checkBuy.map((value) => {
+    OrderList = checkBuy.map((value: Order) => {
       return (
         <CheckBuyListItem
           key={value._id}
