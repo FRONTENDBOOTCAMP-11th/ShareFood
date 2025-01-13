@@ -59,7 +59,7 @@ const ImageSlide = ({
 
   return (
     <div className="flex flex-col items-center bg-back1">
-      <div className="relative w-full max-w-[2000px] overflow-hidden max-h-[220px]">
+      <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[280px]">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
@@ -71,7 +71,7 @@ const ImageSlide = ({
               key={index}
               src={image}
               alt={`slide-${index}`}
-              className="w-full h-full max-h-[375px] object-cover min-w-[448px]"
+              className="object-fit"
               onClick={
                 onClickHandler && onClickHandler[index]
                   ? onClickHandler[index]
@@ -84,11 +84,11 @@ const ImageSlide = ({
           <>
             <button
               onClick={handlePrev}
-              className="absolute left-[13px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+              className="absolute left-[10px] top-1/2 transform -translate-y-1/2 bg-prev-icon bg-no-repeat bg-center bg-contain w-[20px] h-[38px]"
             ></button>
             <button
               onClick={handleNext}
-              className="absolute right-[13px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[10px] h-[18px]"
+              className="absolute right-[10px] top-1/2 transform -translate-y-1/2 bg-next-icon bg-no-repeat bg-center bg-contain w-[20px] h-[38px]"
             ></button>
           </>
         )}

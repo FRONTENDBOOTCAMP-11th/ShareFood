@@ -153,16 +153,16 @@ const Write = () => {
   return (
     <>
       <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
+        position="bottom-center"
+        autoClose={1000}
+        hideProgressBar
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
+        pauseOnHover={false}
+        theme="colored"
         transition={Slide}
       />
       <div className="min-h-screen bg-back1 pt-14 pb-[100px]">

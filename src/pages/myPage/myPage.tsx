@@ -44,6 +44,8 @@ const MyPage = () => {
   // 거래 신청 글 조회
   const { data: myBuyList } = useGetBuyList(showSoldOut);
 
+  if (myBuyList) console.log(myBuyList);
+
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem('user');

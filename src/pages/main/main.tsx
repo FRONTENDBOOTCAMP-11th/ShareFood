@@ -55,14 +55,18 @@ const Main = () => {
 
   // 게시글 추가하기
   useEffect(() => {
-    if (data && data.item.length > 0) {
-      if (page === 1) {
-        setItems(data.item);
-      } else {
-        addItems(data.item);
+    if (data) {
+      if (data.item.length > 0) {
+        if (page === 1) {
+          setItems(data.item);
+        } else {
+          addItems(data.item);
+        }
+        setTotalItems(data.pagination.total);
+        setIsLoading(false);
+      } else if (data.item.length === 0) {
+        resetList();
       }
-      setTotalItems(data.pagination.total);
-      setIsLoading(false);
     }
   }, [data, page]);
 
@@ -188,6 +192,7 @@ const Main = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   loadMore();
+                  resetCalled.current = false;
                 }}
                 className="mt-5 p-2 bg-main text-white rounded-md"
               >
