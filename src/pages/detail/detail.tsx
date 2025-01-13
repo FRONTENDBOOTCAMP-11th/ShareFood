@@ -36,7 +36,7 @@ const Detail = () => {
   const loginInfo =
     localStorage.getItem('user') || sessionStorage.getItem('user');
   let loginId = '';
-  console.log(loginInfo);
+  // console.log(loginInfo);
   if (loginInfo) {
     loginId = JSON.parse(loginInfo).state?.user?._id;
   } else {
@@ -58,11 +58,11 @@ const Detail = () => {
   });
 
   // 주문 상태 확인
-  const { refetch: reCheckOrder } = useQuery({
-    queryKey: ['isLogin', data?.item?.name],
+  const { data: checkOrder, refetch: reCheckOrder } = useQuery({
+    queryKey: ['name', data?.item?.name],
     queryFn: () => {
       const response = axios
-        .get(`/orders?keyword=${data.item.name}`)
+        .get(`/orders?keyword=${encodeURIComponent(data.item.name)}`)
         .catch(() => {
           console.error('주문하지 않은 사용자');
         });
@@ -172,6 +172,9 @@ const Detail = () => {
   const imageList = data.item.mainImages.map((value) => {
     return `https://11.fesp.shop` + value.path;
   });
+
+  console.log(productType, isBuy);
+  console.log(encodeURIComponent('\(|)!@#특수문자 테스트\\+-//'));
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
