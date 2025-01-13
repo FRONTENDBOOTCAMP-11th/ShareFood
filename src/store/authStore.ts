@@ -26,16 +26,16 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
 }));
 
 export const useSessionStorage = () => {
-  const setItem = (key: string, value: string) => {
-    sessionStorage.setItem(key, value);
+  const setItem = (key: string, value: string | undefined) => {
+    sessionStorage.setItem(key, value ?? '');
   };
 
   return { setItem };
 };
 
 export const useLocalStorage = () => {
-  const setItem = (key: string, value: string) => {
-    sessionStorage.setItem(key, value);
+  const setItem = (key: string, value: string | undefined) => {
+    sessionStorage.setItem(key, value ?? '');
   };
 
   return { setItem };
