@@ -55,32 +55,30 @@ const Main = () => {
 
   // 게시글 추가하기
   useEffect(() => {
-    if (data && data.item.length > 0) {
-      if (page === 1) {
-        setItems(data.item);
-      } else {
-        addItems(data.item);
+    if (data) {
+      if (data.item.length > 0) {
+        if (page === 1) {
+          setItems(data.item);
+        } else {
+          addItems(data.item);
+        }
+        setTotalItems(data.pagination.total);
+        setIsLoading(false);
+      } else if (data.item.length === 0) {
+        resetList();
       }
-      setTotalItems(data.pagination.total);
-      setIsLoading(false);
     }
   }, [data, page]);
 
   // 필터 조건 변경 시 상태 초기화
   useEffect(() => {
     // 상태가 변경된 경우에만 resetList 호출
-    console.log(items)
-    console.log(resetCalled.current)
-    console.log(prevFilters.current.soldout, soldout)
-    console.log(prevFilters.current.type, type)
-    console.log(prevFilters.current.location, location)
     if (
       !resetCalled.current &&
       (prevFilters.current.soldout !== soldout ||
         prevFilters.current.type !== type ||
         prevFilters.current.location !== location)
     ) {
-      console.log('초기화');
       resetList();
       resetCalled.current = true;
     }
@@ -194,6 +192,7 @@ const Main = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   loadMore();
+                  resetCalled.current = false;
                 }}
                 className="mt-5 p-2 bg-main text-white rounded-md"
               >
