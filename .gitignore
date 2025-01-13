@@ -67,7 +67,3 @@ pnpm-lock.yaml
 *.pem
 *.crt
 *.key
-
-# db 폴더
-/api/dbinit-sample/
-/api/bruno-sample/
