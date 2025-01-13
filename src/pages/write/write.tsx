@@ -222,6 +222,10 @@ const Write = () => {
                     type="text"
                     className="outline-none grow"
                     placeholder="가격을 입력해주세요"
+                    onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                      const input = e.currentTarget;
+                      input.value = input.value.replace(/[^0-9,]/g, '');
+                    }}
                     {...register('price', {
                       required: '* 가격은 필수입니다',
                     })}
