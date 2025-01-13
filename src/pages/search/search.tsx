@@ -18,14 +18,14 @@ const Search: React.FC<SearchProps> = ({ recentKeywords, handleDeleteKeyword, ha
                 key={keyword}
                 className="flex items-center px-4 h-[26px] rounded-[20px] text-black text-sm border line1 overflow-hidden whitespace-nowrap text-ellipsis" onClick={() => handleClickKeyword(keyword)}
               >
-                <span>{keyword}</span>
+                <span className="hover:text-main cursor-pointer">{keyword}</span>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation(); // 클릭 이벤트 버블링 방지
                     handleDeleteKeyword(keyword);
                   }}
-                  className="ml-2 text-line1"
+                  className="ml-2 text-line1 group-hover:text-main cursor-pointer"
                   aria-label={`${keyword} 삭제`}
                 >
                   ✕
@@ -35,7 +35,7 @@ const Search: React.FC<SearchProps> = ({ recentKeywords, handleDeleteKeyword, ha
           </div>
         </>
       ) : (
-        <p>저장된 검색어가 없습니다.</p>
+        <p className='text-font2'>저장된 검색어가 없습니다.</p>
       )}
     </div>
   );

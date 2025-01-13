@@ -222,6 +222,13 @@ const Write = () => {
                     type="text"
                     className="outline-none grow"
                     placeholder="가격을 입력해주세요"
+                    onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                      const input = e.currentTarget;
+                      input.value = input.value
+                        .replace(/,/g, '')
+                        .replace(/[^0-9,]/g, '')
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    }}
                     {...register('price', {
                       required: '* 가격은 필수입니다',
                     })}
@@ -286,19 +293,6 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  {/* <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="마감 시간을 입력해주세요."
-                    {...register('extra.meetingTime', {
-                      required: '* 마감시간은 필수입니다',
-                      pattern: {
-                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
-                        message:
-                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
-                      },
-                    })}
-                  /> */}
                   <DateTimePicker
                     label={'마감 시간을 선택주세요'}
                     value={selectDate}
@@ -402,6 +396,13 @@ const Write = () => {
                     type="text"
                     className="outline-none grow"
                     placeholder="가격을 입력해주세요"
+                    onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                      const input = e.currentTarget;
+                      input.value = input.value
+                        .replace(/,/g, '')
+                        .replace(/[^0-9,]/g, '')
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    }}
                     {...register('price', {
                       required: '* 가격은 필수입니다',
                     })}
@@ -464,20 +465,55 @@ const Write = () => {
               </div>
 
               <div className="info-time">
-                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
+                <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
-                  <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="거래 시간을 입력해주세요."
-                    {...register('extra.meetingTime', {
-                      required: '* 거래 시간은 필수입니다',
-                      pattern: {
-                        value: new RegExp('^[0-9\\-\\./:\\s]+$'),
-                        message:
-                          '* 정수와 특수문자 (-, /, ., :)만 입력 가능합니다',
+                  <DateTimePicker
+                    label={'거래 시간을 선택해주세요'}
+                    value={selectDate}
+                    onChange={(value) => setSelectDate(value)}
+                    format="YYYY.MM.DD HH:mm"
+                    minDate={dayjs('2025.01.01')}
+                    ampm={false}
+                    slotProps={{
+                      textField: {
+                        sx: {
+                          '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
+                              borderWidth: '2px',
+                            },
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#BDBDBD', // 테두리 색상
+                          },
+                          '& .MuiSvgIcon-root': {
+                            color: '#4CAF50', // 아이콘 색상
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#757575', // 기본 라벨 색상
+                            '&.Mui-focused': {
+                              color: '#4CAF50', // 포커스 시 라벨 색상
+                            },
+                          },
+                        },
                       },
-                    })}
+                      popper: {
+                        sx: {
+                          '& .Mui-selected': {
+                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
+                            color: '#fff',
+                          },
+                          '& .MuiPaper-root': {
+                            display: 'flex',
+                            width: 470, // 팝업(달력+시간 선택창) 너비
+                            height: 400, // 팝업 높이
+                          },
+                          '& .MuiMultiSectionDigitalClockSection-root': {
+                            width: 80,
+                          },
+                        },
+                      },
+                    }}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
