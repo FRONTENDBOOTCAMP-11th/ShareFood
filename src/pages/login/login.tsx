@@ -52,22 +52,18 @@ const Login: React.FC = () => {
       // 로그인 정보 저장
       // 로그인 상태 버튼 활성 시 로컬 스토리지 저장
       if (active === 'active') {
-        useLocal.setUser({
-          _id: user._id,
-          name: user.name,
-          profile: user.image ? user.image : undefined,
-          accessToken: user.token.accessToken,
-          refreshToken: user.token.refreshToken,
-        });
+        useLocal.setItem('_id', user._id);
+        useLocal.setItem('name', user.name);
+        useLocal.setItem('profiled', user.image ? user.image : undefined);
+        useLocal.setItem('accessToken', user.token.accessToken);
+        useLocal.setItem('refreshToken', user.token.refreshToken);
         // 로그인 상태 버튼 비활성 시 세션 스토리지 저장
       } else {
-        useSession.setUser({
-          _id: user._id,
-          name: user.name,
-          profile: user.image ? user.image : undefined,
-          accessToken: user.token.accessToken,
-          refreshToken: user.token.refreshToken,
-        });
+        useSession.setItem('_id', user._id);
+        useSession.setItem('name', user.name);
+        useSession.setItem('profiled', user.image ? user.image : undefined);
+        useSession.setItem('accessToken', user.token.accessToken);
+        useSession.setItem('refreshToken', user.token.refreshToken);
       }
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
