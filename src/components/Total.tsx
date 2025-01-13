@@ -6,14 +6,19 @@ import { axiosInstance } from '../hooks/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { interestStore } from '../store/detailStore';
+import {
+  RefetchOptions,
+  RefetchQueryFilters,
+  QueryObserverResult,
+} from '@tanstack/react-query';
 
 interface TotalProps {
   // interest: number;
   // setInterest: React.Dispatch<React.SetStateAction<number>>;
   data: Data;
-  onRefetch: (options?: {
-    throwOnError?: boolean;
-  }) => Promise<QueryObserverResult<MyData, MyError>>;
+  onRefetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>,
+  ) => Promise<QueryObserverResult<object, Error>>;
 }
 
 interface Data {
@@ -25,6 +30,14 @@ interface Item {
   bookmarks: number;
   replies: Array<string>;
   myBookmarkId: number;
+}
+
+interface CustomErr {
+  response: Response;
+}
+
+interface Response {
+  status: number;
 }
 
 // 매개변수로 관심 수 state, 관심 setter, 댓글 수 state 필요
@@ -57,7 +70,7 @@ function Total({ data, onRefetch }: TotalProps) {
       setIsClicked(true);
       setImageSrc(fullHeart);
     },
-    onError: (err) => {
+    onError: (err: CustomErr) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
         navigate(`/login`);
@@ -79,7 +92,7 @@ function Total({ data, onRefetch }: TotalProps) {
       decreaseInterest();
       // setInterest((n) => n - 1);
     },
-    onError: (err) => {
+    onError: (err: CustomErr) => {
       if (err.response.status === 401) {
         alert('로그인 되지 않은 상태입니다. 로그인 페이지로 이동합니다.');
         navigate(`/login`);
