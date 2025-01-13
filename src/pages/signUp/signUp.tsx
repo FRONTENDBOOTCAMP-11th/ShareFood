@@ -122,16 +122,16 @@ const SignUp: React.FC = () => {
   };
 
   // 휴대전화 번호 자동 하이픈
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    value = value
-      .replace(/[^0-9]/g, '')
-      .replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+  // const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let value = e.target.value;
+  //   value = value
+  //     .replace(/[^0-9]/g, '')
+  //     .replace(/(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
 
-    setPhone(value);
-    e.target.value = value;
-    clearErrors('phone');
-  };
+  //   setPhone(value);
+  //   e.target.value = value;
+  //   clearErrors('phone');
+  // };
 
   // 서버에서 데이터 받아와서 중복 확인
   const duplication = async (type: 'email' | 'name') => {
@@ -260,14 +260,20 @@ const SignUp: React.FC = () => {
               className="w-full border-b-[1px] border-line2 mt-2 mb-1"
               type="text"
               placeholder={phone}
+              onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const phoneNumber = e.currentTarget;
+                phoneNumber.value = phoneNumber.value
+                  .replace(/[^0-9]/g, '')
+                  .replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+              }}
               {...register('phone', {
                 required: '휴대전화 번호를 입력해 주세요.',
                 pattern: {
-                  value: /^(\d{3})-(\d{4})-(\d{4})$/,
+                  value: /^(\d{2,3})-(\d{3,4})-(\d{4})$/,
                   message: '휴대전화 번호 형식으로 입력해 주세요.',
                 },
               })}
-              onChange={handlePhoneChange}
+              // onChange={handlePhoneChange}
             />
             <Error text="text-[10px]">{errors.phone?.message}</Error>
           </section>
