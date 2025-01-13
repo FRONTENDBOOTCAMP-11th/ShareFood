@@ -17,6 +17,7 @@ import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
+import KakaoAddressSearch from '../../components/kakaoAddr';
 
 interface FormData {
   price: number; // 상품 가격
@@ -136,15 +137,15 @@ const Write = () => {
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-            path: image.path,
-            name: image.path.split('/').pop() || '', // 파일명 추출
-          }))
+          path: image.path,
+          name: image.path.split('/').pop() || '', // 파일명 추출
+        }))
         : [
-            {
-              path: `/files/final07/default${randomNum}.png`,
-              name: `/default${randomNum}`,
-            },
-          ]; // 이미지 업로드 안되면 대체 이미지 추가
+          {
+            path: `/files/final07/default${randomNum}.png`,
+            name: `/default${randomNum}`,
+          },
+        ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
@@ -258,14 +259,7 @@ const Write = () => {
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
                   <p className="font-semibold">공구 상세 위치 </p>
-                  <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="거래 상세 위치를 입력해주세요."
-                    {...register('extra.subLocation', {
-                      required: '* 상세 위치는 필수입니다.',
-                    })}
-                  />
+                  <KakaoAddressSearch />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
@@ -425,14 +419,7 @@ const Write = () => {
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
                   <p className="font-semibold">판매 상세 위치 </p>
-                  <input
-                    type="text"
-                    className="outline-none text-xs grow"
-                    placeholder="거래 상세 위치를 입력해주세요."
-                    {...register('extra.subLocation', {
-                      required: '* 상세 위치는 필수입니다.',
-                    })}
-                  />
+                  <KakaoAddressSearch />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
