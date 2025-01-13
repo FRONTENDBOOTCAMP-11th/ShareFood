@@ -48,8 +48,17 @@ const MyPage = () => {
 
   // 로그아웃
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('user');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('name');
+    localStorage.removeItem('profiled');
+    
+    sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('_id');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('profiled');
 
     // 로그아웃 후 리다이렉트
     window.location.href = '/';
