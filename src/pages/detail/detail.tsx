@@ -36,7 +36,6 @@ const Detail = () => {
   const loginInfo =
     localStorage.getItem('user') || sessionStorage.getItem('user');
   let loginId = '';
-  // console.log(loginInfo);
   if (loginInfo) {
     loginId = JSON.parse(loginInfo).state?.user?._id;
   } else {
@@ -179,9 +178,9 @@ const Detail = () => {
     return `https://11.fesp.shop` + value.path;
   });
 
-  console.log('상품의 유형 : ', productType);
-  console.log('주문 여부 : ', isBuy);
-  console.log('작성자 여부 : ', isEditor);
+  // console.log('상품의 유형 : ', productType);
+  // console.log('주문 여부 : ', isBuy);
+  // console.log('작성자 여부 : ', isEditor);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">

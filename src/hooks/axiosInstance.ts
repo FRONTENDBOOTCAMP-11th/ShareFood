@@ -15,7 +15,8 @@ export const axiosInstance = axios.create({
 // Axios 요청 인터셉터 설정
 axiosInstance.interceptors.request.use(
   (config) => {
-    const userData = localStorage.getItem('user');
+    const userData =
+      localStorage.getItem('user') || sessionStorage.getItem('user');
 
     let token = null;
 
