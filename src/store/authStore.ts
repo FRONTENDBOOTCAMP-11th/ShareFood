@@ -35,7 +35,7 @@ export const useSessionStorage = () => {
 
 export const useLocalStorage = () => {
   const setItem = (key: string, value: string | undefined) => {
-    sessionStorage.setItem(key, value ?? '');
+    localStorage.setItem(key, value ?? '');
   };
 
   return { setItem };
