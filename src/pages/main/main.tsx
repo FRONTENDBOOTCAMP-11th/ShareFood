@@ -69,6 +69,11 @@ const Main = () => {
   // 필터 조건 변경 시 상태 초기화
   useEffect(() => {
     // 상태가 변경된 경우에만 resetList 호출
+    console.log(items)
+    console.log(resetCalled.current)
+    console.log(prevFilters.current.soldout, soldout)
+    console.log(prevFilters.current.type, type)
+    console.log(prevFilters.current.location, location)
     if (
       !resetCalled.current &&
       (prevFilters.current.soldout !== soldout ||

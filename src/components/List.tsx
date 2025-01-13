@@ -70,7 +70,7 @@ const List = ({
             <div className="border-l-2">
               <Tag tagName={'time'}>
                 <p className="text-[12px]">
-                  ~ <strong className="text-main text-[13px]">{due}</strong>
+                  <strong className="text-main text-[13px]">{due}</strong>
                 </p>
               </Tag>
             </div>

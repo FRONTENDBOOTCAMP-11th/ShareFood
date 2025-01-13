@@ -118,16 +118,16 @@ function Total({ data, onRefetch }: TotalProps) {
         댓글 <span className="text-main">{data.item.replies.length}</span>
       </p>
       <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
+        position="bottom-center"
+        autoClose={1000}
+        hideProgressBar
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
+        pauseOnHover={false}
+        theme="colored"
         transition={Slide}
       />
     </div>

@@ -59,7 +59,7 @@ const ImageSlide = ({
 
   return (
     <div className="flex flex-col items-center bg-back1">
-      <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[250px]">
+      <div className="relative w-full max-w-[1000px] overflow-hidden max-h-[280px]">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{

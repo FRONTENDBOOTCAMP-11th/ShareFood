@@ -167,16 +167,16 @@ const Login: React.FC = () => {
         </form>
       </div>
       <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
+        position="bottom-center"
+        autoClose={1000}
+        hideProgressBar
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover
-        theme="light"
+        pauseOnHover={false}
+        theme="colored"
         transition={Slide}
       />
     </>
