@@ -399,7 +399,7 @@ const Write = () => {
 
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">판매 상세 위치 </p>
+                  <p className="font-semibold">상세 위치 </p>
                   <KakaoAddressSearch
                     subLocation={subLocation}
                     setSubLocation={(address) => setSubLocation(address)}
