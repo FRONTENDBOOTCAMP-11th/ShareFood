@@ -57,23 +57,16 @@ const Detail = () => {
 
   // 사용자 로그인 정보
   const loginInfo =
-    localStorage.getItem('user') || sessionStorage.getItem('user');
-  let loginId = '';
-  if (loginInfo) {
-    loginId = JSON.parse(loginInfo).state?.user?._id;
-  } else {
-    console.log('미 로그인 사용자 접근');
-    // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
-  }
+    localStorage.getItem('_id') || sessionStorage.getItem('_id');
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
   const { data, refetch } = useQuery({
     queryKey: ['products', _id],
-    // queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
     queryFn: () => axios.get(`/products/${postNum}`),
     select: (res) => {
-      if (res.data.item.seller_id == loginId) setIsEditor(true);
+      if (res.data.item.seller_id == loginInfo) setIsEditor(true);
+      else if (res.data.item.seller_id != loginInfo) setIsEditor(false);
       return res.data;
     },
     staleTime: 1000 * 10,
@@ -81,23 +74,22 @@ const Detail = () => {
 
   // 주문 상태 확인
   const { refetch: reCheckOrder } = useQuery({
-    queryKey: ['name', data?.item?.name],
+    queryKey: ['name', _id],
     queryFn: () => {
       const response = axios.get(`/orders`).catch(() => {
         console.error('주문하지 않은 사용자');
       });
-      // const encodedKeyword = encodeURIComponent(data.item.name);
-      // const response = axios
-      //   .get(`/orders?keword=${encodedKeyword}`)
-      //   .catch(() => {
-      //     console.error('주문하지 않은 사용자');
-      //   });
       return response;
     },
     select: (res) => {
+      let test = false;
       res?.data.item.forEach((value: OrderItem) => {
-        if (value.products[0]._id == data.item._id) setIsBuy(true);
+        if (value.products[0]._id == data.item._id) {
+          test = true;
+          setIsBuy(true);
+        }
       });
+      if (test == false) setIsBuy(false);
       return res?.data;
     },
     enabled: !!data?.item?.name,
@@ -189,28 +181,26 @@ const Detail = () => {
   };
 
   if (!data) {
+    refetch();
+    reCheckOrder();
     return <Loading />;
   }
 
-  const productType: string = data.item.extra.type;
+  const productType: string = data?.item.extra.type;
   const priceTrim =
-    data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
+    data?.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
   // 이미지 가공
-  const imageList = data.item.mainImages.map((value: ImageItem) => {
+  const imageList = data?.item.mainImages.map((value: ImageItem) => {
     return `https://11.fesp.shop` + value.path;
   });
-
-  // console.log('상품의 유형 : ', productType);
-  // console.log('주문 여부 : ', isBuy);
-  // console.log('작성자 여부 : ', isEditor);
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
       <Header>
         <div className="flex items-center max-w-[348px]">
           <h1 className="text-5 font-bold ml-2 text-font1 truncate">
-            {data.item.name}
+            {data?.item.name}
           </h1>
         </div>
         <button onClick={() => navigate(-1)} className="fixed right-[17px]">
@@ -224,7 +214,7 @@ const Detail = () => {
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
           <h1 className="grow font-bold text-xl truncate max-w-[342.5px]">
-            {data.item.name}
+            {data?.item.name}
           </h1>
           <PostType type={productType} />
         </div>
@@ -233,18 +223,18 @@ const Detail = () => {
           <img
             className="w-[38px] h-[38px] rounded-full"
             src={
-              data.item.seller.image
-                ? `https://11.fesp.shop${data.item.seller.image}`
+              data?.item.seller.image
+                ? `https://11.fesp.shop${data?.item.seller.image}`
                 : basicImage
             }
             alt="기본 이미지"
           />
           <h2 className="grow ml-3 font-medium text-sm">
-            {data.item.seller.name}
+            {data?.item.seller.name}
           </h2>
           <div className="border border-main rounded-full px-5 py-[1px]">
             <p className="text-xs font-normal text-main leading-6 text-center">
-              {data.item.extra.location}
+              {data?.item.extra.location}
             </p>
           </div>
         </div>
@@ -294,13 +284,13 @@ const Detail = () => {
           </div>
         )}
 
-        <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
+        <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
         <Total data={data} onRefetch={refetch} />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
-          <Comment replies={data.item.replies} />
+          <Comment replies={data?.item.replies} />
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (
