@@ -117,8 +117,6 @@ function Total({ data, onRefetch }: TotalProps) {
     }
   };
 
-  // console.log(data);
-
   return (
     <div className="border-b border-main pb-3 flex gap-2 text-[13px]">
       <button onClick={handleClick}>

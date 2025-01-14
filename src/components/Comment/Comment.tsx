@@ -1,14 +1,23 @@
 import image from '/images/chef/cryingChef.svg';
+import {
+  RefetchOptions,
+  RefetchQueryFilters,
+  QueryObserverResult,
+} from '@tanstack/react-query';
 
 import CommentItem from './CommentItem';
 
 interface CommentProps {
   replies: Reply[];
+  refetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>,
+  ) => Promise<QueryObserverResult<object, Error>>;
 }
 
 interface User {
   name: string;
   image: string;
+  _id: number;
 }
 
 interface Reply {
@@ -18,7 +27,7 @@ interface Reply {
   createdAt: string; // 날짜 형식에 따라 string 대신 Date를 사용할 수도 있습니다.
 }
 
-function Comment({ replies }: CommentProps) {
+function Comment({ replies, refetch }: CommentProps) {
   let isAttach = false;
   const CommentList = replies.map((value) => {
     // console.log(value.user.name); // 이선재, 이현종, 이현종
@@ -28,10 +37,13 @@ function Comment({ replies }: CommentProps) {
     return (
       <CommentItem
         key={value._id}
+        _id={value.user._id}
+        attach_id={value._id}
         name={value.user.name}
         content={value.content}
         createdAt={value.createdAt}
         image={value.user.image}
+        refetch={refetch}
       />
     );
   });

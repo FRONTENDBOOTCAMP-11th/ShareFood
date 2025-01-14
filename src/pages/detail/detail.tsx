@@ -56,8 +56,11 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const loginInfo =
-    localStorage.getItem('_id') || sessionStorage.getItem('_id');
+  const login = localStorage.getItem('user') || sessionStorage.getItem('user');
+
+  const loginInfo = JSON.parse(login).state.user._id;
+  // const loginInfo =
+  //   localStorage.getItem('_id') || sessionStorage.getItem('_id');
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
@@ -290,7 +293,7 @@ const Detail = () => {
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
-          <Comment replies={data?.item.replies} />
+          <Comment replies={data?.item.replies} refetch={refetch} />
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (
