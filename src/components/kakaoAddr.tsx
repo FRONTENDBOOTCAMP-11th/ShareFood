@@ -56,10 +56,10 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
     }).open();
   };
 
-  const fullAddress = `${addr1} ${addr2}`;
-  setSubLocation(fullAddress);
-
+  // 상세 주소가 입력되면 fullAddress 상태 업데이트
   const handleSubmit = async () => {
+    const fullAddress = `${addr1} ${addr2}`;
+    setSubLocation(fullAddress);
     setAddress(subLocation);
   };
 
