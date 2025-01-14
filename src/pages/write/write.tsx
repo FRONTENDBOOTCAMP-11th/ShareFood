@@ -7,7 +7,6 @@ import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import dayjs, { Dayjs } from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -56,6 +55,8 @@ const Write = () => {
 
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
+
+  const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
@@ -110,6 +111,7 @@ const Write = () => {
 
     // 입력한 시간 값 가져옴
     const dateTime = dayjs(selectDate);
+    console.log(dateTime);
 
     // 입력값이 날짜+시간 인지 날짜 인지 검증
     if (dateTime.isValid()) {
@@ -286,7 +288,10 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  <Picker />
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={setSelectDate}
+                  />
                 </div>
                 {errors.extra?.meetingTime && (
                   <Error>{errors.extra.meetingTime?.message}</Error>
@@ -406,7 +411,10 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
-                  <Picker />
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={setSelectDate}
+                  />
                 </div>
                 {errors.extra?.meetingTime && (
                   <Error>{errors.extra.meetingTime?.message}</Error>
