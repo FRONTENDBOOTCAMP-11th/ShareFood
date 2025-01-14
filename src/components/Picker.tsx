@@ -14,7 +14,7 @@ function Picker({ selectDate, setSelectDate }: PickerProps) {
         value={selectDate}
         onChange={(value) => setSelectDate(value)}
         format="YYYY.MM.DD HH:mm"
-        minDate={dayjs('2025.01.01')}
+        minDate={dayjs()}
         ampm={false}
         slotProps={{
           textField: {
