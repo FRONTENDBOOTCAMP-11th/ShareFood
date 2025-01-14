@@ -2,6 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const REQUEST_TIME = 25000;
+const REFRESH_URL = '/auth/refresh';
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
