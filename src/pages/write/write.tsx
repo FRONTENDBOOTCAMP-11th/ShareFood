@@ -7,7 +7,6 @@ import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import dayjs, { Dayjs } from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -18,6 +17,7 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 import KakaoAddressSearch from '../../components/kakaoAddr';
+import Picker from '../../components/Picker';
 
 interface FormData {
   price: number; // 상품 가격
@@ -111,6 +111,7 @@ const Write = () => {
 
     // 입력한 시간 값 가져옴
     const dateTime = dayjs(selectDate);
+    console.log(dateTime);
 
     // 입력값이 날짜+시간 인지 날짜 인지 검증
     if (dateTime.isValid()) {
@@ -137,15 +138,15 @@ const Write = () => {
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-          path: image.path,
-          name: image.path.split('/').pop() || '', // 파일명 추출
-        }))
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
         : [
-          {
-            path: `/files/final07/default${randomNum}.png`,
-            name: `/default${randomNum}`,
-          },
-        ]; // 이미지 업로드 안되면 대체 이미지 추가
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
   };
@@ -287,53 +288,9 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  <DateTimePicker
-                    label={'마감 시간을 선택주세요'}
-                    value={selectDate}
-                    onChange={(value) => setSelectDate(value)}
-                    format="YYYY.MM.DD HH:mm"
-                    minDate={dayjs('2025.01.01')}
-                    ampm={false}
-                    slotProps={{
-                      textField: {
-                        sx: {
-                          '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#BDBDBD', // 테두리 색상
-                          },
-                          '& .MuiSvgIcon-root': {
-                            color: '#4CAF50', // 아이콘 색상
-                          },
-                          '& .MuiInputLabel-root': {
-                            color: '#757575', // 기본 라벨 색상
-                            '&.Mui-focused': {
-                              color: '#4CAF50', // 포커스 시 라벨 색상
-                            },
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          '& .Mui-selected': {
-                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
-                            color: '#fff',
-                          },
-                          '& .MuiPaper-root': {
-                            display: 'flex',
-                            width: 470, // 팝업(달력+시간 선택창) 너비
-                            height: 400, // 팝업 높이
-                          },
-                          '& .MuiMultiSectionDigitalClockSection-root': {
-                            width: 80,
-                          },
-                        },
-                      },
-                    }}
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={setSelectDate}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
@@ -454,53 +411,9 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
-                  <DateTimePicker
-                    label={'거래 시간을 선택해주세요'}
-                    value={selectDate}
-                    onChange={(value) => setSelectDate(value)}
-                    format="YYYY.MM.DD HH:mm"
-                    minDate={dayjs('2025.01.01')}
-                    ampm={false}
-                    slotProps={{
-                      textField: {
-                        sx: {
-                          '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#BDBDBD', // 테두리 색상
-                          },
-                          '& .MuiSvgIcon-root': {
-                            color: '#4CAF50', // 아이콘 색상
-                          },
-                          '& .MuiInputLabel-root': {
-                            color: '#757575', // 기본 라벨 색상
-                            '&.Mui-focused': {
-                              color: '#4CAF50', // 포커스 시 라벨 색상
-                            },
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          '& .Mui-selected': {
-                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
-                            color: '#fff',
-                          },
-                          '& .MuiPaper-root': {
-                            display: 'flex',
-                            width: 470, // 팝업(달력+시간 선택창) 너비
-                            height: 400, // 팝업 높이
-                          },
-                          '& .MuiMultiSectionDigitalClockSection-root': {
-                            width: 80,
-                          },
-                        },
-                      },
-                    }}
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={setSelectDate}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
