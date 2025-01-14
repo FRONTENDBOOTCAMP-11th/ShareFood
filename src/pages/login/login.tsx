@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { useAuthStore } from '../../store/authStore';
 
 import Button from '../../components/Button';
@@ -26,6 +26,7 @@ const Login: React.FC = () => {
   } = useForm<FormData>();
 
   const navigate = useNavigate();
+  const axiosInstance = useAxiosInstance();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');

@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { uploadImg } from '../../hooks/useUploadImg';
 import { isDuplicate } from '../../hooks/isDuplicate';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 type modifyInfoTypes = {
   name: string;
@@ -28,9 +28,10 @@ const UserInfo = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const { _id } = useParams<{ _id: string }>();
+  const axiosInstance = useAxiosInstance();
 
   // 회원 정보 조회
-  const { data: userInfo } = useGetUserInfo(_id);
+  const { data: userInfo } = useGetUserInfo(axiosInstance, _id);
 
   // use-hook-form
   const {
@@ -71,7 +72,7 @@ const UserInfo = () => {
   // 닉네임 중복 검사
   const handleCheckName = async () => {
     if (nameValue) {
-      const result = await isDuplicate('name', nameValue);
+      const result = await isDuplicate(axiosInstance, 'name', nameValue);
       if (!result) {
         setError('name', { message: '중복된 닉네임 입니다' });
         setIsNameChecked(false);

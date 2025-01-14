@@ -12,10 +12,11 @@ import Layout from '../../components/Layout';
 import List from '../../components/List';
 import Button from '../../components/Button';
 
-import check from '/images/check/check.svg';
-import checkActive from '/images/check/check-active.svg';
+// import check from '/images/check/check.svg';
+// import checkActive from '/images/check/check-active.svg';
 import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 import Loading from '../../components/Loading';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
@@ -31,9 +32,10 @@ const MyPage = () => {
     { label: '거래신청글', key: 'trade' },
   ];
   const { list, setList } = useMyListStateStore();
+  const axiosInstance = useAxiosInstance();
 
   // 회원정보 조회
-  const { data: userInfo } = useGetUserInfo(_id);
+  const { data: userInfo } = useGetUserInfo(axiosInstance, _id);
 
   // 내 작성글 조회
   const { data: myList } = useGetMyList(showSoldOut);
@@ -105,7 +107,7 @@ const MyPage = () => {
           ))}
         </div>
 
-        <button
+        {/* <button
           onClick={() => setShowSoldOut((prev) => !prev)}
           className="flex items-center gap-[5px] my-[10px]"
         >
@@ -119,7 +121,7 @@ const MyPage = () => {
           >
             거래 완료 된 상품도 보기
           </p>
-        </button>
+        </button> */}
 
         {list === '작성글' && (
           <div className="flex flex-col gap-[10px]">

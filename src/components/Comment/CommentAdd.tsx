@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
     formState: { errors },
   } = useForm<FormData>();
 
-  const axios = axiosInstance;
+  const axiosInstance = useAxiosInstance();
   const navigate = useNavigate();
 
   const addComment = useMutation({
@@ -48,7 +48,7 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
         content: formData.content,
       };
       console.log(body);
-      return axios.post('/replies', body);
+      return axiosInstance.post('/replies', body);
     },
     onSuccess: () => {
       onRefetch();
