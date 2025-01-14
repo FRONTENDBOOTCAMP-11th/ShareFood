@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
@@ -64,6 +64,8 @@ const Write = () => {
 
   // Selector : 기본값 '전체지역'
   const location = watch('extra.location', '전체지역');
+
+  const axiosInstance = useAxiosInstance();
 
   // 상품 게시글 등록
   const addPost = useMutation({

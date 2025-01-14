@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from './axiosInstance';
+import useAxiosInstance from './useAxiosInstance';
 
 interface ParamsType {
   showSoldOut: boolean;
@@ -17,11 +17,12 @@ export const useGetList = (
   keyword?: string,
   page?: number,
   limit?: number,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   // 기본값 설정
   const resolvedPage = page ?? 1;
   const resolvedLimit = limit ?? 5;
+  const axiosInstance = useAxiosInstance();
 
   return useQuery({
     queryKey: [
@@ -52,12 +53,13 @@ export const useGetList = (
     },
     select: (res) => res.data,
     staleTime: 1000 * 10,
-    enabled: enabled ?? true
+    enabled: enabled ?? true,
   });
 };
 
 // 내가 작성한 글
 export const useGetMyList = (showSoldOut: boolean) => {
+  const axiosInstance = useAxiosInstance();
   return useQuery({
     queryKey: ['myProducts', showSoldOut],
     queryFn: () =>
@@ -71,6 +73,7 @@ export const useGetLikeList = (
   showSoldOut: boolean,
   id: string | undefined,
 ) => {
+  const axiosInstance = useAxiosInstance();
   return useQuery({
     queryKey: ['likeProducts', showSoldOut, id],
     queryFn: () =>
@@ -81,6 +84,7 @@ export const useGetLikeList = (
 
 // 거래신청글
 export const useGetBuyList = (showSoldOut: boolean) => {
+  const axiosInstance = useAxiosInstance();
   return useQuery({
     queryKey: ['nuyProducts', showSoldOut],
     queryFn: () => axiosInstance.get(`/orders`).then((res) => res.data),
