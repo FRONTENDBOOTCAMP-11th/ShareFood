@@ -109,6 +109,10 @@ const Write = () => {
     data.extra.location = location;
     data.extra.type = productsType;
 
+    // 가격 정수 형태로 변경 후 전송
+    const integerPrice = Number(data.price.toString().replace(/,/g, ''));
+    data.price = integerPrice;
+
     // 입력한 시간 값 가져옴
     const dateTime = dayjs(selectDate);
     console.log(dateTime);
