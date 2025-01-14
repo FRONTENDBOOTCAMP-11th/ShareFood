@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 interface AddressProps {
@@ -12,7 +11,7 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
 }) => {
   const [addr1, setAddr1] = useState(''); // 기본 주소 상태
   const [addr2, setAddr2] = useState(''); // 상세 주소 상태
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(''); // 상세 주소 출력
 
   // 카카오 주소 검색 스크립트 로드
   useEffect(() => {
@@ -62,16 +61,6 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
 
   const handleSubmit = async () => {
     setAddress(subLocation);
-    // console.log('서버로 전송할 주소:', fullAddress);
-
-    // try {
-    //   const response = await axios.post('/seller/products', {
-    //     address: fullAddress,
-    //   });
-    //   console.log('서버 응답:', response.data);
-    // } catch (error) {
-    //   console.error('서버 요청 중 오류 발생:', error);
-    // }
   };
 
   return (
