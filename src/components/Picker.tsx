@@ -1,7 +1,12 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-function Picker() {
+interface PickerProps {
+  selectDate: Dayjs | null;
+  setSelectDate: (value: Dayjs | null) => void;
+}
+
+function Picker({ selectDate, setSelectDate }: PickerProps) {
   return (
     <>
       <DateTimePicker
