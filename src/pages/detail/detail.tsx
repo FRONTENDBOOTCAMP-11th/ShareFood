@@ -10,7 +10,7 @@ import CommentAdd from '../../components/Comment/CommentAdd';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Tag from '../../components/Tag';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
@@ -51,7 +51,7 @@ interface Response {
 }
 
 const Detail = () => {
-  const axios = axiosInstance;
+  const axiosInstance = useAxiosInstance();
   const { _id } = useParams();
   const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ const Detail = () => {
   const postNum: number = Number(_id);
   const { data, refetch } = useQuery({
     queryKey: ['products', _id],
-    queryFn: () => axios.get(`/products/${postNum}`),
+    queryFn: () => axiosInstance.get(`/products/${postNum}`),
     select: (res) => {
       if (res.data.item.seller_id == loginInfo) setIsEditor(true);
       else if (res.data.item.seller_id != loginInfo) setIsEditor(false);
@@ -79,7 +79,7 @@ const Detail = () => {
   const { refetch: reCheckOrder } = useQuery({
     queryKey: ['name', _id],
     queryFn: () => {
-      const response = axios.get(`/orders`).catch(() => {
+      const response = axiosInstance.get(`/orders`).catch(() => {
         console.error('주문하지 않은 사용자');
       });
       return response;
@@ -110,7 +110,7 @@ const Detail = () => {
           },
         ],
       };
-      return await axios.post('/orders', body);
+      return await axiosInstance.post('/orders', body);
     },
     onSuccess: () => {
       refetch();
@@ -140,7 +140,7 @@ const Detail = () => {
           },
         ],
       };
-      return await axios.post('/orders', body);
+      return await axiosInstance.post('/orders', body);
     },
     onSuccess: () => {
       refetch();

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import Button from '../../components/Button';
 import Error from '../../components/Error';
@@ -56,6 +56,7 @@ const SignUp: React.FC = () => {
     }
   }, [confirmPassword, password]);
 
+  const axiosInstance = useAxiosInstance();
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'seller'; // 데이터 타입 지정

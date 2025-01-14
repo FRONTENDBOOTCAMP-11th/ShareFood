@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import emptyHeart from '/images/icons/heart.svg';
 import fullHeart from '/images/icons/full_heart.svg';
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance } from '../hooks/axiosInstance';
+import useAxiosInstance from '../hooks/useAxiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { interestStore } from '../store/detailStore';
@@ -52,7 +52,7 @@ function Total({ data, onRefetch }: TotalProps) {
   const navigate = useNavigate();
 
   // api 접근
-  const axios = axiosInstance;
+  const axiosInstance = useAxiosInstance();
 
   // 관심 추가
   const addInterest = useMutation({
@@ -60,7 +60,7 @@ function Total({ data, onRefetch }: TotalProps) {
       const body = {
         target_id: data.item._id,
       };
-      return await axios.post('/bookmarks/product', body);
+      return await axiosInstance.post('/bookmarks/product', body);
     },
     onSuccess: () => {
       onRefetch();
@@ -82,7 +82,7 @@ function Total({ data, onRefetch }: TotalProps) {
   const deleteInterest = useMutation({
     mutationFn: () => {
       // console.log('삭제할 관심 번호 : ', data.item.myBookmarkId);
-      return axios.delete(`/bookmarks/${data.item.myBookmarkId}`);
+      return axiosInstance.delete(`/bookmarks/${data.item.myBookmarkId}`);
     },
     onSuccess: () => {
       onRefetch();

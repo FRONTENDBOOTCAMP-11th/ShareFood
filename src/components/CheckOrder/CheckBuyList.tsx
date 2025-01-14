@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import Tag from '../Tag';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import CheckBuyListItem from './CheckBuyListItem';
 import Button from '../Button';
 import image from '/images/chef/cryingChef.svg';
@@ -33,11 +33,11 @@ interface Order {
 }
 
 function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
-  const axios = axiosInstance;
+  const axiosInstance = useAxiosInstance();
   const { data: checkBuy } = useQuery({
     queryKey: ['buyList', data.item._id],
     queryFn: () => {
-      return axios.get(`/seller/products/${data.item._id}`);
+      return axiosInstance.get(`/seller/products/${data.item._id}`);
     },
     select: (res) => res?.data?.item?.orders,
     staleTime: 1000 * 10,

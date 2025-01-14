@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 export default function Footer() {
   //const [userId, setUserId] = useState('');
@@ -6,7 +7,7 @@ export default function Footer() {
   const location = useLocation();
 
   // 사용자 데이터 가져오기
-  const userId = localStorage.getItem('_id') || sessionStorage.getItem('_id');
+  const { user } = useAuthStore();
 
   const footerItems = [
     {
@@ -25,7 +26,7 @@ export default function Footer() {
       label: '마이페이지',
       iconSrc: '/images/icons/myPage.svg',
       activeIconSrc: '/images/icons/myPage-active.svg',
-      route: `/mypage/${userId}`,
+      route: `/mypage/${user?._id}`,
     },
   ];
 

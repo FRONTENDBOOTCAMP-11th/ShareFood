@@ -1,9 +1,17 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
-const KakaoAddressSearch: React.FC = () => {
+interface AddressProps {
+  subLocation: string;
+  setSubLocation: (addres: string) => void;
+}
+
+const KakaoAddressSearch: React.FC<AddressProps> = ({
+  subLocation,
+  setSubLocation,
+}) => {
   const [addr1, setAddr1] = useState(''); // 기본 주소 상태
   const [addr2, setAddr2] = useState(''); // 상세 주소 상태
+  const [address, setAddress] = useState(''); // 상세 주소 출력
 
   // 카카오 주소 검색 스크립트 로드
   useEffect(() => {
@@ -11,6 +19,7 @@ const KakaoAddressSearch: React.FC = () => {
     script.src =
       '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
     script.async = true;
+
     document.head.appendChild(script);
   }, []);
 
@@ -47,18 +56,11 @@ const KakaoAddressSearch: React.FC = () => {
     }).open();
   };
 
+  // 상세 주소가 입력되면 fullAddress 상태 업데이트
   const handleSubmit = async () => {
     const fullAddress = `${addr1} ${addr2}`;
-    console.log('서버로 전송할 주소:', fullAddress);
-
-    try {
-      const response = await axios.post('/seller/products', {
-        address: fullAddress,
-      });
-      console.log('서버 응답:', response.data);
-    } catch (error) {
-      console.error('서버 요청 중 오류 발생:', error);
-    }
+    setSubLocation(fullAddress);
+    setAddress(subLocation);
   };
 
   return (
@@ -101,6 +103,7 @@ const KakaoAddressSearch: React.FC = () => {
           확인
         </button>
       </div>
+      <p className="subLocation">{address}</p>
     </div>
   );
 };

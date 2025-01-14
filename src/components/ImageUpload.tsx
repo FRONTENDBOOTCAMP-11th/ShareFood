@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import photo from '/images/photo.svg';
-import { axiosInstance } from '../hooks/axiosInstance';
+import useAxiosInstance from '../hooks/useAxiosInstance';
 
 function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
   const [showImages, setShowImages] = useState<string[]>([]);
@@ -35,13 +35,16 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
     }
   };
 
-  const throttle = (func: (...args: any[]) => void, ms: number) => {
+  const throttle = <T extends (e: React.MouseEvent<HTMLDivElement>) => void>(
+    func: T,
+    ms: number
+  ) => {
     let throttled = false;
-    return (...args: any[]) => {
+    return (e: React.MouseEvent<HTMLDivElement>) => {
       if (!throttled) {
         throttled = true;
         setTimeout(() => {
-          func(...args);
+          func(e);
           throttled = false;
         }, ms);
       }
@@ -50,6 +53,7 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
 
   const delay = 50;
   const onThrottleDragMove = throttle(onDragMove, delay);
+  const axiosInstance = useAxiosInstance();
 
   // 이미지 상대경로 저장
   const handleAddImages = async (
