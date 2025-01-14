@@ -19,7 +19,12 @@ function Picker({ selectDate, setSelectDate }: PickerProps) {
         slotProps={{
           textField: {
             sx: {
+              '& .MuiInputBase-input': {
+                fontSize: '13px',
+                fontFamily: 'pretendard',
+              },
               '& .MuiOutlinedInput-root': {
+                height: '50px',
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                   borderColor: '#4CAF50', // 포커스 시 테두리 색상
                   borderWidth: '2px',
@@ -32,6 +37,7 @@ function Picker({ selectDate, setSelectDate }: PickerProps) {
                 color: '#4CAF50', // 아이콘 색상
               },
               '& .MuiInputLabel-root': {
+                fontSize: '13px',
                 color: '#757575', // 기본 라벨 색상
                 '&.Mui-focused': {
                   color: '#4CAF50', // 포커스 시 라벨 색상
