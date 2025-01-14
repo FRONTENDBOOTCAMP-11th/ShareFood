@@ -58,6 +58,8 @@ const Write = () => {
 
   const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
+  const [subLocation, setSubLocation] = useState('');
+
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
   );
@@ -109,6 +111,7 @@ const Write = () => {
     // 전송 값이 input이 아닌 경우 추가
     data.quantity = num;
     data.extra.location = location;
+    data.extra.subLocation = subLocation;
     data.extra.type = productsType;
 
     // 가격 정수 형태로 변경 후 전송
@@ -272,8 +275,11 @@ const Write = () => {
 
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">공구 상세 위치 </p>
-                  <KakaoAddressSearch />
+                  <p className="font-semibold w-[60px]">상세 위치 </p>
+                  <KakaoAddressSearch
+                    subLocation={subLocation}
+                    setSubLocation={(address) => setSubLocation(address)}
+                  />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
@@ -395,8 +401,11 @@ const Write = () => {
 
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">판매 상세 위치 </p>
-                  <KakaoAddressSearch />
+                  <p className="font-semibold">상세 위치 </p>
+                  <KakaoAddressSearch
+                    subLocation={subLocation}
+                    setSubLocation={(address) => setSubLocation(address)}
+                  />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
