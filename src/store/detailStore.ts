@@ -13,7 +13,7 @@ interface viewPaymentStore {
 }
 
 interface setIsBuyStore {
-  isBuy: boolean;
+  isBuy: boolean | null;
   setIsBuy: (isBuy: boolean) => void;
 }
 
@@ -40,7 +40,7 @@ export const viewPaymentStore = create<viewPaymentStore>((set) => ({
 }));
 
 export const isBuyStore = create<setIsBuyStore>((set) => ({
-  isBuy: false,
+  isBuy: null,
   setIsBuy: (isBuy: boolean) => set({ isBuy }),
 }));
 
