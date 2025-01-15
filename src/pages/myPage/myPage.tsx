@@ -17,6 +17,7 @@ import Button from '../../components/Button';
 import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 import Loading from '../../components/Loading';
 import useAxiosInstance from '../../hooks/useAxiosInstance';
+import { useAuthStore } from '../../store/authStore';
 
 const MyPage = () => {
   const [showSoldOut, setShowSoldOut] = useState(false);
@@ -46,21 +47,11 @@ const MyPage = () => {
   // 거래 신청 글 조회
   const { data: myBuyList } = useGetBuyList(showSoldOut);
 
-  if (myBuyList) console.log(myBuyList);
+  const { resetUser } = useAuthStore();
 
   // 로그아웃
   const handleLogout = () => {
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('_id');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('name');
-    localStorage.removeItem('profiled');
-    
-    sessionStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('_id');
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('name');
-    sessionStorage.removeItem('profiled');
+    resetUser();
 
     // 로그아웃 후 리다이렉트
     window.location.href = '/';
@@ -91,7 +82,7 @@ const MyPage = () => {
         </div>
       </Layout>
       <Layout>
-        <div className="flex gap-3 border-b">
+        <div className="flex gap-3 border-b mb-4">
           {tabs.map((tab) => (
             <button
               key={tab.key}
