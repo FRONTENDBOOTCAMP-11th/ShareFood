@@ -94,7 +94,7 @@ const Detail = () => {
       return res?.data;
     },
     enabled: !!data?.item?.name,
-    staleTime: 1000 * 10,
+    // staleTime: 1000 * 10,
   });
 
   // 공구 하기 기능
@@ -178,7 +178,6 @@ const Detail = () => {
   const handleModal = (contentType: string) => {
     setContent(contentType);
     setViewPayment(true);
-    console.log(viewPayment);
   };
 
   if (!data) {
