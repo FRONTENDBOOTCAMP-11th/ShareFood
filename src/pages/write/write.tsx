@@ -202,7 +202,7 @@ const Write = () => {
                 path: image,
                 name: image.split('/').pop() || '',
               }));
-              setUploadImg(formattedImages);
+              setUploadImg((prevState) => [...prevState, ...formattedImages]);
             }}
           />
           <TypeSelector
