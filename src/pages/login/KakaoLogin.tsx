@@ -7,12 +7,12 @@ const KakaoLogin: React.FC = () => {
         </h1>
         <section className="flex flex-col gap-1 mt-[30px]">
           <input
-            className="border-b h-[43px]"
+            className="border-b h-[43px] focus:outline-none"
             type="text"
             placeholder="카카오메일 아이디, 이메일, 전화번호"
           />
           <input
-            className="border-b h-[43px]"
+            className="border-b h-[43px] focus:outline-none"
             type="password"
             placeholder="비밀번호"
           />
