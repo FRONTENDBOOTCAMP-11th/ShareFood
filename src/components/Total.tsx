@@ -142,6 +142,7 @@ function Total({ data, onRefetch }: TotalProps) {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
     </div>
   );

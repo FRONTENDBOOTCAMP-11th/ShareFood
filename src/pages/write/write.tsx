@@ -35,6 +35,9 @@ interface FormData {
     type: string; // 판매글 타입
   };
 }
+interface AxiosErrorResponse {
+  errors: { msg: string }[];
+}
 
 const Write = () => {
   const {
@@ -90,9 +93,10 @@ const Write = () => {
       });
     },
     onError: (err) => {
-      const axiosError = err as AxiosError;
+      const axiosError = err as AxiosError<AxiosErrorResponse>;
       if (axiosError.response) {
         console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+        toast.error(`${axiosError.response.data.errors[0].msg}`);
       } else {
         console.error('Unexpected Error:', err); // 기타 에러
       }
@@ -174,6 +178,7 @@ const Write = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
       <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
         <Header>

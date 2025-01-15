@@ -287,6 +287,7 @@ const SignUp: React.FC = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
     </>
   );
