@@ -52,7 +52,7 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
     },
     onSuccess: () => {
       onRefetch();
-      toast.success('댓글이 추가 되었습니다.');
+      toast.success('댓글이 등록 되었습니다.');
       resetField('content');
     },
     onError: (err: CustomErr) => {
@@ -76,9 +76,14 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
           placeholder="댓글을 입력하세요."
           className="border-b-2 w-full pl-1.5 py-1.5 text-sm outline-none"
           {...register('content', {
+            required: '내용을 입력해 주세요.',
             maxLength: {
               value: 50,
               message: '50자까지 입력할 수 있습니다.',
+            },
+            minLength: {
+              value: 2,
+              message: '2글자 이상 입력해 주세요.',
             },
           })}
         />
