@@ -1,29 +1,31 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Button from '../../components/Button.tsx';
-
 import whitechef from '/images/chef/whiteChef.svg';
+import { useAuthStore } from '../../store/authStore.ts';
 
 const SplashStart: React.FC = () => {
 
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const handleClick = () => {
-    navigate('/login'); // 로그인 페이지로 이동
+    // user 여부 확인(토큰 여부 확인과 같음)
+    if (user) {
+      navigate('/main'); // 메인 페이지로 이동
+    } else {
+      navigate('/login'); // 로그인 페이지로 이동
+    }
   };
 
 
   return (
     <div
-      className='flex flex-col items-center justify-center px-4 bg-main'
-      style={{
-        height: '100vh', // 화면 전체 높이
-      }}
+      className='flex flex-col items-center justify-center px-4 bg-main h-screen'
     >
       <div className='flex flex-col items-center'>
         <img
-          src={ whitechef }
+          src={whitechef}
           alt='셰푸 아이콘'
           className='w-[80px] h-[80px] mx-auto mb-4'
         />
@@ -40,7 +42,7 @@ const SplashStart: React.FC = () => {
             bg='white'
             color='black'
             border='border-none'
-            onClick={ handleClick }
+            onClick={handleClick}
           >
             시작하기
           </Button>
