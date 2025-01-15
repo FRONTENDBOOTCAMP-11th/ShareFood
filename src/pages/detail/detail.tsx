@@ -26,6 +26,7 @@ import {
 } from '../../store/detailStore';
 import Loading from '../../components/Loading';
 import ImageSlide from '../../components/ImageSlide';
+import { useAuthStore } from '../../store/authStore';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -56,11 +57,8 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const login = localStorage.getItem('user') || sessionStorage.getItem('user');
-
-  const loginInfo = JSON.parse(login).state.user._id;
-  // const loginInfo =
-  //   localStorage.getItem('_id') || sessionStorage.getItem('_id');
+  const { user } = useAuthStore();
+  const loginInfo = user?._id;
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Modal from '../../components/Modal';
 import basicImage from '/images/chef/drawingChef.svg';
 import moreImage from '/images/icons/more.svg';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import {
@@ -10,6 +10,7 @@ import {
   RefetchQueryFilters,
   QueryObserverResult,
 } from '@tanstack/react-query';
+import { useAuthStore } from '../../store/authStore';
 
 interface CommentItemProps {
   _id: number;
@@ -32,15 +33,15 @@ function CommentItem({
   image,
   refetch,
 }: CommentItemProps) {
-  const axios = axiosInstance;
+  const axios = useAxiosInstance();
 
   // 사용자 로그인 정보
-  const login = localStorage.getItem('user') || sessionStorage.getItem('user');
-
-  const loginInfo = JSON.parse(login).state.user._id;
+  const { user } = useAuthStore();
+  const loginInfo = user?._id;
 
   const [isEditor, setIsEditor] = useState(false);
   const [viewPayment, setViewPayment] = useState(false);
+  const [isModify, setIsModify] = useState(false);
 
   useEffect(() => {
     if (_id == loginInfo) setIsEditor(true);
@@ -49,13 +50,34 @@ function CommentItem({
   const delComment = useMutation({
     mutationFn: () => axios.delete(`replies/${attach_id}`),
     onSuccess: () => {
-      toast.success('관심이 삭제 되었습니다.');
+      toast.success('댓글이 삭제 되었습니다.');
       refetch();
     },
   });
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        modifyEnd();
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, [modalRef]);
+
   const handleModal = () => {
     setViewPayment(true);
+  };
+
+  const modifyAttach = () => {
+    setIsModify(true);
+  };
+
+  const modifyEnd = () => {
+    setIsModify(false);
+    setViewPayment(false);
   };
 
   const closeModal = () => {
@@ -65,45 +87,78 @@ function CommentItem({
   // 날짜 데이터 전처리
   const date = createdAt.slice(5, 10);
 
-  return (
-    <div>
-      <div className="flex leading-7">
-        <img
-          src={image ? `https://11.fesp.shop/${image}` : basicImage}
-          alt="프로필 사진"
-          className="max-w-[29px] max-h-[29px] rounded-full"
-        />
-        <p className="ml-2 font-semibold text-[14px]">{name}</p>
-        <p className="ml-auto text-font2">{date}</p>
-      </div>
-      <div className="flex">
-        <p className="text-[13px] ml-[37px] mt-[6px] grow">{content}</p>
-        {isEditor && (
-          <button className="mr-3 ml-3" onClick={() => handleModal()}>
-            <img
-              src={moreImage}
-              alt="더 보기 이미지"
-              className="min-w-[12px] min-h-[3px]"
-            />
+  if (isModify) {
+    return (
+      <div ref={modalRef}>
+        <div className="flex leading-7">
+          <img
+            src={image ? `https://11.fesp.shop/${image}` : basicImage}
+            alt="프로필 사진"
+            className="max-w-[29px] max-h-[29px] rounded-full"
+          />
+          <p className="ml-2 font-semibold text-[14px]">{name}</p>
+          <p className="ml-auto text-font2">{date}</p>
+        </div>
+        <div className="flex">
+          <input
+            type="text"
+            className="text-[13px] ml-[30px] mt-[6px] grow border rounded-[5px] p-1"
+            defaultValue={content}
+            autoFocus
+          />
+          {/* <p className="text-[13px] ml-[37px] mt-[6px] grow">{content}</p> */}
+          <button className="ml-3 mr-1 mt-[6px] float-right whitespace-nowrap text-main text-xs border py-1 px-3 rounded-[5px]">
+            수정
           </button>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <div className="flex leading-7">
+          <img
+            src={image ? `https://11.fesp.shop/${image}` : basicImage}
+            alt="프로필 사진"
+            className="max-w-[29px] max-h-[29px] rounded-full"
+          />
+          <p className="ml-2 font-semibold text-[14px]">{name}</p>
+          <p className="ml-auto text-font2">{date}</p>
+        </div>
+        <div className="flex">
+          <p className="text-[13px] ml-[37px] mt-[6px] grow">{content}</p>
+          {isEditor && (
+            <button className="mr-3 ml-3" onClick={() => handleModal()}>
+              <img
+                src={moreImage}
+                alt="더 보기 이미지"
+                className="min-w-[12px] min-h-[3px]"
+              />
+            </button>
+          )}
+        </div>
+        {viewPayment && (
+          <Modal setViewPayment={setViewPayment}>
+            <br />
+            <br />
+            <div className="flex flex-col">
+              <button
+                className="text-error"
+                onClick={() => delComment.mutate()}
+              >
+                삭제
+              </button>
+              <hr className="my-4" />
+              <button onClick={() => modifyAttach()}>수정</button>
+              <hr className="my-4" />
+              <button onClick={() => closeModal()}>취소</button>
+            </div>
+            <br />
+          </Modal>
         )}
       </div>
-      {viewPayment && (
-        <Modal setViewPayment={setViewPayment}>
-          <br />
-          <br />
-          <div className="flex flex-col">
-            <button className="text-error" onClick={() => delComment.mutate()}>
-              삭제
-            </button>
-            <hr className="my-4" />
-            <button onClick={() => closeModal()}>취소</button>
-          </div>
-          <br />
-        </Modal>
-      )}
-    </div>
-  );
+    );
+  }
 }
 
 export default CommentItem;
