@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Button from '../../components/Button.tsx';
-
 import whitechef from '/images/chef/whiteChef.svg';
 import { useAuthStore } from '../../store/authStore.ts';
 
@@ -11,20 +9,16 @@ const SplashStart: React.FC = () => {
   const { user } = useAuthStore();
 
   const handleClick = () => {
+    // user 여부 확인(토큰 여부 확인과 같음)
     if (user) {
-      navigate('/main');
+      navigate('/main'); // 메인 페이지로 이동
     } else {
       navigate('/login'); // 로그인 페이지로 이동
     }
   };
 
   return (
-    <div
-      className="flex flex-col items-center justify-center px-4 bg-main"
-      style={{
-        height: '100vh', // 화면 전체 높이
-      }}
-    >
+    <div className="flex flex-col items-center justify-center px-4 bg-main h-screen">
       <div className="flex flex-col items-center">
         <img
           src={whitechef}
