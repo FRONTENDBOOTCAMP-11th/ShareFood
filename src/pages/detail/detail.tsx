@@ -26,6 +26,7 @@ import {
 } from '../../store/detailStore';
 import Loading from '../../components/Loading';
 import ImageSlide from '../../components/ImageSlide';
+import { useAuthStore } from '../../store/authStore';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -56,8 +57,8 @@ const Detail = () => {
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const loginInfo =
-    localStorage.getItem('_id') || sessionStorage.getItem('_id');
+  const { user } = useAuthStore();
+  const loginInfo = user?._id;
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
@@ -93,7 +94,7 @@ const Detail = () => {
       return res?.data;
     },
     enabled: !!data?.item?.name,
-    staleTime: 1000 * 10,
+    // staleTime: 1000 * 10,
   });
 
   // 공구 하기 기능
@@ -177,7 +178,6 @@ const Detail = () => {
   const handleModal = (contentType: string) => {
     setContent(contentType);
     setViewPayment(true);
-    console.log(viewPayment);
   };
 
   if (!data) {
@@ -290,7 +290,7 @@ const Detail = () => {
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
-          <Comment replies={data?.item.replies} />
+          <Comment replies={data?.item.replies} refetch={refetch} />
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (
