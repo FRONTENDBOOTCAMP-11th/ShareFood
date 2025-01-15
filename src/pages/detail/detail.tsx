@@ -183,7 +183,11 @@ const Detail = () => {
   if (!data) {
     refetch();
     reCheckOrder();
-    return <Loading />;
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
   }
 
   const productType: string = data?.item.extra.type;

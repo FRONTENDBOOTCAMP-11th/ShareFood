@@ -185,7 +185,11 @@ const Main = () => {
                 imageScr={products?.mainImages[0]?.path || ''}
               />
             ))}
-            {isLoading && <Loading />}
+            {isLoading && (
+              <div className='pt-3'>
+                <Loading />
+              </div>
+            )}
             {/* 더보기 버튼 */}
             {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
               <button

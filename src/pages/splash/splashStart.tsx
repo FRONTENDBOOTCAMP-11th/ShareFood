@@ -5,7 +5,6 @@ import whitechef from '/images/chef/whiteChef.svg';
 import { useAuthStore } from '../../store/authStore.ts';
 
 const SplashStart: React.FC = () => {
-
   const navigate = useNavigate();
   const { user } = useAuthStore();
 
@@ -18,30 +17,27 @@ const SplashStart: React.FC = () => {
     }
   };
 
-
   return (
-    <div
-      className='flex flex-col items-center justify-center px-4 bg-main h-screen'
-    >
-      <div className='flex flex-col items-center'>
+    <div className="flex flex-col items-center justify-center px-4 bg-main h-screen">
+      <div className="flex flex-col items-center">
         <img
           src={whitechef}
-          alt='셰푸 아이콘'
-          className='w-[80px] h-[80px] mx-auto mb-4'
+          alt="셰푸 아이콘"
+          className="w-[80px] h-[80px] mx-auto mb-4"
         />
-        <h2 className='text-white text-lg font-normal font-BMJUA'>
+        <h2 className="text-white text-lg font-normal font-BMJUA">
           우리동네 Share Food
         </h2>
-        <h1 className='text-white text-3xl font-BMJUA mt-2'>셰푸</h1>
+        <h1 className="text-white text-3xl font-BMJUA mt-2">셰푸</h1>
 
-        <div className='mt-[60px]'>
+        <div className="mt-[60px]">
           <Button
-            text='시작하기'
-            width='270px'
-            height='40px'
-            bg='white'
-            color='black'
-            border='border-none'
+            text="시작하기"
+            width="270px"
+            height="40px"
+            bg="white"
+            color="black"
+            border="border-none"
             onClick={handleClick}
           >
             시작하기
