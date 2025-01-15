@@ -94,6 +94,10 @@ const Login: React.FC = () => {
     login.mutate(data);
   };
 
+  const kakaoLogin = () => {
+    navigate('/KakaoLogin');
+  };
+
   return (
     <>
       <div className="flex flex-col px-4 justify-center bg-main min-h-screen">
@@ -140,7 +144,13 @@ const Login: React.FC = () => {
             >
               로그인
             </Button>
-            <Button height="40px" text="text-sm" bg="kakao" color="kakao">
+            <Button
+              height="40px"
+              text="text-sm"
+              bg="kakao"
+              color="kakao"
+              onClick={kakaoLogin}
+            >
               <div className="flex justify-center items-center gap-2">
                 <img src="/images/icons/kakao.svg" />
                 <p>카카오계정으로 로그인</p>
