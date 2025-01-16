@@ -15,7 +15,7 @@ const KakaoRedirect = () => {
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get('code');
-    const active = 'inactive';
+    const active = 'active';
 
     const kakaoLogin = async () => {
       try {
