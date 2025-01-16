@@ -19,6 +19,7 @@ interface UserInfo {
   name: string; // 닉네임
   phone: string; // 전화번호
   type?: string; // data 타입 => seller로 지정
+  image: string;
 }
 
 const SignUp: React.FC = () => {
@@ -60,6 +61,7 @@ const SignUp: React.FC = () => {
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'seller'; // 데이터 타입 지정
+      userInfo.image = '/files/final07/default4.png';
 
       // API 호출
       const res = await axiosInstance.post('/users', userInfo);
