@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import {
   useGetBuyList,
@@ -6,15 +8,18 @@ import {
   useGetMyList,
 } from '../../hooks/useGetList';
 import useAxiosInstance from '../../hooks/useAxiosInstance';
+import { useGetNotification } from '../../hooks/useGetNotification';
+
 import { useAuthStore } from '../../store/authStore';
 import { useMyListStateStore } from '../../store/listStateStore';
+
+import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 
 import Layout from '../../components/Layout';
 import List from '../../components/List';
 import Button from '../../components/Button';
-
-import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 import Loading from '../../components/Loading';
+import whiteChef from '/images/chef/whiteChef.svg';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -43,6 +48,27 @@ const MyPage = () => {
   const { data: myBuyList } = useGetBuyList(false);
 
   const { resetUser } = useAuthStore();
+
+  // 알림 불러오기
+  const [isNoti, setIsNoti] = useState<number[]>([]);
+  const { data: notification } = useGetNotification();
+  useEffect(() => {
+    if (notification) {
+      console.log(notification);
+      notification.forEach((key) => {
+        setIsNoti((prev) => {
+          if (!prev.includes(key.extra.productId)) {
+            return [...prev, key.extra.productId];
+          }
+          return prev;
+        });
+      });
+    }
+  }, [notification]);
+
+  useEffect(() => {
+    console.log(isNoti);
+  }, [isNoti]);
 
   // 로그아웃
   const handleLogout = () => {
@@ -102,24 +128,33 @@ const MyPage = () => {
           <div className="flex flex-col gap-[10px]">
             {myList ? (
               myList.item.map((products: Product, index: number) => (
-                <List
-                  id={products._id}
-                  key={index}
-                  title={products.name}
-                  type={products.extra.type}
-                  total={products.quantity}
-                  remain={products.buyQuantity}
-                  location={products.extra.subLocation}
-                  due={products.extra.meetingTime}
-                  price={products.price}
-                  date={products.createdAt}
-                  like={products.bookmarks}
-                  comments={products.replies}
-                  imageScr={products?.mainImages[0]?.path || ''}
-                />
+                <div className="relative" key={index}>
+                  <List
+                    id={products._id}
+                    title={products.name}
+                    type={products.extra.type}
+                    total={products.quantity}
+                    remain={products.buyQuantity}
+                    location={products.extra.subLocation}
+                    due={products.extra.meetingTime}
+                    price={products.price}
+                    date={products.createdAt}
+                    like={products.bookmarks}
+                    comments={products.replies}
+                    imageScr={products?.mainImages[0]?.path || ''}
+                  />
+                  {isNoti.includes(products._id) && (
+                    <div className="absolute h-[30px] bg-sub rounded-full bottom-[7px] right-[7px] p-1 flex gap-[5px] items-center px-2">
+                      <img src={whiteChef} className="w-[17px]" />
+                      <span className="text-[13px] text-white font-medium">
+                        신청자가 있어요!
+                      </span>
+                    </div>
+                  )}
+                </div>
               ))
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>등록한 상품이 없습니다.</div>
             )}
           </div>
         )}
@@ -143,7 +178,7 @@ const MyPage = () => {
                 ),
               )
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>좋아요한 상품이 없습니다.</div>
             )}
           </div>
         )}
@@ -163,7 +198,7 @@ const MyPage = () => {
                 />
               ))
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>거래 신청 상품이 없습니다.</div>
             )}
           </div>
         )}

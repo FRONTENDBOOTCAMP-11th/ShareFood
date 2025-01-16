@@ -122,8 +122,7 @@ const Detail = () => {
           target_id: data.item.seller_id,
           content: `${data.item.name}의 거래를 원해요!`,
           extra: {
-            lecture_id: loginInfo,
-            url: `/detail/${data.item._id}`,
+            productId: data.item._id,
           },
         });
         refetch();

@@ -12,7 +12,7 @@ export const useRegisterNotification = () => {
     }: {
       target_id: number;
       content: string;
-      extra: { lecture_id: number | undefined; url: string };
+      extra: { productId: number };
     }) => {
       const response = await axiosInstance.post('/notifications', {
         target_id,
