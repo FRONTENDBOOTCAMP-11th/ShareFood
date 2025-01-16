@@ -121,6 +121,7 @@ const Detail = () => {
         registerNotification({
           target_id: data.item.seller_id,
           content: `${data.item.name}의 거래를 원해요!`,
+          type: "product",
           extra: {
             productId: data.item._id,
           },

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
 import { useGetList } from '../../hooks/useGetList';
+import { useGetNotification } from '../../hooks/useGetNotification';
 
 //store
 import { useFilterStateStore } from '../../store/listStateStore';
@@ -15,6 +16,7 @@ import Select from '../../components/Select';
 import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
 import { NoData } from '../../components/NoData';
+import Button from '../../components/Button';
 
 // constants
 import { BANNERS, BANNERS_LINKS } from '../../constants/banner';
@@ -25,11 +27,15 @@ import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 import Loading from '../../components/Loading';
-import { useGetNotification } from '../../hooks/useGetNotification';
+import Modal from '../../components/Modal';
+import { viewPaymentStore } from '../../store/detailStore';
+import { useAuthStore } from '../../store/authStore';
 
 const Main = () => {
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_BASE_URL;
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuthStore();
   const prevFilters = useRef({
     soldout: true,
     type: 'buy',
@@ -55,8 +61,10 @@ const Main = () => {
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
 
   // 알림 불러오기
-  const { data: noti } = useGetNotification();
-  if (noti) console.log(noti);
+  const { data: notification } = useGetNotification();
+  if (notification) console.log(notification);
+  // 모달 나타나는 여부, true일 경우 출력
+  const { viewPayment, setViewPayment } = viewPaymentStore();
 
   // 게시글 추가하기
   useEffect(() => {
@@ -114,21 +122,36 @@ const Main = () => {
     (_, index) => () => BannerClick(index),
   );
 
+  // 알림 모달 오픈
+  const handleModal = () => {
+    setViewPayment(true);
+  };
+
   return (
     <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
       {/* 헤더 */}
       <Header>
-        <div className="flex items-center">
-          <img src={greenchef} alt="Chef Icon" className="w-6 h-6" />
-          <h1 className="text-5 font-bold ml-2 text-font1">Share Food</h1>
-        </div>
+        <div className="flex justify-between w-full">
+          <div className='relative'>
+            <img
+              src={`${apiUrl}${user?.profile}`}
+              className="w-[30px] rounded-full"
+              onClick={handleModal}
+            />
+            {notification && (
+              <div className="w-[8px] h-[8px] rounded-full bg-sub absolute top-0 right-0"></div>
+            )}
+          </div>
 
-        <button
-          onClick={() => navigate('/search')}
-          className="fixed right-[30px]"
-        >
-          <img src={search} alt="Search Icon" className="w-5 h-5" />
-        </button>
+          <div className="flex items-center">
+            <img src={greenchef} alt="Chef Icon" className="w-6 h-6" />
+            <h1 className="text-5 font-bold ml-2 text-font1">Share Food</h1>
+          </div>
+
+          <button onClick={() => navigate('/search')}>
+            <img src={search} alt="Search Icon" className="w-[24px] h-[24px]" />
+          </button>
+        </div>
       </Header>
 
       {/* 이미지 슬라이드 */}
@@ -213,6 +236,36 @@ const Main = () => {
           <NoData />
         )}
       </div>
+      {viewPayment && (
+        <Modal setViewPayment={setViewPayment}>
+          <h2 className='text-[22px] font-bold text-main'>알림 목록</h2>
+          <div className="flex flex-col gap-4 py-5 divide-y">
+            {notification?.map((key) => (
+              <div
+                className="flex justify-between items-center pt-2"
+                key={key._id}
+              >
+                <p className="text-font1 font-semibold">
+                  {key.user.name}님이 {key.content}
+                </p>
+                <Button
+                  bg="main"
+                  color="white"
+                  height="40px"
+                  width="100px"
+                  text="text-sm"
+                  onClick={() => {
+                    navigate(`/detail/${key.extra.productId}`);
+                    setViewPayment(false);
+                  }}
+                >
+                  확인하기
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

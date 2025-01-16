@@ -54,7 +54,6 @@ const MyPage = () => {
   const { data: notification } = useGetNotification();
   useEffect(() => {
     if (notification) {
-      console.log(notification);
       notification.forEach((key) => {
         setIsNoti((prev) => {
           if (!prev.includes(key.extra.productId)) {
@@ -65,10 +64,6 @@ const MyPage = () => {
       });
     }
   }, [notification]);
-
-  useEffect(() => {
-    console.log(isNoti);
-  }, [isNoti]);
 
   // 로그아웃
   const handleLogout = () => {
@@ -144,7 +139,7 @@ const MyPage = () => {
                     imageScr={products?.mainImages[0]?.path || ''}
                   />
                   {isNoti.includes(products._id) && (
-                    <div className="absolute h-[30px] bg-sub rounded-full bottom-[7px] right-[7px] p-1 flex gap-[5px] items-center px-2">
+                    <div className="absolute h-[30px] bg-sub rounded-full bottom-[7px] right-[16px] p-1 flex gap-[5px] items-center px-2 shadow-custom">
                       <img src={whiteChef} className="w-[17px]" />
                       <span className="text-[13px] text-white font-medium">
                         신청자가 있어요!

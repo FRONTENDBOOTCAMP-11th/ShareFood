@@ -7,15 +7,18 @@ export const useRegisterNotification = () => {
   return useMutation({
     mutationFn: async ({
       target_id,
+      type,
       content,
       extra,
     }: {
+      type: string;
       target_id: number;
       content: string;
       extra: { productId: number };
     }) => {
       const response = await axiosInstance.post('/notifications', {
         target_id,
+        type,
         content,
         extra,
       });
