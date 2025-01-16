@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import { useGetNotification } from '../../hooks/useGetNotification';
 
 export default function Footer() {
   //const [userId, setUserId] = useState('');
@@ -8,6 +9,8 @@ export default function Footer() {
 
   // 사용자 데이터 가져오기
   const { user } = useAuthStore();
+
+  const { data: notification } = useGetNotification();
 
   const footerItems = [
     {
@@ -30,7 +33,9 @@ export default function Footer() {
     },
   ];
 
-  return ['/', '/login', '/sign-up'].includes(location.pathname) ? (
+  return ['/', '/login', '/sign-up', '/users/login/kakao'].includes(
+    location.pathname,
+  ) ? (
     <></>
   ) : (
     <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 max-w-md w-full bg-white h-[86px] flex justify-around items-center px-4 z-10 rounded-tl-[10px] rounded-tr-[10px] shadow-custom">
@@ -38,7 +43,7 @@ export default function Footer() {
         <button
           key={index}
           onClick={() => navigate(item.route)} // 경로 이동
-          className="flex flex-col items-center text-sm w-[61px]"
+          className="flex flex-col items-center text-sm w-[61px] relative"
         >
           <img
             src={
@@ -59,6 +64,9 @@ export default function Footer() {
           >
             {item.label}
           </span>
+          {notification && item.label === '마이페이지' && location.pathname !== `/mypage/${user?._id}` && (
+            <div className="absolute top-[-5px] right-[10px] bg-sub w-[7px] h-[7px] rounded-full"></div>
+          )}
         </button>
       ))}
     </footer>
