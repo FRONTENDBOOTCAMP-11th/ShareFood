@@ -61,7 +61,7 @@ function useAxiosInstance() {
         config.headers.Authorization = `Bearer ${ accessToken }`;
         return axios(config);
       }else{ // 로그인 안한 경우
-        navigateLogin();
+        //navigateLogin();
       }
     }
     return Promise.reject(error);

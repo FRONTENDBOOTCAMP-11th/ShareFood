@@ -138,7 +138,7 @@ const Main = () => {
               className="w-[30px] rounded-full"
               onClick={handleModal}
             />
-            {notification && (
+            {notification && notification?.length > 0 && (
               <div className="w-[8px] h-[8px] rounded-full bg-sub absolute top-0 right-0"></div>
             )}
           </div>
