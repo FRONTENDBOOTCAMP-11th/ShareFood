@@ -51,7 +51,7 @@ const Login: React.FC = () => {
         {
           _id: user._id,
           name: user.name,
-          profile: user.image ? user.image : undefined,
+          profile: user.image,
           accessToken: user.token.accessToken,
           refreshToken: user.token.refreshToken,
         },
@@ -94,6 +94,7 @@ const Login: React.FC = () => {
     login.mutate(data);
   };
 
+  // 카카오 로그인
   const restAPI = import.meta.env.VITE_REST_API_KEY;
   const redirectURI = import.meta.env.VITE_REDIRECT_URI;
 
