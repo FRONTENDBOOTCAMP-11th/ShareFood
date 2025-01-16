@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -71,31 +71,41 @@ const Detail = () => {
       return res.data;
     },
     staleTime: 1000 * 10,
+    retry: 5,
+    retryDelay: 1000,
   });
 
   // 주문 상태 확인
-  const { refetch: reCheckOrder } = useQuery({
+  const { data: order, refetch: reCheckOrder } = useQuery({
     queryKey: ['name', _id],
-    queryFn: () => {
-      const response = axiosInstance.get(`/orders`).catch(() => {
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/orders`).catch(() => {
         console.error('주문하지 않은 사용자');
       });
       return response;
     },
     select: (res) => {
-      let test = false;
-      res?.data.item.forEach((value: OrderItem) => {
-        if (value.products[0]._id == data.item._id) {
-          test = true;
-          setIsBuy(true);
-        }
-      });
-      if (test == false) setIsBuy(false);
-      return res?.data;
+      // let test = false;
+      // res?.data.item.forEach((value: OrderItem) => {
+      //   if (value.products[0]._id == data.item._id) {
+      //     test = true;
+      //     setIsBuy(true);
+      //   }
+      // });
+      // if (test == false) setIsBuy(false);
+      return res?.data.item;
     },
     enabled: !!data?.item?.name,
     // staleTime: 1000 * 10,
   });
+
+  // api에서 undefined를 반환할 때 재요청
+  useEffect(() => {
+    if (!data) {
+      const timer = setTimeout(() => refetch(), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // 공구 하기 기능
   const addRecruit = useMutation({
@@ -172,20 +182,34 @@ const Detail = () => {
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  // const [content, setContent] = useState<string>();
   const { content, setContent } = contentStore();
 
+  // 주문 상태 파악 및 주문 직후 주문상태 파악 후 버튼 변경을 위한 함수
+  useEffect(() => {
+    if (data) {
+      // data 로딩 시 실행
+      let test = false;
+      order?.forEach((value: OrderItem) => {
+        if (value.products[0]._id == data?.item._id) {
+          test = true;
+          setIsBuy(true);
+        }
+      });
+      if (test == false) setIsBuy(false);
+    }
+  }, [data, order, setIsBuy]);
+
+  // 모달 여부 설정
   const handleModal = (contentType: string) => {
     setContent(contentType);
     setViewPayment(true);
   };
 
   if (!data) {
-    refetch();
-    reCheckOrder();
     return <Loading />;
   }
 
+  // 공구, 판매 구분 및 값 정규 표현식 적용
   const productType: string = data?.item.extra.type;
   const priceTrim =
     data?.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
@@ -194,6 +218,16 @@ const Detail = () => {
   const imageList = data?.item.mainImages.map((value: ImageItem) => {
     return `https://11.fesp.shop` + value.path;
   });
+
+  // 카카오 이미지 가공
+  let profileImage = '';
+  if (data?.item.seller.image != null) {
+    if (data?.item.seller.image.includes('kakao')) {
+      profileImage = data?.item.seller.image;
+    } else {
+      profileImage = `https://11.fesp.shop${data?.item.seller.image}`;
+    }
+  } else profileImage = basicImage;
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
@@ -222,11 +256,7 @@ const Detail = () => {
         <div className="board-author flex items-center">
           <img
             className="w-[38px] h-[38px] rounded-full"
-            src={
-              data?.item.seller.image
-                ? `https://11.fesp.shop${data?.item.seller.image}`
-                : basicImage
-            }
+            src={profileImage}
             alt="기본 이미지"
           />
           <h2 className="grow ml-3 font-medium text-sm">
