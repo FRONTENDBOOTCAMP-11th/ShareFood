@@ -21,6 +21,7 @@ const Picker = forwardRef<HTMLDivElement, PickerProps>(
           slotProps={{
             textField: {
               sx: {
+                width: '380px',
                 '& .MuiInputBase-input': {
                   fontSize: '13px',
                   fontFamily: 'pretendard',
