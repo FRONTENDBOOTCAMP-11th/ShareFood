@@ -112,7 +112,7 @@ const UserInfo = () => {
       };
 
       // 서버에 요청 보내기
-      const result = await axiosInstance.patch(`/users/1`, updatedData);
+      const result = await axiosInstance.patch(`/users/${_id}`, updatedData);
       console.log('수정 완료:', result.data);
       alert('수정이 완료되었습니다.');
       navigate(`/mypage/${_id}`);
