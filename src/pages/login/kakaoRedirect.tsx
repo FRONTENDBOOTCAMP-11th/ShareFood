@@ -66,9 +66,7 @@ const KakaoRedirect = () => {
           <div className="flex flex-col items-center">
             <img className="size-[100px]" src={forkChef} alt="셰푸 이미지" />
             <div className="flex flex-row items-center gap-1 mb-1">
-              <p className="text-white font-semibold text-xl">
-                로그인 중입니다
-              </p>
+              <p className="text-white font-BMJUA text-xl">로그인 중입니다</p>
               <PulseLoader
                 color="#ffffff"
                 loading
