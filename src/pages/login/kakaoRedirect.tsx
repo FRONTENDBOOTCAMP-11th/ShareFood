@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { useEffect } from 'react';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { useAuthStore } from '../../store/authStore';
+import { PulseLoader } from 'react-spinners';
+
+import useAxiosInstance from '../../hooks/useAxiosInstance';
+
+import forkChef from '/images/chef/forkChef.svg';
 
 const KakaoRedirect = () => {
   const navigate = useNavigate();
@@ -11,7 +15,7 @@ const KakaoRedirect = () => {
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get('code');
-    const active = 'inactive';
+    const active = 'active';
 
     const kakaoLogin = async () => {
       try {
@@ -57,7 +61,22 @@ const KakaoRedirect = () => {
 
   return (
     <>
-      <p>로그인 처리 중입니다...</p>
+      <div className="kakao-login-loading">
+        <div className="flex flex-col justify-center items-center bg-main min-h-screen">
+          <div className="flex flex-col items-center">
+            <img className="size-[100px]" src={forkChef} alt="셰푸 이미지" />
+            <div className="flex flex-row items-center gap-1 mb-1">
+              <p className="text-white font-BMJUA text-xl">로그인 중입니다</p>
+              <PulseLoader
+                color="#ffffff"
+                loading
+                size={8}
+                speedMultiplier={0.7}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       <ToastContainer
         position="bottom-center"
         autoClose={1000}
