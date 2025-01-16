@@ -180,7 +180,7 @@ function CommentItem({
       <div>
         <div className="flex leading-7">
           <img
-            src={image ? `https://11.fesp.shop/${image}` : basicImage}
+            src={profileImage}
             alt="프로필 사진"
             className="max-w-[29px] max-h-[29px] rounded-full"
           />
