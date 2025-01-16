@@ -40,7 +40,7 @@ export const viewPaymentStore = create<viewPaymentStore>((set) => ({
 }));
 
 export const isBuyStore = create<setIsBuyStore>((set) => ({
-  isBuy: null,
+  isBuy: false,
   setIsBuy: (isBuy: boolean) => set({ isBuy }),
 }));
 

@@ -49,7 +49,13 @@ const Write = () => {
     setError,
     clearErrors,
     reset,
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      extra: {
+        meetingTime: '',
+      },
+    },
+  });
 
   const navigate = useNavigate();
 
@@ -105,10 +111,17 @@ const Write = () => {
 
   // onSubmit용 함수
   const onSubmit = (data: FormData) => {
-    // 전체지역
+    // 전체지역 유효성 검증
     if (location === '전체지역') {
       setError('extra.location', {
         message: '* 지역을 선택해주세요',
+      });
+    }
+
+    // 날짜, 시간 유효성 검증
+    if (selectDate === null) {
+      setError('extra.meetingTime', {
+        message: '* 날짜, 시간을 선택해주세요',
       });
     }
 
@@ -126,23 +139,23 @@ const Write = () => {
     const dateTime = dayjs(selectDate);
     console.log(dateTime);
 
-    // 입력값이 날짜+시간 인지 날짜 인지 검증
-    if (dateTime.isValid()) {
-      const hour = dateTime.hour();
-      const minute = dateTime.minute();
+    // // 입력값이 날짜+시간 인지 날짜 인지 검증
+    // if (dateTime.isValid()) {
+    //   const hour = dateTime.hour();
+    //   const minute = dateTime.minute();
 
-      // 날짜만 있는 경우 시간 추가
-      if (hour === 0 && minute === 0) {
-        data.extra.meetingTime = dateTime
-          .hour(23)
-          .minute(59)
-          .format('YYYY.MM.DD HH:mm');
-      }
-      // 날짜 + 시간의 경우 그대로 추가
-      else {
-        data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
-      }
-    }
+    //   // 날짜만 있는 경우 시간 추가
+    //   if (hour === 0 && minute === 0) {
+    //     data.extra.meetingTime = dateTime
+    //       .hour(23)
+    //       .minute(59)
+    //       .format('YYYY.MM.DD HH:mm');
+    //   }
+    //   // 날짜 + 시간의 경우 그대로 추가
+    //   else {
+    //     data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
+    //   }
+    // }
 
     const randomNum = Math.floor(Math.random() * 4) + 1;
     console.log(randomNum);
@@ -202,7 +215,7 @@ const Write = () => {
                 path: image,
                 name: image.split('/').pop() || '',
               }));
-              setUploadImg(formattedImages);
+              setUploadImg((prevState) => [...prevState, ...formattedImages]);
             }}
           />
           <TypeSelector
@@ -307,7 +320,24 @@ const Write = () => {
                   <p className="font-semibold">마감시간 </p>
                   <Picker
                     selectDate={selectDate}
-                    setSelectDate={setSelectDate}
+                    setSelectDate={(date) => {
+                      setSelectDate(date);
+                      setValue(
+                        'extra.meetingTime',
+                        date ? dayjs(date).format('YYYY.MM.DD HH:mm') : '',
+                      );
+
+                      if (date) {
+                        clearErrors('extra.meetingTime');
+                      } else {
+                        setError('extra.meetingTime', {
+                          message: '* 날짜, 시간을 선택해주세요',
+                        });
+                      }
+                    }}
+                    {...register('extra.meetingTime', {
+                      required: '* 날짜, 시간을 선택해주세요',
+                    })}
                   />
                 </div>
                 {errors.extra?.meetingTime && (

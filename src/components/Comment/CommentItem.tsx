@@ -116,12 +116,21 @@ function CommentItem({
   // 날짜 데이터 전처리
   const date = createdAt.slice(5, 10);
 
+  let profileImage = '';
+  if (image != null) {
+    if (image.includes('kakao')) {
+      profileImage = image;
+    } else {
+      profileImage = `https://11.fesp.shop${image}`;
+    }
+  } else profileImage = basicImage;
+
   if (isModify) {
     return (
       <div ref={modalRef}>
         <div className="flex leading-7">
           <img
-            src={image ? `https://11.fesp.shop/${image}` : basicImage}
+            src={profileImage}
             alt="프로필 사진"
             className="max-w-[29px] max-h-[29px] rounded-full"
           />
