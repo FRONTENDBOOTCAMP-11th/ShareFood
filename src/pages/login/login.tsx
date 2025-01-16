@@ -94,8 +94,12 @@ const Login: React.FC = () => {
     login.mutate(data);
   };
 
+  const restAPI = import.meta.env.VITE_REST_API_KEY;
+  const redirectURI = import.meta.env.VITE_REDIRECT_URI;
+
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${restAPI}&redirect_uri=${redirectURI}&response_type=code`;
   const kakaoLogin = () => {
-    navigate('/KakaoLogin');
+    window.location.href = kakaoURL;
   };
 
   return (
@@ -176,6 +180,7 @@ const Login: React.FC = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
     </>
   );

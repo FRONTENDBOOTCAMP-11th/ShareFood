@@ -206,7 +206,13 @@ const Detail = () => {
   };
 
   if (!data) {
-    return <Loading />;
+    refetch();
+    reCheckOrder();
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
   }
 
   // 공구, 판매 구분 및 값 정규 표현식 적용

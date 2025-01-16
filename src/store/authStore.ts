@@ -15,7 +15,7 @@ interface AuthState {
 
 interface AuthActions {
   setUser: (user: User | null, active: string) => void;
-  resetUser: (user: User | null) => void;
+  resetUser: () => void;
 }
 
 export const useAuthStore = create<AuthState & AuthActions>()(
