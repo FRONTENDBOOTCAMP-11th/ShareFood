@@ -65,13 +65,12 @@ const KakaoRedirect = () => {
         <div className="flex flex-col justify-center items-center bg-main min-h-screen">
           <div className="flex flex-col items-center">
             <img className="size-[100px]" src={forkChef} alt="셰푸 이미지" />
-            <div className="flex flex-row items-center gap-1">
-              <p className="text-white font-semibold text-xl mt-1">
+            <div className="flex flex-row items-center gap-1 mb-1">
+              <p className="text-white font-semibold text-xl">
                 로그인 중입니다
               </p>
               <PulseLoader
                 color="#ffffff"
-                cssOverride={{}}
                 loading
                 size={10}
                 speedMultiplier={0.7}
@@ -82,7 +81,7 @@ const KakaoRedirect = () => {
       </div>
       <ToastContainer
         position="bottom-center"
-        autoClose={1000}
+        // autoClose={1000}
         hideProgressBar
         newestOnTop={false}
         closeOnClick
