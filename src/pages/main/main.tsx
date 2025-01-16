@@ -25,6 +25,7 @@ import search from '/images/icons/search.svg';
 import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 import Loading from '../../components/Loading';
+import { useGetNotification } from '../../hooks/useGetNotification';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -52,6 +53,10 @@ const Main = () => {
 
   // 게시글 불러오기
   const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
+
+  // 알림 불러오기
+  const { data: noti } = useGetNotification();
+  if (noti) console.log(noti);
 
   // 게시글 추가하기
   useEffect(() => {
@@ -186,7 +191,7 @@ const Main = () => {
               />
             ))}
             {isLoading && (
-              <div className='pt-3'>
+              <div className="pt-3">
                 <Loading />
               </div>
             )}
