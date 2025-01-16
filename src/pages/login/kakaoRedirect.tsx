@@ -70,7 +70,7 @@ const KakaoRedirect = () => {
               <PulseLoader
                 color="#ffffff"
                 loading
-                size={10}
+                size={8}
                 speedMultiplier={0.7}
               />
             </div>
@@ -79,7 +79,7 @@ const KakaoRedirect = () => {
       </div>
       <ToastContainer
         position="bottom-center"
-        // autoClose={1000}
+        autoClose={1000}
         hideProgressBar
         newestOnTop={false}
         closeOnClick
