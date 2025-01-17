@@ -172,10 +172,23 @@ const Detail = () => {
       return await axiosInstance.post('/orders', body);
     },
     onSuccess: () => {
-      refetch();
-      toast.success('구매하기가 완료 되었습니다.');
-      setViewPayment(false);
-      reCheckOrder();
+      try {
+        registerNotification({
+          target_id: data.item.seller_id,
+          content: `${data.item.name}의 거래를 원해요!`,
+          type: 'product',
+          extra: {
+            productId: data.item._id,
+          },
+        });
+        refetch();
+        toast.success('구매하기가 완료 되었습니다.');
+        setViewPayment(false);
+        reCheckOrder();
+      } catch (err) {
+        toast.error('알림 전송에 실패했습니다.');
+        console.log(err);
+      }
     },
     onError: (err: CustomErr) => {
       if (err.response.status === 401) {

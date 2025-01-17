@@ -164,26 +164,8 @@ const Write = () => {
     const dateTime = dayjs(selectDate);
     console.log(dateTime);
 
-    // // 입력값이 날짜+시간 인지 날짜 인지 검증
-    // if (dateTime.isValid()) {
-    //   const hour = dateTime.hour();
-    //   const minute = dateTime.minute();
-
-    //   // 날짜만 있는 경우 시간 추가
-    //   if (hour === 0 && minute === 0) {
-    //     data.extra.meetingTime = dateTime
-    //       .hour(23)
-    //       .minute(59)
-    //       .format('YYYY.MM.DD HH:mm');
-    //   }
-    //   // 날짜 + 시간의 경우 그대로 추가
-    //   else {
-    //     data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
-    //   }
-    // }
-
+    // 랜덤 이미지 출력
     const randomNum = Math.floor(Math.random() * 4) + 1;
-    console.log(randomNum);
 
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages =
@@ -202,6 +184,25 @@ const Write = () => {
     addPost.mutate(data);
 
 
+  };
+
+  // 서버에서 이미지 경로 받아서 다시 저장
+  const updateImg = (images: string[]) => {
+    setUploadImg((prevState) => {
+      const existingPath = prevState.map((img) => img.path);
+      const newImg = images
+        .filter((path) => !existingPath.includes(path))
+        .map((path) => ({
+          path,
+          name: path.split('/').pop() || '',
+        }));
+      return [...prevState, ...newImg];
+    });
+  };
+
+  // 삭제하면 업로드된 경로도 삭제
+  const deleteImg = (updatePath: string[]) => {
+    setUploadImg((prev) => prev.filter((img) => updatePath.includes(img.path)));
   };
 
   return (
@@ -236,15 +237,7 @@ const Write = () => {
         </Header>
 
         <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-          <ImageUpload
-            onChange={(images) => {
-              const formattedImages = images.map((image) => ({
-                path: image,
-                name: image.split('/').pop() || '',
-              }));
-              setUploadImg((prevState) => [...prevState, ...formattedImages]);
-            }}
-          />
+          <ImageUpload onChange={updateImg} onDelete={deleteImg} />
           <TypeSelector
             productsType={productsType}
             setProductsType={setProductsType}
@@ -490,7 +483,24 @@ const Write = () => {
                   <p className="font-semibold">거래 시간 </p>
                   <Picker
                     selectDate={selectDate}
-                    setSelectDate={setSelectDate}
+                    setSelectDate={(date) => {
+                      setSelectDate(date);
+                      setValue(
+                        'extra.meetingTime',
+                        date ? dayjs(date).format('YYYY.MM.DD HH:mm') : '',
+                      );
+
+                      if (date) {
+                        clearErrors('extra.meetingTime');
+                      } else {
+                        setError('extra.meetingTime', {
+                          message: '* 날짜, 시간을 선택해주세요',
+                        });
+                      }
+                    }}
+                    {...register('extra.meetingTime', {
+                      required: '* 날짜, 시간을 선택해주세요',
+                    })}
                   />
                 </div>
                 {errors.extra?.meetingTime && (

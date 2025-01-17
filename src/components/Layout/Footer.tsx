@@ -64,7 +64,7 @@ export default function Footer() {
           >
             {item.label}
           </span>
-          {notification && item.label === '마이페이지' && location.pathname !== `/mypage/${user?._id}` && (
+          {notification && notification.length > 0 && item.label === '마이페이지' && location.pathname !== `/mypage/${user?._id}` && (
             <div className="absolute top-[-5px] right-[10px] bg-sub w-[7px] h-[7px] rounded-full"></div>
           )}
         </button>
