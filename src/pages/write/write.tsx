@@ -159,9 +159,6 @@ const Write = () => {
     addPost.mutate(data);
   };
 
-  console.log(uploadImg);
-  console.log(uploadImg.length);
-
   return (
     <>
       <ToastContainer
