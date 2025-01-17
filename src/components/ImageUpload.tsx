@@ -141,28 +141,34 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
   return (
     <div
-      className="flex gap-x-4 flex-nowrap overflow-x-hidden"
+      className="flex gap-x-4 flex-nowrap"
       onMouseDown={onDragStart}
       onMouseMove={isDrag ? onThrottleDragMove : undefined}
       onMouseUp={onDragEnd}
       onMouseLeave={onDragEnd}
       ref={scrollRef}
     >
-      {showImages.map((image, id) => (
-        <div key={id} className="relative">
-          <img src={image.preview} className="w-[100px] h-[100px]" />
-          <button
-            data-id={id}
-            onClick={handleDeleteImage}
-            className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
-          >
-            {/* X 버튼 색 변경 필요! */}X
-          </button>
-        </div>
-      ))}
+      <div className="flex flex-row gap-3 overflow-x-scroll flex-nowrap">
+        {showImages.map((image, id) => (
+          <div key={id} className="relative shrink-0">
+            <img
+              src={image.preview}
+              className="w-[100px] h-[100px] object-cover shrink-0"
+            />
+            <button
+              data-id={id}
+              onClick={handleDeleteImage}
+              className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
+            >
+              {/* X 버튼 색 변경 필요! */}X
+            </button>
+          </div>
+        ))}
+      </div>
+
       <label
         htmlFor="uploadFile1"
-        className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300  "
+        className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 shrink-0 "
       >
         <img src={photo} alt="사진첨부 이미지" className="mb-1.5" />
         <input
