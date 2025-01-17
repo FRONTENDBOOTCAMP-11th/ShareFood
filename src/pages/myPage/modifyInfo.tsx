@@ -1,5 +1,13 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
+import { uploadImg } from '../../hooks/useUploadImg';
+import { isDuplicate } from '../../hooks/isDuplicate';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
+import { useAuthStore } from '../../store/authStore';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -7,11 +15,6 @@ import Layout from '../../components/Layout';
 
 import arrow from '/images/arrow/prevArrow.svg';
 import gallery from '/images/icons/gallery.svg';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import { uploadImg } from '../../hooks/useUploadImg';
-import { isDuplicate } from '../../hooks/isDuplicate';
-import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 type modifyInfoTypes = {
   name: string;
@@ -20,18 +23,20 @@ type modifyInfoTypes = {
 };
 
 const UserInfo = () => {
-  const [imgUrl, setImgUrl] = useState<string | null>(null);
-  const [isNameChecked, setIsNameChecked] = useState(false);
-  const [isChangeInfo, setIsChangeInfo] = useState(false);
-  const [nameValue, setNameValue] = useState<string | null>(null);
-  const [phoneValue, setPhoneValue] = useState<string>('');
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
-  const { _id } = useParams<{ _id: string }>();
   const axiosInstance = useAxiosInstance();
 
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [nameValue, setNameValue] = useState<string | null>(null);
+  const [isNameChecked, setIsNameChecked] = useState(false);
+  const [phoneValue, setPhoneValue] = useState<string>('');
+  const [isChangeInfo, setIsChangeInfo] = useState(false);
+
+  const { user } = useAuthStore();
+
   // 회원 정보 조회
-  const { data: userInfo } = useGetUserInfo(axiosInstance, _id);
+  const { data: userInfo } = useGetUserInfo(axiosInstance, String(user?._id));
 
   // use-hook-form
   const {
@@ -71,19 +76,28 @@ const UserInfo = () => {
 
   // 닉네임 중복 검사
   const handleCheckName = async () => {
-    if (nameValue) {
+    if (!nameValue || nameValue.trim() === '') {
+      toast.error('닉네임을 입력해주세요.');
+      return;
+    }
+  
+    try {
       const result = await isDuplicate(axiosInstance, 'name', nameValue);
       if (!result) {
         setError('name', { message: '중복된 닉네임 입니다' });
         setIsNameChecked(false);
-        alert('이미 존재하는 닉네임입니다.');
+        toast.error('이미 존재하는 닉네임입니다.');
       } else {
         clearErrors('name');
         setIsNameChecked(true);
-        alert('사용가능한 닉네임입니다.');
+        toast.success('사용가능한 닉네임입니다.');
       }
+    } catch (error) {
+      console.error('닉네임 중복 검사 오류:', error);
+      toast.error('닉네임 중복 검사 중 오류가 발생했습니다.');
     }
   };
+  
 
   // 이미지 업로드 핸들러
   const handleImgChange = async (
@@ -112,13 +126,13 @@ const UserInfo = () => {
       };
 
       // 서버에 요청 보내기
-      const result = await axiosInstance.patch(`/users/${_id}`, updatedData);
+      const result = await axiosInstance.patch(`/users/${user?._id}`, updatedData);
       console.log('수정 완료:', result.data);
-      alert('수정이 완료되었습니다.');
-      navigate(`/mypage/${_id}`);
+      toast.success('수정이 완료되었습니다.');
+      navigate(`/mypage/${user?._id}`);
     } catch (error) {
       console.error('수정 중 오류 발생:', error);
-      alert('수정에 실패했습니다.');
+      toast.error('수정에 실패했습니다.');
     }
   };
 

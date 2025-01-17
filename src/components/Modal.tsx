@@ -19,7 +19,7 @@ function Modal({ setViewPayment, children }: props) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-[400px] p-5 bg-white rounded-[10px] shadow-custom animate-revealDown max-h-[500px] overflow-scroll [&::-webkit-scrollbar]:hidden"
+        className="relative w-[400px] mx-4 p-5 bg-white rounded-[10px] shadow-custom animate-revealDown max-h-[500px] overflow-scroll [&::-webkit-scrollbar]:hidden"
       >
         <button
           className="absolute top-4 right-4 size-6 text-3xl text-neutral-500 cursor-pointer"

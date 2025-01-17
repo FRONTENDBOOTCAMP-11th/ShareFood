@@ -7,7 +7,6 @@ export const isDuplicate = async (
 ) => {
   try {
     const result = await axiosInstance.get(`/users/${type}?${type}=${value}`);
-    console.log(result);
     return result;
   } catch (error) {
     console.error(error);
