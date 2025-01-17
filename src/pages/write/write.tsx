@@ -33,6 +33,7 @@ interface FormData {
     subLocation: string; // 공구, 판매 상세 지역
     meetingTime: string; // 공구 마감 시간 or 판매 시간
     type: string; // 판매글 타입
+    position: kakao.maps.LatLng; // 위치
   };
 }
 interface AxiosErrorResponse {
@@ -109,8 +110,23 @@ const Write = () => {
     },
   });
 
+  // 주소로 좌표를 검색
+  const getPosition = (address: string): Promise<kakao.maps.LatLng> => {
+    return new Promise((resolve) => {
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.addressSearch(address, (result: any, status: any) => {
+        console.log(status);
+        if (status === kakao.maps.services.Status.OK) {
+          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+          console.log(coords);
+          resolve(coords);
+        }
+      })
+    });
+  };
+
   // onSubmit용 함수
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     // 전체지역 유효성 검증
     if (location === '전체지역') {
       setError('extra.location', {
@@ -130,6 +146,7 @@ const Write = () => {
     data.extra.location = location;
     data.extra.subLocation = subLocation;
     data.extra.type = productsType;
+    data.extra.position = await getPosition(subLocation);
 
     // 가격 정수 형태로 변경 후 전송
     const integerPrice = Number(data.price.toString().replace(/,/g, ''));
@@ -164,17 +181,19 @@ const Write = () => {
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-            path: image.path,
-            name: image.path.split('/').pop() || '', // 파일명 추출
-          }))
+          path: image.path,
+          name: image.path.split('/').pop() || '', // 파일명 추출
+        }))
         : [
-            {
-              path: `/files/final07/default${randomNum}.png`,
-              name: `/default${randomNum}`,
-            },
-          ]; // 이미지 업로드 안되면 대체 이미지 추가
+          {
+            path: `/files/final07/default${randomNum}.png`,
+            name: `/default${randomNum}`,
+          },
+        ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
+
+
   };
 
   return (

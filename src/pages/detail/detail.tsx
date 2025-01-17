@@ -27,6 +27,7 @@ import ImageSlide from '../../components/ImageSlide';
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
 import { useRegisterNotification } from '../../hooks/useRegisterNotification';
+import KaKaoMap from '../../components/kakaoMap';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -340,6 +341,8 @@ const Detail = () => {
           </div>
         )}
 
+        <KaKaoMap position={data.item.extra.position} />
+
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
         <Total data={data} onRefetch={refetch} />
@@ -372,7 +375,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-                // onClick={() => handleModal(productType)}
+              // onClick={() => handleModal(productType)}
               >
                 공구 신청 완료
               </Button>
@@ -398,7 +401,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-                // onClick={() => handleModal(productType)}
+              // onClick={() => handleModal(productType)}
               >
                 구매 신청 완료
               </Button>
