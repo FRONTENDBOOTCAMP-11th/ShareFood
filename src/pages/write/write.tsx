@@ -159,6 +159,29 @@ const Write = () => {
     addPost.mutate(data);
   };
 
+  const updateImg = (images: string[]) => {
+    const formattedImages = images.map((image: string) => ({
+      path: image,
+      name: image.split('/').pop() || '',
+    }));
+
+    console.log(formattedImages);
+
+    setUploadImg((prevState) => {
+      const existingPath = prevState.map((img) => img.path);
+      const newImg = formattedImages.filter(
+        (img) => !existingPath.includes(img.path),
+      );
+      return [...prevState, ...newImg];
+    });
+  };
+
+  const deleteImg = (updatePath: string[]) => {
+    setUploadImg((prev) => prev.filter((img) => updatePath.includes(img.path)));
+  };
+
+  console.log(uploadImg);
+
   return (
     <>
       <ToastContainer
@@ -191,29 +214,7 @@ const Write = () => {
         </Header>
 
         <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-          <ImageUpload
-            onChange={(images) => {
-              const formattedImages = images.map((image) => ({
-                path: image,
-                name: image.split('/').pop() || '',
-              }));
-
-              console.log(formattedImages);
-
-              setUploadImg((prevState) => {
-                const existingPath = prevState.map((img) => img.path);
-                const newImg = formattedImages.filter(
-                  (img) => !existingPath.includes(img.path),
-                );
-                return [...prevState, ...newImg];
-              });
-            }}
-            onDelete={(updatePath) => {
-              setUploadImg((prev) =>
-                prev.filter((img) => updatePath.includes(img.path)),
-              );
-            }}
-          />
+          <ImageUpload onChange={updateImg} onDelete={deleteImg} />
           <TypeSelector
             productsType={productsType}
             setProductsType={setProductsType}
