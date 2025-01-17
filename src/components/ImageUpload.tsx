@@ -148,7 +148,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
       onMouseLeave={onDragEnd}
       ref={scrollRef}
     >
-      <div className="flex flex-row gap-3 overflow-x-scroll flex-nowrap">
+      <div className="flex flex-row gap-3 overflow-x-auto flex-nowrap">
         {showImages.map((image, id) => (
           <div key={id} className="relative shrink-0">
             <img
