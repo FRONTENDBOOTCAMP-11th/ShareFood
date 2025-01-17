@@ -140,15 +140,15 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
   };
 
   return (
-    <div
-      className="flex gap-x-4 flex-nowrap"
-      onMouseDown={onDragStart}
-      onMouseMove={isDrag ? onThrottleDragMove : undefined}
-      onMouseUp={onDragEnd}
-      onMouseLeave={onDragEnd}
-      ref={scrollRef}
-    >
-      <div className="flex flex-row gap-3 overflow-x-auto flex-nowrap">
+    <div className="flex flex-row gap-x-4 flex-nowrap">
+      <div
+        className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden "
+        onMouseDown={onDragStart}
+        onMouseMove={isDrag ? onThrottleDragMove : undefined}
+        onMouseUp={onDragEnd}
+        onMouseLeave={onDragEnd}
+        ref={scrollRef}
+      >
         {showImages.map((image, id) => (
           <div key={id} className="relative shrink-0">
             <img
