@@ -29,7 +29,7 @@ function CheckBuyListItem({
         <img
           src={profileImage}
           alt="프로필 사진"
-          className="max-w-[30px] max-h-[30px] rounded-full"
+          className="min-w-[27px] min-h-[27px] max-w-[27px] max-h-[27px] rounded-full"
         />
         <p className="grow text-left w-[180px] max-w-[180px]">{name}</p>
       </div>
