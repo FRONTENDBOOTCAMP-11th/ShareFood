@@ -16,8 +16,8 @@ import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
-import KakaoAddressSearch from '../../components/kakaoAddr';
 import Picker from '../../components/Picker';
+import KakaoAddressSearch from '../../components/kakaoAddr';
 
 interface FormData {
   price: number; // 상품 가격
@@ -33,7 +33,10 @@ interface FormData {
     subLocation: string; // 공구, 판매 상세 지역
     meetingTime: string; // 공구 마감 시간 or 판매 시간
     type: string; // 판매글 타입
-    position: kakao.maps.LatLng; // 위치
+    position: {
+      lat: number,
+      lng: number
+    }
   };
 }
 interface AxiosErrorResponse {
@@ -114,10 +117,10 @@ const Write = () => {
   const getPosition = (address: string): Promise<kakao.maps.LatLng> => {
     return new Promise((resolve) => {
       const geocoder = new kakao.maps.services.Geocoder();
-      geocoder.addressSearch(address, (result: any, status: any) => {
+      geocoder.addressSearch(address, (result, status) => {
         console.log(status);
         if (status === kakao.maps.services.Status.OK) {
-          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+          const coords = new kakao.maps.LatLng(result?.[0].y, result?.[0].x);
           console.log(coords);
           resolve(coords);
         }
@@ -141,12 +144,17 @@ const Write = () => {
       });
     }
 
+    const coords = await getPosition(subLocation);
+
     // 전송 값이 input이 아닌 경우 추가
     data.quantity = num;
     data.extra.location = location;
     data.extra.subLocation = subLocation;
     data.extra.type = productsType;
-    data.extra.position = await getPosition(subLocation);
+    data.extra.position = {
+      lat: coords.getLat(),
+      lng: coords.getLng()
+    }
 
     // 가격 정수 형태로 변경 후 전송
     const integerPrice = Number(data.price.toString().replace(/,/g, ''));

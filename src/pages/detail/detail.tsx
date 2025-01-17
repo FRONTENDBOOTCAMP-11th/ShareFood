@@ -246,6 +246,8 @@ const Detail = () => {
     return `https://11.fesp.shop` + value.path;
   });
 
+  const subLocation: string = data.item.extra.subLocation;
+
   // 카카오 이미지 가공
   let profileImage = '';
   if (data?.item.seller.image != null) {
@@ -341,7 +343,7 @@ const Detail = () => {
           </div>
         )}
 
-        <KaKaoMap position={data.item.extra.position} />
+        <KaKaoMap position={data.item.extra.position} subLocation={subLocation} />
 
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
