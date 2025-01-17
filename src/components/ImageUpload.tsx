@@ -156,7 +156,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
           <div key={id} className="relative shrink-0">
             <img
               src={image.preview}
-              draggable="false"
+              draggable="false" // e.preventDefault() 대신 사용해서 이미지 드래그 막음
               className="w-[100px] h-[100px] object-cover shrink-0"
             />
             <button
