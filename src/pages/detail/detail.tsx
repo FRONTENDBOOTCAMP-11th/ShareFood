@@ -27,7 +27,7 @@ import ImageSlide from '../../components/ImageSlide';
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
 import { useRegisterNotification } from '../../hooks/useRegisterNotification';
-import KaKaoMap from '../../components/kakaoMap';
+import KaKaoMap from '../../components/KakaoMap';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -356,7 +356,7 @@ const Detail = () => {
           </div>
         )}
 
-        <KaKaoMap position={data.item.extra.position} subLocation={subLocation} />
+        {data.item.extra.position && <KaKaoMap position={data.item.extra.position} subLocation={subLocation} />}
 
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
