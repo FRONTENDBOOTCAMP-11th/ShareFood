@@ -10,7 +10,7 @@ interface PickerProps {
 const Picker = forwardRef<HTMLDivElement, PickerProps>(
   ({ selectDate, setSelectDate }: PickerProps, ref) => {
     return (
-      <div ref={ref}>
+      <div className="w-full" ref={ref}>
         <DateTimePicker
           label={'마감 시간을 선택주세요'}
           value={selectDate}
@@ -21,7 +21,7 @@ const Picker = forwardRef<HTMLDivElement, PickerProps>(
           slotProps={{
             textField: {
               sx: {
-                width: '380px',
+                minWidth: '100%',
                 '& .MuiInputBase-input': {
                   fontSize: '13px',
                   fontFamily: 'pretendard',
