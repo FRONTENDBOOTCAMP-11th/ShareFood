@@ -159,6 +159,8 @@ const Write = () => {
     addPost.mutate(data);
   };
 
+  console.log(uploadImg.length);
+
   return (
     <>
       <ToastContainer
@@ -197,7 +199,14 @@ const Write = () => {
                 path: image,
                 name: image.split('/').pop() || '',
               }));
-              setUploadImg((prevState) => [...prevState, ...formattedImages]);
+
+              setUploadImg((prevState) => {
+                const existingPath = prevState.map((img) => img.path);
+                const newImg = formattedImages.filter(
+                  (img) => !existingPath.includes(img.path),
+                );
+                return [...prevState, ...newImg];
+              });
             }}
           />
           <TypeSelector
