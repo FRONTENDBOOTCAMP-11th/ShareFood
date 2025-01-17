@@ -25,8 +25,6 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
   // PointerEvent 사용
   const onDragStart = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.currentTarget.setPointerCapture(e.pointerId);
     if (scrollRef.current) {
       setIsDrag(true);
       setStartX(e.pageX + scrollRef.current.scrollLeft);
@@ -158,6 +156,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
           <div key={id} className="relative shrink-0">
             <img
               src={image.preview}
+              draggable="false" // e.preventDefault() 대신 사용해서 이미지 드래그 막음
               className="w-[100px] h-[100px] object-cover shrink-0"
             />
             <button
