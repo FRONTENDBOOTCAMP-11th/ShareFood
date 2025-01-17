@@ -19,15 +19,15 @@ interface NotificationItem {
   channel: string;
   createdAt: string;
   updatedAt: string;
+  type: string;
 }
-
 
 export const useGetNotification = () => {
   const axiosInstance = useAxiosInstance();
 
   return useQuery<NotificationItem[]>({
     queryKey: ['notification'],
-    queryFn: async() => {
+    queryFn: async () => {
       const response = await axiosInstance.get('/notifications');
       return response.data.item;
     },

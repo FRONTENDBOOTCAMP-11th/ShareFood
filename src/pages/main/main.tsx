@@ -62,7 +62,7 @@ const Main = () => {
 
   // 알림 불러오기
   const { data: notification } = useGetNotification();
-  if (notification) console.log(notification);
+
   // 모달 나타나는 여부, true일 경우 출력
   const { viewPayment, setViewPayment } = viewPaymentStore();
 
@@ -132,7 +132,7 @@ const Main = () => {
       {/* 헤더 */}
       <Header>
         <div className="flex justify-between w-full">
-          <div className='relative'>
+          <div className="relative">
             <img
               src={`${apiUrl}${user?.profile}`}
               className="w-[30px] rounded-full"
@@ -238,29 +238,31 @@ const Main = () => {
       </div>
       {viewPayment && (
         <Modal setViewPayment={setViewPayment}>
-          <h2 className='text-[22px] font-bold text-main'>알림 목록</h2>
+          <h2 className="text-[22px] font-bold text-main">알림 목록</h2>
           <div className="flex flex-col gap-4 py-5 divide-y">
             {notification?.map((key) => (
               <div
                 className="flex justify-between items-center pt-2"
                 key={key._id}
               >
-                <p className="text-font1 font-semibold">
+                <p className="text-font1 font-semibold max-w-[240px]">
                   {key.user.name}님이 {key.content}
                 </p>
-                <Button
-                  bg="main"
-                  color="white"
-                  height="40px"
-                  width="100px"
-                  text="text-sm"
-                  onClick={() => {
-                    navigate(`/detail/${key.extra.productId}`);
-                    setViewPayment(false);
-                  }}
-                >
-                  확인하기
-                </Button>
+                {key.type === 'product' && (
+                  <Button
+                    bg="main"
+                    color="white"
+                    height="35px"
+                    width="60px"
+                    text="text-sm"
+                    onClick={() => {
+                      navigate(`/detail/${key.extra.productId}`);
+                      setViewPayment(false);
+                    }}
+                  >
+                    확인하기
+                  </Button>
+                )}
               </div>
             ))}
           </div>
