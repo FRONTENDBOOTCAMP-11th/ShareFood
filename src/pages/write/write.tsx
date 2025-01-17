@@ -159,6 +159,7 @@ const Write = () => {
     addPost.mutate(data);
   };
 
+  console.log(uploadImg);
   console.log(uploadImg.length);
 
   return (
@@ -200,6 +201,8 @@ const Write = () => {
                 name: image.split('/').pop() || '',
               }));
 
+              console.log(formattedImages);
+
               setUploadImg((prevState) => {
                 const existingPath = prevState.map((img) => img.path);
                 const newImg = formattedImages.filter(
@@ -207,6 +210,11 @@ const Write = () => {
                 );
                 return [...prevState, ...newImg];
               });
+            }}
+            onDelete={(updatePath) => {
+              setUploadImg((prev) =>
+                prev.filter((img) => updatePath.includes(img.path)),
+              );
             }}
           />
           <TypeSelector
