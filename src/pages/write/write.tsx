@@ -456,7 +456,24 @@ const Write = () => {
                   <p className="font-semibold">거래 시간 </p>
                   <Picker
                     selectDate={selectDate}
-                    setSelectDate={setSelectDate}
+                    setSelectDate={(date) => {
+                      setSelectDate(date);
+                      setValue(
+                        'extra.meetingTime',
+                        date ? dayjs(date).format('YYYY.MM.DD HH:mm') : '',
+                      );
+
+                      if (date) {
+                        clearErrors('extra.meetingTime');
+                      } else {
+                        setError('extra.meetingTime', {
+                          message: '* 날짜, 시간을 선택해주세요',
+                        });
+                      }
+                    }}
+                    {...register('extra.meetingTime', {
+                      required: '* 날짜, 시간을 선택해주세요',
+                    })}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
