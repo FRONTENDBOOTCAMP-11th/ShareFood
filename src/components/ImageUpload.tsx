@@ -15,25 +15,30 @@ interface ImgProps {
 function ImageUpload({ onChange, onDelete }: UploadImgProps) {
   const [showImages, setShowImages] = useState<ImgProps[]>([]);
   const [imageCount, setImageCount] = useState<number>(0);
+
+  // 이미지 스크롤
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDrag, setIsDrag] = useState<boolean>(false);
   const [startX, setStartX] = useState<number | undefined>(undefined);
 
   const axiosInstance = useAxiosInstance();
 
-  const onDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+  // PointerEvent 사용
+  const onDragStart = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
     if (scrollRef.current) {
       setIsDrag(true);
       setStartX(e.pageX + scrollRef.current.scrollLeft);
     }
   };
 
-  const onDragEnd = () => {
+  const onDragEnd = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
     setIsDrag(false);
   };
 
-  const onDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onDragMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isDrag && scrollRef.current) {
       const { scrollWidth, clientWidth, scrollLeft } = scrollRef.current;
 
@@ -47,12 +52,12 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
     }
   };
 
-  const throttle = <T extends (e: React.MouseEvent<HTMLDivElement>) => void>(
+  const throttle = <T extends (e: React.PointerEvent<HTMLDivElement>) => void>(
     func: T,
     ms: number,
   ) => {
     let throttled = false;
-    return (e: React.MouseEvent<HTMLDivElement>) => {
+    return (e: React.PointerEvent<HTMLDivElement>) => {
       if (!throttled) {
         throttled = true;
         setTimeout(() => {
@@ -119,7 +124,6 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
     // 상대 경로의 리스트를 저장
     setShowImages(newImages);
-
     setImageCount(newImages.length);
 
     // 이미지 경로 전달
@@ -143,11 +147,12 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
     <div className="flex flex-row gap-x-4 flex-nowrap">
       <div
         className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden "
-        onMouseDown={onDragStart}
-        onMouseMove={isDrag ? onThrottleDragMove : undefined}
-        onMouseUp={onDragEnd}
-        onMouseLeave={onDragEnd}
+        onPointerDown={onDragStart}
+        onPointerMove={isDrag ? onThrottleDragMove : undefined}
+        onPointerUp={onDragEnd}
+        onPointerLeave={onDragEnd}
         ref={scrollRef}
+        style={{ touchAction: 'none' }}
       >
         {showImages.map((image, id) => (
           <div key={id} className="relative shrink-0">
