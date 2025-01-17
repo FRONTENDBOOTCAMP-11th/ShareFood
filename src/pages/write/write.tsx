@@ -159,28 +159,24 @@ const Write = () => {
     addPost.mutate(data);
   };
 
+  // 서버에서 이미지 경로 받아서 다시 저장
   const updateImg = (images: string[]) => {
-    const formattedImages = images.map((image: string) => ({
-      path: image,
-      name: image.split('/').pop() || '',
-    }));
-
-    console.log(formattedImages);
-
     setUploadImg((prevState) => {
       const existingPath = prevState.map((img) => img.path);
-      const newImg = formattedImages.filter(
-        (img) => !existingPath.includes(img.path),
-      );
+      const newImg = images
+        .filter((path) => !existingPath.includes(path))
+        .map((path) => ({
+          path,
+          name: path.split('/').pop() || '',
+        }));
       return [...prevState, ...newImg];
     });
   };
 
+  // 삭제하면 업로드된 경로도 삭제
   const deleteImg = (updatePath: string[]) => {
     setUploadImg((prev) => prev.filter((img) => updatePath.includes(img.path)));
   };
-
-  console.log(uploadImg);
 
   return (
     <>
