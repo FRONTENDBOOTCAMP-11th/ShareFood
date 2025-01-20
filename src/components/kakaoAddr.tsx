@@ -10,7 +10,7 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
   setSubLocation,
 }) => {
   const [addr1, setAddr1] = useState(''); // 기본 주소 상태
-  const [addr2, setAddr2] = useState(''); // 상세 주소 상태
+  const [position, setPosition] = useState();
 
   // 카카오 주소 검색 스크립트 로드
   useEffect(() => {
@@ -26,7 +26,6 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
     new (window as any).daum.Postcode({
       oncomplete: (data: any) => {
         let fullAddr = '';
-        let extraAddr = '';
 
         if (data.userSelectedType === 'R') {
           // 도로명 주소
@@ -36,20 +35,11 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
           fullAddr = data.jibunAddress;
         }
 
-        // 추가 주소 포함
-        if (data.userSelectedType === 'R') {
-          if (data.bname) extraAddr += data.bname;
-          if (data.buildingName) {
-            extraAddr += extraAddr ? `, ${data.buildingName}` : data.buildingName;
-          }
-          fullAddr += extraAddr ? ` (${extraAddr})` : '';
-        }
-
         // 상태 업데이트
         setAddr1(fullAddr);
 
         // 전체 주소 업데이트
-        setSubLocation(`${fullAddr} ${addr2}`);
+        setSubLocation(fullAddr);
       },
     }).open();
   };
@@ -77,25 +67,6 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
         </button>
       </div>
 
-      {/* 상세 주소 입력 섹션 */}
-      <div className="flex items-center">
-        <div className="flex-1 flex items-center space-x-[8px]">
-          <input
-            type="text"
-            id="addr2"
-            value={addr2}
-            onChange={(e) => {
-              const detail = e.target.value;
-              // 상세 주소 저장
-              setAddr2(detail);
-              // 전체 주소 업데이트
-              setSubLocation(`${addr1} ${detail}`);
-            }}
-            placeholder="상세 주소"
-            className="block w-full h-6 border border-gray-300 rounded-md shadow-sm sm:text-sm pl-1"
-          />
-        </div>
-      </div>
       <p className="subLocation">{subLocation}</p>
     </div>
   );
