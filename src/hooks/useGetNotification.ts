@@ -27,7 +27,7 @@ export const useGetNotification = () => {
   const axiosInstance = useAxiosInstance();
   const location = useLocation();
 
-  const disabledPaths = ['/login', '/'];
+  const disabledPaths = ['/', '/login', '/sign-up'];
 
   return useQuery<NotificationItem[]>({
     queryKey: ['notification'],
