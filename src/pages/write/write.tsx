@@ -21,8 +21,8 @@ import Picker from '../../components/Picker';
 import KakaoAddressSearch from '../../components/kakaoAddr';
 
 interface Position {
-  lat: number;
-  lng: number;
+  lat: number; // 위도
+  lng: number; // 경도
 }
 
 interface FormData {
@@ -39,7 +39,7 @@ interface FormData {
     subLocation: string; // 공구, 판매 상세 지역
     meetingTime: string; // 공구 마감 시간 or 판매 시간
     type: string; // 판매글 타입
-    position: Position;
+    position: Position; // 위치 좌표
   };
 }
 interface AxiosErrorResponse {
@@ -155,7 +155,7 @@ const Write = () => {
 
     const position = await getPosition(subLocation);
 
-    // 전송 값이 input이 아닌 경우 추가
+    // 서버에 전송될 추가 데이터
     data.quantity = num;
     data.extra.location = location;
     data.extra.subLocation = subLocation;
