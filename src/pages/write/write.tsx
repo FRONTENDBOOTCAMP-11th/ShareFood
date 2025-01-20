@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -71,10 +72,13 @@ const Write = () => {
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
 
+  // 날짜 선택
   const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
+  // 상세 지역 선택
   const [subLocation, setSubLocation] = useState('');
 
+  // 이미지 업로드
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
   );
