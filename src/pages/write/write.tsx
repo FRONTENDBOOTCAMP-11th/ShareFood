@@ -17,11 +17,11 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 import Picker from '../../components/Picker';
-import KakaoAddressSearch from '../../components/KakaoAddr';
+import KakaoAddressSearch from '../../components/kakaoAddr';
 
 interface Position {
-  lat: number,
-  lng: number
+  lat: number;
+  lng: number;
 }
 
 interface FormData {
@@ -129,7 +129,7 @@ const Write = () => {
           console.log(coords);
           resolve(coords);
         }
-      })
+      });
     });
   };
 
@@ -173,19 +173,17 @@ const Write = () => {
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-          path: image.path,
-          name: image.path.split('/').pop() || '', // 파일명 추출
-        }))
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
         : [
-          {
-            path: `/files/final07/default${randomNum}.png`,
-            name: `/default${randomNum}`,
-          },
-        ]; // 이미지 업로드 안되면 대체 이미지 추가
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
-
-
   };
 
   // 서버에서 이미지 경로 받아서 다시 저장
