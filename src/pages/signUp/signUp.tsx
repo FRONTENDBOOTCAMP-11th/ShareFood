@@ -45,8 +45,6 @@ const SignUp: React.FC = () => {
   const [isNameUnique, setIsNameUnique] = useState(false);
 
   const password = watch('password');
-  const email = watch('email');
-  const name = watch('name');
 
   // 비밀번호, 비밀번호 확인 입력창이 변경될 때마다 렌더링 실행
   // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
@@ -57,18 +55,6 @@ const SignUp: React.FC = () => {
       setPasswordError('');
     }
   }, [confirmPassword, password]);
-
-  // useEffect(() => {
-  //   if (!email.trim()) {
-  //     setEmailDuplicationError('');
-  //   }
-  // }, [email]);
-
-  // useEffect(() => {
-  //   if (!name.trim()) {
-  //     setNameDuplicationError('');
-  //   }
-  // }, [name]);
 
   const axiosInstance = useAxiosInstance();
   const addUser = useMutation({
@@ -145,13 +131,6 @@ const SignUp: React.FC = () => {
     }
   };
 
-  // 서버에서 데이터 받아와서 중복 확인
-  const duplication = async (type: 'email' | 'name') => {
-    const value = type === 'email' ? email : name;
-    const res = await axiosInstance.get(`/users?${type}=${value}`);
-    return { type, isDuplicate: res.data.item.length > 0 };
-  };
-
   // 버튼 클릭 시 중복된 데이터가 있으면 에러 메세지 출력
   const handleDuplication = async (type: 'email' | 'name') => {
     const allValues = getValues();
@@ -168,21 +147,24 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    const result = await duplication(type);
-    if (result.type === 'email') {
+    // 서버에서 데이터 받아와서 중복 확인
+    const res = await axiosInstance.get(`/users?${type}=${value}`);
+    const isDuplicate = res.data.item.length > 0;
+
+    if (type === 'email') {
       setEmailDuplicationError(
-        result.isDuplicate
+        isDuplicate
           ? '이미 존재하는 아이디입니다.'
           : '사용 가능한 아이디입니다.',
       );
-      setIsEmailUnique(!result.isDuplicate);
+      setIsEmailUnique(!isDuplicate);
     } else {
       setNameDuplicationError(
-        result.isDuplicate
+        isDuplicate
           ? '이미 존재하는 닉네임입니다.'
           : '사용 가능한 닉네임 입니다.',
       );
-      setIsNameUnique(!result.isDuplicate);
+      setIsNameUnique(!isDuplicate);
     }
   };
 
