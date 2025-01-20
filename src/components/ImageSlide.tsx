@@ -71,7 +71,7 @@ const ImageSlide = ({
               key={index}
               src={image}
               alt={`slide-${index}`}
-              className="object-fit min-w-full"
+              className="object-fit min-w-full max-h-[280px]"
               onClick={
                 onClickHandler && onClickHandler[index]
                   ? onClickHandler[index]
