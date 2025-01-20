@@ -29,6 +29,7 @@ const SignUp: React.FC = () => {
     formState: { errors },
     watch,
     clearErrors,
+    getValues,
   } = useForm<UserInfo>();
 
   const navigate = useNavigate();
@@ -153,6 +154,20 @@ const SignUp: React.FC = () => {
 
   // 버튼 클릭 시 중복된 데이터가 있으면 에러 메세지 출력
   const handleDuplication = async (type: 'email' | 'name') => {
+    const allValues = getValues();
+    const value = type === 'email' ? allValues.email : allValues.name;
+
+    if (!value || value.trim().length === 0) {
+      if (type === 'email') {
+        setEmailDuplicationError('아이디를 입력해주세요');
+        setIsEmailUnique(false);
+      } else {
+        setNameDuplicationError('닉네임을 입력해주세요');
+        setIsNameUnique(false);
+      }
+      return;
+    }
+
     const result = await duplication(type);
     if (result.type === 'email') {
       setEmailDuplicationError(
