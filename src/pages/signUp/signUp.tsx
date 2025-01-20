@@ -35,8 +35,9 @@ const SignUp: React.FC = () => {
   const navigate = useNavigate();
 
   // 비밀번호 확인
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   // 아이디, 닉네임 중복 확인
   const [emailDuplicationError, setEmailDuplicationError] = useState('');
@@ -50,9 +51,9 @@ const SignUp: React.FC = () => {
   // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
   useEffect(() => {
     if (confirmPassword && confirmPassword !== password) {
-      setPasswordError('비밀번호가 일치하지 않습니다.');
+      setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     } else {
-      setPasswordError('');
+      setConfirmPasswordError('');
     }
   }, [confirmPassword, password]);
 
@@ -113,6 +114,19 @@ const SignUp: React.FC = () => {
 
     if (name === 'password') {
       clearErrors('password');
+
+      if (!value) {
+        setPasswordError('');
+      } else {
+        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/;
+        if (!regex.test(password)) {
+          setPasswordError(
+            '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
+          );
+        } else {
+          setConfirmPassword('');
+        }
+      }
     }
 
     if (name === 'confirmPassword') {
@@ -226,7 +240,9 @@ const SignUp: React.FC = () => {
               })}
               onChange={handleInputChange}
             />
-            <Error text="text-[10px]">{errors.password?.message}</Error>
+            <Error text="text-[10px]">
+              {errors.password?.message || passwordError}
+            </Error>
 
             <input
               className="w-full border-b-[1px] border-line2 mt-2 mb-1"
@@ -235,7 +251,7 @@ const SignUp: React.FC = () => {
               name="confirmPassword"
               onChange={handleInputChange}
             />
-            <Error text="text-[10px]">{passwordError}</Error>
+            <Error text="text-[10px]">{confirmPasswordError}</Error>
           </section>
           <section
             className="bg-white p-4 rounded-[10px] 
