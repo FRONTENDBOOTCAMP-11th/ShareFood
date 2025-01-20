@@ -10,6 +10,7 @@ export default function Footer() {
   // 사용자 데이터 가져오기
   const { user } = useAuthStore();
 
+  
   const { data: notification } = useGetNotification();
 
   const footerItems = [
