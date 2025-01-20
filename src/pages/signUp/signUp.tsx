@@ -29,13 +29,15 @@ const SignUp: React.FC = () => {
     formState: { errors },
     watch,
     clearErrors,
+    getValues,
   } = useForm<UserInfo>();
 
   const navigate = useNavigate();
 
   // 비밀번호 확인
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   // 아이디, 닉네임 중복 확인
   const [emailDuplicationError, setEmailDuplicationError] = useState('');
@@ -44,16 +46,14 @@ const SignUp: React.FC = () => {
   const [isNameUnique, setIsNameUnique] = useState(false);
 
   const password = watch('password');
-  const email = watch('email');
-  const name = watch('name');
 
   // 비밀번호, 비밀번호 확인 입력창이 변경될 때마다 렌더링 실행
   // 비밀번호, 비밀번호 확인에 입력된 값이 다르면 메세지 출력
   useEffect(() => {
     if (confirmPassword && confirmPassword !== password) {
-      setPasswordError('비밀번호가 일치하지 않습니다.');
+      setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     } else {
-      setPasswordError('');
+      setConfirmPasswordError('');
     }
   }, [confirmPassword, password]);
 
@@ -108,43 +108,77 @@ const SignUp: React.FC = () => {
   };
 
   // input창 공백 입력 제거
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     e.target.value = value.replace(/\s/g, '');
 
     if (name === 'password') {
       clearErrors('password');
+
+      if (!value) {
+        setPasswordError('');
+      } else {
+        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/;
+        if (!regex.test(password)) {
+          setPasswordError(
+            '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
+          );
+        } else {
+          setConfirmPassword('');
+        }
+      }
     }
 
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
     }
-  };
 
-  // 서버에서 데이터 받아와서 중복 확인
-  const duplication = async (type: 'email' | 'name') => {
-    const value = type === 'email' ? email : name;
-    const res = await axiosInstance.get(`/users?${type}=${value}`);
-    return { type, isDuplicate: res.data.item.length > 0 };
+    if (name === 'email') {
+      if (!e.target.value) {
+        setEmailDuplicationError('');
+      }
+    }
+    if (name === 'name') {
+      if (!e.target.value) {
+        setNameDuplicationError('');
+      }
+    }
   };
 
   // 버튼 클릭 시 중복된 데이터가 있으면 에러 메세지 출력
   const handleDuplication = async (type: 'email' | 'name') => {
-    const result = await duplication(type);
-    if (result.type === 'email') {
+    const allValues = getValues();
+    const value = type === 'email' ? allValues.email : allValues.name;
+
+    if (!value || value.trim().length === 0) {
+      if (type === 'email') {
+        setEmailDuplicationError('아이디를 입력해주세요');
+        setIsEmailUnique(false);
+      } else {
+        setNameDuplicationError('닉네임을 입력해주세요');
+        setIsNameUnique(false);
+      }
+      return;
+    }
+
+    // 서버에서 데이터 받아와서 중복 확인
+    const res = await axiosInstance.get(`/users?${type}=${value}`);
+    const isDuplicate = res.data.item.length > 0;
+
+    if (type === 'email') {
       setEmailDuplicationError(
-        result.isDuplicate
+        isDuplicate
           ? '이미 존재하는 아이디입니다.'
           : '사용 가능한 아이디입니다.',
       );
-      setIsEmailUnique(!result.isDuplicate);
+      setIsEmailUnique(!isDuplicate);
     } else {
       setNameDuplicationError(
-        result.isDuplicate
+        isDuplicate
           ? '이미 존재하는 닉네임입니다.'
           : '사용 가능한 닉네임 입니다.',
       );
-      setIsNameUnique(!result.isDuplicate);
+      setIsNameUnique(!isDuplicate);
     }
   };
 
@@ -172,6 +206,7 @@ const SignUp: React.FC = () => {
                     message: '이메일 형식으로 입력해 주세요.',
                   },
                 })}
+                onChange={handleInputChange}
               />
               <Button
                 bg="main"
@@ -184,7 +219,10 @@ const SignUp: React.FC = () => {
                 중복체크
               </Button>
             </div>
-            <Error text="text-[10px]">
+            <Error
+              text="text-[10px]"
+              color={isEmailUnique === true ? 'text-main' : 'text-error'}
+            >
               {errors.email?.message || emailDuplicationError}
             </Error>
 
@@ -200,18 +238,20 @@ const SignUp: React.FC = () => {
                     '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
                 },
               })}
-              onChange={handlePasswordChange}
+              onChange={handleInputChange}
             />
-            <Error text="text-[10px]">{errors.password?.message}</Error>
+            <Error text="text-[10px]">
+              {errors.password?.message || passwordError}
+            </Error>
 
             <input
               className="w-full border-b-[1px] border-line2 mt-2 mb-1"
               type="password"
               placeholder="비밀번호 확인"
               name="confirmPassword"
-              onChange={handlePasswordChange}
+              onChange={handleInputChange}
             />
-            <Error text="text-[10px]">{passwordError}</Error>
+            <Error text="text-[10px]">{confirmPasswordError}</Error>
           </section>
           <section
             className="bg-white p-4 rounded-[10px] 
@@ -229,6 +269,7 @@ const SignUp: React.FC = () => {
                     message: '특수문자는 사용할 수 없습니다.',
                   },
                 })}
+                onChange={handleInputChange}
               />
               <Button
                 bg="main"
@@ -241,7 +282,10 @@ const SignUp: React.FC = () => {
                 중복체크
               </Button>
             </div>
-            <Error text="text-[10px]">
+            <Error
+              text="text-[10px]"
+              color={isNameUnique === true ? 'text-main' : 'text-error'}
+            >
               {errors.name?.message || nameDuplicationError}
             </Error>
             <input
@@ -262,7 +306,6 @@ const SignUp: React.FC = () => {
                   message: '휴대전화 번호 형식으로 입력해 주세요.',
                 },
               })}
-              // onChange={handlePhoneChange}
             />
             <Error text="text-[10px]">{errors.phone?.message}</Error>
           </section>
