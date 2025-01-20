@@ -57,6 +57,18 @@ const SignUp: React.FC = () => {
     }
   }, [confirmPassword, password]);
 
+  // useEffect(() => {
+  //   if (!email.trim()) {
+  //     setEmailDuplicationError('');
+  //   }
+  // }, [email]);
+
+  // useEffect(() => {
+  //   if (!name.trim()) {
+  //     setNameDuplicationError('');
+  //   }
+  // }, [name]);
+
   const axiosInstance = useAxiosInstance();
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
@@ -108,7 +120,7 @@ const SignUp: React.FC = () => {
   };
 
   // input창 공백 입력 제거
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     e.target.value = value.replace(/\s/g, '');
 
@@ -118,6 +130,17 @@ const SignUp: React.FC = () => {
 
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
+    }
+
+    if (name === 'email') {
+      if (!e.target.value) {
+        setEmailDuplicationError('');
+      }
+    }
+    if (name === 'name') {
+      if (!e.target.value) {
+        setNameDuplicationError('');
+      }
     }
   };
 
@@ -172,6 +195,7 @@ const SignUp: React.FC = () => {
                     message: '이메일 형식으로 입력해 주세요.',
                   },
                 })}
+                onChange={handleInputChange}
               />
               <Button
                 bg="main"
@@ -184,7 +208,10 @@ const SignUp: React.FC = () => {
                 중복체크
               </Button>
             </div>
-            <Error text="text-[10px]">
+            <Error
+              text="text-[10px]"
+              color={isEmailUnique === true ? 'text-main' : 'text-error'}
+            >
               {errors.email?.message || emailDuplicationError}
             </Error>
 
@@ -200,7 +227,7 @@ const SignUp: React.FC = () => {
                     '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
                 },
               })}
-              onChange={handlePasswordChange}
+              onChange={handleInputChange}
             />
             <Error text="text-[10px]">{errors.password?.message}</Error>
 
@@ -209,7 +236,7 @@ const SignUp: React.FC = () => {
               type="password"
               placeholder="비밀번호 확인"
               name="confirmPassword"
-              onChange={handlePasswordChange}
+              onChange={handleInputChange}
             />
             <Error text="text-[10px]">{passwordError}</Error>
           </section>
@@ -229,6 +256,7 @@ const SignUp: React.FC = () => {
                     message: '특수문자는 사용할 수 없습니다.',
                   },
                 })}
+                onChange={handleInputChange}
               />
               <Button
                 bg="main"
@@ -241,7 +269,10 @@ const SignUp: React.FC = () => {
                 중복체크
               </Button>
             </div>
-            <Error text="text-[10px]">
+            <Error
+              text="text-[10px]"
+              color={isNameUnique === true ? 'text-main' : 'text-error'}
+            >
               {errors.name?.message || nameDuplicationError}
             </Error>
             <input
@@ -262,7 +293,6 @@ const SignUp: React.FC = () => {
                   message: '휴대전화 번호 형식으로 입력해 주세요.',
                 },
               })}
-              // onChange={handlePhoneChange}
             />
             <Error text="text-[10px]">{errors.phone?.message}</Error>
           </section>
