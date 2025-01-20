@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -17,11 +18,11 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 import Picker from '../../components/Picker';
-import KakaoAddressSearch from '../../components/KakaoAddr';
+import KakaoAddressSearch from '../../components/kakaoAddr';
 
 interface Position {
-  lat: number,
-  lng: number
+  lat: number; // 위도
+  lng: number; // 경도
 }
 
 interface FormData {
@@ -38,7 +39,7 @@ interface FormData {
     subLocation: string; // 공구, 판매 상세 지역
     meetingTime: string; // 공구 마감 시간 or 판매 시간
     type: string; // 판매글 타입
-    position: Position;
+    position: Position; // 위치 좌표
   };
 }
 interface AxiosErrorResponse {
@@ -71,10 +72,13 @@ const Write = () => {
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
 
+  // 날짜 선택
   const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
+  // 상세 지역 선택
   const [subLocation, setSubLocation] = useState('');
 
+  // 이미지 업로드
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
   );
@@ -129,7 +133,7 @@ const Write = () => {
           console.log(coords);
           resolve(coords);
         }
-      })
+      });
     });
   };
 
@@ -151,7 +155,7 @@ const Write = () => {
 
     const position = await getPosition(subLocation);
 
-    // 전송 값이 input이 아닌 경우 추가
+    // 서버에 전송될 추가 데이터
     data.quantity = num;
     data.extra.location = location;
     data.extra.subLocation = subLocation;
@@ -173,19 +177,17 @@ const Write = () => {
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-          path: image.path,
-          name: image.path.split('/').pop() || '', // 파일명 추출
-        }))
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
         : [
-          {
-            path: `/files/final07/default${randomNum}.png`,
-            name: `/default${randomNum}`,
-          },
-        ]; // 이미지 업로드 안되면 대체 이미지 추가
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
-
-
   };
 
   // 서버에서 이미지 경로 받아서 다시 저장
