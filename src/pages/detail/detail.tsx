@@ -290,7 +290,7 @@ const Detail = () => {
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex gap-2">
-          <h1 className="grow font-bold text-l max-w-[342.5px] truncate">
+          <h1 className="grow font-bold text-l max-w-[342.5px] ">
             {data?.item.name}
           </h1>
           <PostType type={productType} />
