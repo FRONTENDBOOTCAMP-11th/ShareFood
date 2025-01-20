@@ -142,7 +142,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
   };
 
   return (
-    <div className="flex flex-row gap-x-4 flex-nowrap overflow-x-scroll py-1">
+    <div className="flex flex-row gap-x-4 flex-nowrap py-1">
       <label
         htmlFor="uploadFile1"
         className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 shrink-0 "
@@ -159,7 +159,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
         <p className="text-xs font-normal text-gray-400 mt-2">{imageCount}/5</p>
       </label>
       <div
-        className="flex flex-row flex-nowrap gap-3 select-none "
+        className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden"
         onPointerDown={onDragStart}
         onPointerMove={isDrag ? onThrottleDragMove : undefined}
         onPointerUp={onDragEnd}
@@ -184,7 +184,6 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
           </div>
         ))}
       </div>
-
     </div>
   );
 }
