@@ -289,7 +289,7 @@ const Detail = () => {
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
-          <h1 className="grow font-bold text-xl truncate max-w-[342.5px]">
+          <h1 className="grow font-bold text-xl truncate max-w-[330px] mr-auto">
             {data?.item.name}
           </h1>
           <PostType type={productType} />
@@ -356,7 +356,12 @@ const Detail = () => {
           </div>
         )}
 
-        {data.item.extra.position && <KaKaoMap position={data.item.extra.position} subLocation={subLocation} />}
+        {data.item.extra.position && (
+          <KaKaoMap
+            position={data.item.extra.position}
+            subLocation={subLocation}
+          />
+        )}
 
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
@@ -390,7 +395,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-              // onClick={() => handleModal(productType)}
+                // onClick={() => handleModal(productType)}
               >
                 공구 신청 완료
               </Button>
@@ -416,7 +421,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-              // onClick={() => handleModal(productType)}
+                // onClick={() => handleModal(productType)}
               >
                 구매 신청 완료
               </Button>
