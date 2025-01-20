@@ -86,7 +86,7 @@ const MyPage = () => {
         <div className="flex items-center">
           <img
             src={`${apiUrl}${userInfo.item.image}`}
-            className="rounded-full w-[47px] h-[47px] bg-line1 mr-[11px]"
+            className="rounded-full w-[47px] h-[47px] bg-line1 mr-[11px] object-cover"
           />
           <div className="flex flex-col justify-evenly">
             <p className="text-[14px] text-font1 font-semibold">

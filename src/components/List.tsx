@@ -52,7 +52,7 @@ const List = ({
         <div className="flex flex-col gap-[12px] justify-evenly">
           {remain !== undefined ? (
             <div className="border-l-2">
-              <Tag tagName={'item'}>
+              <Tag tagName={`${type === 'buy' ? 'member' : 'item'}`}>
                 {remain} / <strong className="text-main">{total}</strong>
               </Tag>
             </div>

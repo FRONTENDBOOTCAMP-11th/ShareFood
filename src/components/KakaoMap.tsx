@@ -31,7 +31,7 @@ const KaKaoMap: React.FC<KaKaoMapProps> = ({ position, subLocation }) => {
   return (
     <Map
       center={position}
-      className='w-full h-[150px]'
+      className='w-full h-[150px] z-[0]'
     >
       <MapMarker position={position}>
         <div className='h-[30px] w-auto flex px-2 items-center justify-center overflow-hidden text-ellipsis  whitespace-nowrap rounded shadow-lg'>

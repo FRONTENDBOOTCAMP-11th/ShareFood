@@ -55,7 +55,7 @@ function Comment({ replies, refetch }: CommentProps) {
   } else {
     return (
       <div className="w-fit mx-auto my-[35px]">
-        <img src={image} alt="기본 이미지" className="mx-auto rounded-full" />
+        <img src={image} alt="기본 이미지" className="mx-auto rounded-full object-cover" />
         <p className="mt-[30px]">등록된 댓글이 없습니다</p>
       </div>
     );
