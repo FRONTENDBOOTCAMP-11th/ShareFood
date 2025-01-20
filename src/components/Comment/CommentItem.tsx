@@ -132,7 +132,7 @@ function CommentItem({
           <img
             src={profileImage}
             alt="프로필 사진"
-            className="max-w-[29px] max-h-[29px] rounded-full"
+            className="max-w-[29px] max-h-[29px] rounded-full object-cover"
           />
           <p className="ml-2 font-semibold text-[14px]">{name}</p>
           <p className="ml-auto text-font2">{date}</p>
@@ -182,7 +182,7 @@ function CommentItem({
           <img
             src={profileImage}
             alt="프로필 사진"
-            className="max-w-[29px] max-h-[29px] rounded-full"
+            className="max-w-[29px] max-h-[29px] rounded-full object-cover"
           />
           <p className="ml-2 font-semibold text-[14px]">{name}</p>
           <p className="ml-auto text-font2">{date}</p>

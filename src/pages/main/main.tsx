@@ -8,6 +8,8 @@ import { useGetNotification } from '../../hooks/useGetNotification';
 //store
 import { useFilterStateStore } from '../../store/listStateStore';
 import { useListStateStore } from '../../store/listStateStore';
+import { viewPaymentStore } from '../../store/detailStore';
+import { useAuthStore } from '../../store/authStore';
 
 // components
 import Header from '../../components/Layout/Header';
@@ -28,8 +30,8 @@ import check from '/images/check/check.svg';
 import checkActive from '/images/check/check-active.svg';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
-import { viewPaymentStore } from '../../store/detailStore';
-import { useAuthStore } from '../../store/authStore';
+import noticeChef from '/images/chef/noticeChef.svg';
+import rightArrow from '/images/arrow/rightArrow.svg';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -135,7 +137,7 @@ const Main = () => {
           <div className="relative">
             <img
               src={`${apiUrl}${user?.profile}`}
-              className="w-[30px] rounded-full"
+              className="w-[35px] h-[35px] rounded-full object-cover"
               onClick={handleModal}
             />
             {notification && notification?.length > 0 && (
@@ -238,33 +240,50 @@ const Main = () => {
       </div>
       {viewPayment && (
         <Modal setViewPayment={setViewPayment}>
-          <h2 className="text-[22px] font-bold text-main">알림 목록</h2>
+          <div className="flex gap-1">
+            <h2 className="text-[22px] font-bold text-main">알림 목록</h2>
+            <img src={noticeChef} className="w-[30px]" />
+          </div>
           <div className="flex flex-col gap-4 py-5 divide-y">
-            {notification?.map((key) => (
-              <div
-                className="flex justify-between items-center pt-2"
-                key={key._id}
-              >
-                <p className="text-font1 font-semibold max-w-[240px]">
-                  {key.user.name}님이 {key.content}
-                </p>
-                {key.type === 'product' && (
-                  <Button
-                    bg="main"
-                    color="white"
-                    height="35px"
-                    width="60px"
-                    text="text-sm"
-                    onClick={() => {
-                      navigate(`/detail/${key.extra.productId}`);
-                      setViewPayment(false);
-                    }}
-                  >
-                    확인하기
-                  </Button>
-                )}
-              </div>
-            ))}
+            {notification && notification.length > 0 ? (
+              notification.map((key) => (
+                <div
+                  className="flex justify-between items-center pt-2"
+                  key={key._id}
+                >
+                  <div className={`flex gap-[2px] ${key.content.length > 15 ? 'flex-col' : 'flex-row'}`}>
+                    <p className="text-font1 text-[14px] font-semibold max-w-[200px]">
+                      {key.user.name}님이
+                    </p>
+                    <p className="text-main text-[14px] font-semibold max-w-[200px]">
+                      {key.content}
+                    </p>
+                    {key.type === 'message' && (
+                      <p className="text-font1 text-[14px] font-semibold">
+                        라는 메시지를 보냈어요!
+                      </p>
+                    )}
+                  </div>
+                  {key.type === 'product' && (
+                    <Button
+                      bg="main"
+                      color="white"
+                      height="30px"
+                      width="40px"
+                      text="text-sm"
+                      onClick={() => {
+                        navigate(`/detail/${key.extra.productId}`);
+                        setViewPayment(false);
+                      }}
+                    >
+                      <img src={rightArrow} className='m-auto w-[20px]'/>
+                    </Button>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>알림이 없습니다</p>
+            )}
           </div>
         </Modal>
       )}
