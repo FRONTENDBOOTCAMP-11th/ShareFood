@@ -9,6 +9,7 @@ import Write from './pages/write/write';
 import UserInfo from './pages/myPage/modifyInfo';
 import SplashTransition from './pages/splash/splashTransition';
 import SearchPage from './pages/search/searchPage';
+import KakaoRedirect from './pages/login/kakaoRedirect';
 
 export const router = createBrowserRouter(
   [
@@ -27,6 +28,10 @@ export const router = createBrowserRouter(
         {
           path: 'login',
           element: <Login />,
+        },
+        {
+          path: '/users/login/kakao',
+          element: <KakaoRedirect />,
         },
         {
           path: 'main',

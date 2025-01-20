@@ -13,7 +13,7 @@ interface viewPaymentStore {
 }
 
 interface setIsBuyStore {
-  isBuy: boolean;
+  isBuy: boolean | null;
   setIsBuy: (isBuy: boolean) => void;
 }
 

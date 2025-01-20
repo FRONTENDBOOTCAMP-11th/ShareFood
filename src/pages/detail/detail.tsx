@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
+import {
+  contentStore,
+  isBuyStore,
+  isEditorStore,
+  viewPaymentStore,
+} from '../../store/detailStore';
+import { useAuthStore } from '../../store/authStore';
 
 import Header from '../../components/Layout/Header';
 import Total from '../../components/Total';
@@ -10,22 +19,14 @@ import CommentAdd from '../../components/Comment/CommentAdd';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Tag from '../../components/Tag';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import Counter from '../../components/Counter';
+import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
+import Loading from '../../components/Loading';
+import ImageSlide from '../../components/ImageSlide';
 
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
-
-import Counter from '../../components/Counter';
-import { toast } from 'react-toastify';
-import CheckBuyList from '../../components/CheckOrder/CheckBuyList';
-import {
-  contentStore,
-  isBuyStore,
-  isEditorStore,
-  viewPaymentStore,
-} from '../../store/detailStore';
-import Loading from '../../components/Loading';
-import ImageSlide from '../../components/ImageSlide';
+import { useRegisterNotification } from '../../hooks/useRegisterNotification';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -51,58 +52,67 @@ interface Response {
 }
 
 const Detail = () => {
-  const axios = axiosInstance;
+  const axiosInstance = useAxiosInstance();
   const { _id } = useParams();
   const navigate = useNavigate();
 
   // 사용자 로그인 정보
-  const loginInfo =
-    localStorage.getItem('user') || sessionStorage.getItem('user');
-  let loginId = '';
-  if (loginInfo) {
-    loginId = JSON.parse(loginInfo).state?.user?._id;
-  } else {
-    console.log('미 로그인 사용자 접근');
-    // 미 로그인 사용자의 접속 차단은 여기를 수정해서 추가 가능
-  }
+  const { user } = useAuthStore();
+  const loginInfo = user?._id;
+
+  const { mutate: registerNotification } = useRegisterNotification();
 
   // 상품의 정보 흭득
   const postNum: number = Number(_id);
   const { data, refetch } = useQuery({
     queryKey: ['products', _id],
-    // queryFn: () => setTimeout(() => axios.get(`/products/${postNum}`), 1000),
-    queryFn: () => axios.get(`/products/${postNum}`),
-    select: (res) => {
-      if (res.data.item.seller_id == loginId) setIsEditor(true);
+    queryFn: async () => {
+      const res = await axiosInstance.get(`/products/${postNum}`);
       return res.data;
     },
     staleTime: 1000 * 10,
+    retry: 5,
+    retryDelay: 1000,
   });
 
+  // 작성자인지 확인
+  useEffect(() => {
+    if (data?.item?.seller_id) {
+      setIsEditor(data.item.seller_id === loginInfo);
+    }
+  }, [data, loginInfo]);
+
   // 주문 상태 확인
-  const { refetch: reCheckOrder } = useQuery({
-    queryKey: ['name', data?.item?.name],
-    queryFn: () => {
-      const response = axios.get(`/orders`).catch(() => {
+  const { data: order, refetch: reCheckOrder } = useQuery({
+    queryKey: ['name', _id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/orders`).catch(() => {
         console.error('주문하지 않은 사용자');
       });
-      // const encodedKeyword = encodeURIComponent(data.item.name);
-      // const response = axios
-      //   .get(`/orders?keword=${encodedKeyword}`)
-      //   .catch(() => {
-      //     console.error('주문하지 않은 사용자');
-      //   });
       return response;
     },
     select: (res) => {
-      res?.data.item.forEach((value: OrderItem) => {
-        if (value.products[0]._id == data.item._id) setIsBuy(true);
-      });
-      return res?.data;
+      // let test = false;
+      // res?.data.item.forEach((value: OrderItem) => {
+      //   if (value.products[0]._id == data.item._id) {
+      //     test = true;
+      //     setIsBuy(true);
+      //   }
+      // });
+      // if (test == false) setIsBuy(false);
+      return res?.data.item;
     },
     enabled: !!data?.item?.name,
-    staleTime: 1000 * 10,
+    // staleTime: 1000 * 10,
   });
+
+  // api에서 undefined를 반환할 때 재요청
+  useEffect(() => {
+    if (!data) {
+      const timer = setTimeout(() => refetch(), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // 공구 하기 기능
   const addRecruit = useMutation({
@@ -115,13 +125,26 @@ const Detail = () => {
           },
         ],
       };
-      return await axios.post('/orders', body);
+      return await axiosInstance.post('/orders', body);
     },
     onSuccess: () => {
-      refetch();
-      toast.success('공구하기가 완료 되었습니다.');
-      setViewPayment(false);
-      reCheckOrder();
+      try {
+        registerNotification({
+          target_id: data.item.seller_id,
+          content: `${data.item.name}의 거래를 원해요!`,
+          type: 'product',
+          extra: {
+            productId: data.item._id,
+          },
+        });
+        refetch();
+        toast.success('공구하기가 완료 되었습니다.');
+        setViewPayment(false);
+        reCheckOrder();
+      } catch (err) {
+        toast.error('알림 전송에 실패했습니다.');
+        console.log(err);
+      }
     },
     onError: (err: CustomErr) => {
       if (err.response.status === 401) {
@@ -145,13 +168,26 @@ const Detail = () => {
           },
         ],
       };
-      return await axios.post('/orders', body);
+      return await axiosInstance.post('/orders', body);
     },
     onSuccess: () => {
-      refetch();
-      toast.success('구매하기가 완료 되었습니다.');
-      setViewPayment(false);
-      reCheckOrder();
+      try {
+        registerNotification({
+          target_id: data.item.seller_id,
+          content: `${data.item.name}의 거래를 원해요!`,
+          type: 'product',
+          extra: {
+            productId: data.item._id,
+          },
+        });
+        refetch();
+        toast.success('구매하기가 완료 되었습니다.');
+        setViewPayment(false);
+        reCheckOrder();
+      } catch (err) {
+        toast.error('알림 전송에 실패했습니다.');
+        console.log(err);
+      }
     },
     onError: (err: CustomErr) => {
       if (err.response.status === 401) {
@@ -179,38 +215,65 @@ const Detail = () => {
   // modal 상태 관리
   // 상세페이지에서 버튼 클릭했을 때 정보를 받아서 모달 콘텐츠가 알맞게 나오게 하면 될 것 같습니다.
   // 임시로 공구하기, 구매자 확인만 동작하게 만들었습니다.
-  // const [content, setContent] = useState<string>();
   const { content, setContent } = contentStore();
 
+  // 주문 상태 파악 및 주문 직후 주문상태 파악 후 버튼 변경을 위한 함수
+  useEffect(() => {
+    if (data) {
+      // data 로딩 시 실행
+      let test = false;
+      order?.forEach((value: OrderItem) => {
+        if (value.products[0]._id == data?.item._id) {
+          test = true;
+          setIsBuy(true);
+        }
+      });
+      if (test == false) setIsBuy(false);
+    }
+  }, [data, order, setIsBuy]);
+
+  // 모달 여부 설정
   const handleModal = (contentType: string) => {
     setContent(contentType);
     setViewPayment(true);
-    console.log(viewPayment);
   };
 
   if (!data) {
-    return <Loading />;
+    refetch();
+    reCheckOrder();
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
   }
 
-  const productType: string = data.item.extra.type;
+  // 공구, 판매 구분 및 값 정규 표현식 적용
+  const productType: string = data?.item.extra.type;
   const priceTrim =
-    data.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
+    data?.item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 원';
 
   // 이미지 가공
-  const imageList = data.item.mainImages.map((value: ImageItem) => {
+  const imageList = data?.item.mainImages.map((value: ImageItem) => {
     return `https://11.fesp.shop` + value.path;
   });
 
-  // console.log('상품의 유형 : ', productType);
-  // console.log('주문 여부 : ', isBuy);
-  // console.log('작성자 여부 : ', isEditor);
+  // 카카오 이미지 가공
+  let profileImage = '';
+  if (data?.item.seller.image != null) {
+    if (data?.item.seller.image.includes('kakao')) {
+      profileImage = data?.item.seller.image;
+    } else {
+      profileImage = `https://11.fesp.shop${data?.item.seller.image}`;
+    }
+  } else profileImage = basicImage;
 
   return (
     <div className="pt-14 pb-[100px] min-h-screen ">
       <Header>
         <div className="flex items-center max-w-[348px]">
           <h1 className="text-5 font-bold ml-2 text-font1 truncate">
-            {data.item.name}
+            {data?.item.name}
           </h1>
         </div>
         <button onClick={() => navigate(-1)} className="fixed right-[17px]">
@@ -224,7 +287,7 @@ const Detail = () => {
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex">
           <h1 className="grow font-bold text-xl truncate max-w-[342.5px]">
-            {data.item.name}
+            {data?.item.name}
           </h1>
           <PostType type={productType} />
         </div>
@@ -232,19 +295,15 @@ const Detail = () => {
         <div className="board-author flex items-center">
           <img
             className="w-[38px] h-[38px] rounded-full"
-            src={
-              data.item.seller.image
-                ? `https://11.fesp.shop${data.item.seller.image}`
-                : basicImage
-            }
+            src={profileImage}
             alt="기본 이미지"
           />
           <h2 className="grow ml-3 font-medium text-sm">
-            {data.item.seller.name}
+            {data?.item.seller.name}
           </h2>
           <div className="border border-main rounded-full px-5 py-[1px]">
             <p className="text-xs font-normal text-main leading-6 text-center">
-              {data.item.extra.location}
+              {data?.item.extra.location}
             </p>
           </div>
         </div>
@@ -294,13 +353,13 @@ const Detail = () => {
           </div>
         )}
 
-        <p className="whitespace-pre-wrap text-[15px]">{data.item.content}</p>
+        <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
         <Total data={data} onRefetch={refetch} />
 
         <div className="board-attach">
           <h2 className="text-base font-bold mb-[15px]">댓글</h2>
-          <Comment replies={data.item.replies} />
+          <Comment replies={data?.item.replies} refetch={refetch} />
           <CommentAdd _id={_id} onRefetch={refetch} />
           {/* 게시글 type, 구매 여부에 따라 버튼 및 기능 변경 */}
           {isEditor == false && productType == 'buy' && isBuy == false && (

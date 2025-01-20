@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
-import { axiosInstance } from '../../hooks/axiosInstance';
-import { useLocalStorage, useSessionStorage } from '../../store/authStore';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
+import { useAuthStore } from '../../store/authStore';
 
 import Button from '../../components/Button';
 import Error from '../../components/Error';
@@ -26,11 +26,11 @@ const Login: React.FC = () => {
   } = useForm<FormData>();
 
   const navigate = useNavigate();
+  const axiosInstance = useAxiosInstance();
 
   // 로그인 상태 유지
   const [active, setActive] = useState<string>('inactive');
-  const useLocal = useLocalStorage();
-  const useSession = useSessionStorage();
+  const setUser = useAuthStore((state) => state.setUser);
 
   // 활성, 비활성 따라서 이미지 변경
   const handleActive = () => {
@@ -44,27 +44,19 @@ const Login: React.FC = () => {
       return res.data;
     },
     onSuccess: (res) => {
-      console.log(res);
-
       const user = res.item;
-      console.log(user);
 
       // 로그인 정보 저장
-      // 로그인 상태 버튼 활성 시 로컬 스토리지 저장
-      if (active === 'active') {
-        useLocal.setItem('_id', user._id);
-        useLocal.setItem('name', user.name);
-        useLocal.setItem('profiled', user.image ? user.image : undefined);
-        useLocal.setItem('accessToken', user.token.accessToken);
-        useLocal.setItem('refreshToken', user.token.refreshToken);
-        // 로그인 상태 버튼 비활성 시 세션 스토리지 저장
-      } else {
-        useSession.setItem('_id', user._id);
-        useSession.setItem('name', user.name);
-        useSession.setItem('profiled', user.image ? user.image : undefined);
-        useSession.setItem('accessToken', user.token.accessToken);
-        useSession.setItem('refreshToken', user.token.refreshToken);
-      }
+      setUser(
+        {
+          _id: user._id,
+          name: user.name,
+          profile: user.image,
+          accessToken: user.token.accessToken,
+          refreshToken: user.token.refreshToken,
+        },
+        active,
+      );
 
       // 로그인 성공 시 알림창 띄우고 메인페이지 이동
       toast.success(`${res.item.name}님, 환영합니다.`, {
@@ -100,6 +92,15 @@ const Login: React.FC = () => {
   // onSubmit에 사용하기 위함
   const onSubmit = (data: FormData) => {
     login.mutate(data);
+  };
+
+  // 카카오 로그인
+  const restAPI = import.meta.env.VITE_REST_API_KEY;
+  const redirectURI = import.meta.env.VITE_REDIRECT_URI;
+
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${restAPI}&redirect_uri=${redirectURI}&response_type=code`;
+  const kakaoLogin = () => {
+    window.location.href = kakaoURL;
   };
 
   return (
@@ -148,7 +149,13 @@ const Login: React.FC = () => {
             >
               로그인
             </Button>
-            <Button height="40px" text="text-sm" bg="kakao" color="kakao">
+            <Button
+              height="40px"
+              text="text-sm"
+              bg="kakao"
+              color="kakao"
+              onClick={kakaoLogin}
+            >
               <div className="flex justify-center items-center gap-2">
                 <img src="/images/icons/kakao.svg" />
                 <p>카카오계정으로 로그인</p>
@@ -174,6 +181,7 @@ const Login: React.FC = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
     </>
   );

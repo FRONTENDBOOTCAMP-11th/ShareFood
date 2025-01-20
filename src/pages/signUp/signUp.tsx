@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import Button from '../../components/Button';
 import Error from '../../components/Error';
@@ -19,6 +19,7 @@ interface UserInfo {
   name: string; // 닉네임
   phone: string; // 전화번호
   type?: string; // data 타입 => seller로 지정
+  image: string;
 }
 
 const SignUp: React.FC = () => {
@@ -56,9 +57,11 @@ const SignUp: React.FC = () => {
     }
   }, [confirmPassword, password]);
 
+  const axiosInstance = useAxiosInstance();
   const addUser = useMutation({
     mutationFn: async (userInfo: UserInfo) => {
       userInfo.type = 'seller'; // 데이터 타입 지정
+      userInfo.image = '/files/final07/default4.png';
 
       // API 호출
       const res = await axiosInstance.post('/users', userInfo);
@@ -286,6 +289,7 @@ const SignUp: React.FC = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
     </>
   );

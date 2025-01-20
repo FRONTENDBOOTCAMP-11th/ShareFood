@@ -1,4 +1,5 @@
 import { forwardRef, useState } from 'react';
+import { Location } from '../constants/location';
 interface SelectTypes {
   meetingLocation: string;
   setMeetingLocation: (arg0: string) => void;
@@ -6,17 +7,6 @@ interface SelectTypes {
 
 const Select = forwardRef<HTMLDivElement, SelectTypes>(
   ({ meetingLocation, setMeetingLocation }: SelectTypes, ref) => {
-    const location: string[] = [
-      '전체지역',
-      '서울',
-      '경기',
-      '강원',
-      '충청',
-      '경상',
-      '전라',
-      '제주',
-    ];
-
     const [isVisible, setIsVisible] = useState<boolean>(false);
 
     // 클릭 시 토글 나오게
@@ -31,7 +21,7 @@ const Select = forwardRef<HTMLDivElement, SelectTypes>(
     };
 
     // 리스트 생성
-    const list = location.map((item, index) => (
+    const list = Location.map((item, index) => (
       <li
         key={item}
         className={`flex flex-col items-center text-main ${

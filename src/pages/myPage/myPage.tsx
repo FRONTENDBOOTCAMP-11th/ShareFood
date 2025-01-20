@@ -1,28 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import {
   useGetBuyList,
   useGetLikeList,
   useGetMyList,
 } from '../../hooks/useGetList';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
+import { useGetNotification } from '../../hooks/useGetNotification';
+
+import { useAuthStore } from '../../store/authStore';
 import { useMyListStateStore } from '../../store/listStateStore';
+
+import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 
 import Layout from '../../components/Layout';
 import List from '../../components/List';
 import Button from '../../components/Button';
-
-import check from '/images/check/check.svg';
-import checkActive from '/images/check/check-active.svg';
-import { LikeProducts, MyProducts, Product } from '../../types/productsTypes';
 import Loading from '../../components/Loading';
+import whiteChef from '/images/chef/whiteChef.svg';
 
 const MyPage = () => {
-  const [showSoldOut, setShowSoldOut] = useState(false);
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const { _id } = useParams<{ _id: string }>();
-  console.log(_id);
 
   // 게시물 토글 유지
   const tabs = [
@@ -31,40 +33,52 @@ const MyPage = () => {
     { label: '거래신청글', key: 'trade' },
   ];
   const { list, setList } = useMyListStateStore();
+  const axiosInstance = useAxiosInstance();
 
   // 회원정보 조회
-  const { data: userInfo } = useGetUserInfo(_id);
+  const { data: userInfo } = useGetUserInfo(axiosInstance, _id);
 
   // 내 작성글 조회
-  const { data: myList } = useGetMyList(showSoldOut);
+  const { data: myList } = useGetMyList(false);
 
   // 내가 좋아요한 글 조회
-  const { data: myLikeList } = useGetLikeList(showSoldOut, _id);
+  const { data: myLikeList } = useGetLikeList(false, _id);
 
   // 거래 신청 글 조회
-  const { data: myBuyList } = useGetBuyList(showSoldOut);
+  const { data: myBuyList } = useGetBuyList(false);
 
-  if (myBuyList) console.log(myBuyList);
+  const { resetUser } = useAuthStore();
+
+  // 알림 불러오기
+  const [isNoti, setIsNoti] = useState<number[]>([]);
+  const { data: notification } = useGetNotification();
+  useEffect(() => {
+    if (notification) {
+      notification.forEach((key) => {
+        setIsNoti((prev) => {
+          if (!prev.includes(key.extra.productId)) {
+            return [...prev, key.extra.productId];
+          }
+          return prev;
+        });
+      });
+    }
+  }, [notification]);
 
   // 로그아웃
   const handleLogout = () => {
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('_id');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('name');
-    localStorage.removeItem('profiled');
-    
-    sessionStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('_id');
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('name');
-    sessionStorage.removeItem('profiled');
+    resetUser();
 
     // 로그아웃 후 리다이렉트
     window.location.href = '/';
   };
 
-  if (!userInfo) return <Loading />;
+  if (!userInfo)
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="pt-[24px] pb-[100px] px-[17px] bg-back1 flex flex-col gap-[13px] min-h-screen">
@@ -89,7 +103,7 @@ const MyPage = () => {
         </div>
       </Layout>
       <Layout>
-        <div className="flex gap-3 border-b">
+        <div className="flex gap-3 border-b mb-4">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -105,44 +119,37 @@ const MyPage = () => {
           ))}
         </div>
 
-        <button
-          onClick={() => setShowSoldOut((prev) => !prev)}
-          className="flex items-center gap-[5px] my-[10px]"
-        >
-          <img
-            src={`${showSoldOut ? checkActive : check}`}
-            alt="check"
-            className="w-[15px] h-[15px]"
-          />
-          <p
-            className={`text-[13px] ${showSoldOut ? 'text-main' : 'text-font2'}`}
-          >
-            거래 완료 된 상품도 보기
-          </p>
-        </button>
-
         {list === '작성글' && (
           <div className="flex flex-col gap-[10px]">
             {myList ? (
               myList.item.map((products: Product, index: number) => (
-                <List
-                  id={products._id}
-                  key={index}
-                  title={products.name}
-                  type={products.extra.type}
-                  total={products.quantity}
-                  remain={products.buyQuantity}
-                  location={products.extra.subLocation}
-                  due={products.extra.meetingTime}
-                  price={products.price}
-                  date={products.createdAt}
-                  like={products.bookmarks}
-                  comments={products.replies}
-                  imageScr={products?.mainImages[0]?.path || ''}
-                />
+                <div className="relative" key={index}>
+                  <List
+                    id={products._id}
+                    title={products.name}
+                    type={products.extra.type}
+                    total={products.quantity}
+                    remain={products.buyQuantity}
+                    location={products.extra.subLocation}
+                    due={products.extra.meetingTime}
+                    price={products.price}
+                    date={products.createdAt}
+                    like={products.bookmarks}
+                    comments={products.replies}
+                    imageScr={products?.mainImages[0]?.path || ''}
+                  />
+                  {isNoti.includes(products._id) && (
+                    <div className="absolute h-[30px] bg-sub rounded-full bottom-[7px] right-[16px] p-1 flex gap-[5px] items-center px-2 shadow-custom">
+                      <img src={whiteChef} className="w-[17px]" />
+                      <span className="text-[13px] text-white font-medium">
+                        신청자가 있어요!
+                      </span>
+                    </div>
+                  )}
+                </div>
               ))
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>등록한 상품이 없습니다.</div>
             )}
           </div>
         )}
@@ -166,7 +173,7 @@ const MyPage = () => {
                 ),
               )
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>좋아요한 상품이 없습니다.</div>
             )}
           </div>
         )}
@@ -186,7 +193,7 @@ const MyPage = () => {
                 />
               ))
             ) : (
-              <div>작성글이 없습니다.</div>
+              <div>거래 신청 상품이 없습니다.</div>
             )}
           </div>
         )}

@@ -1,27 +1,42 @@
 import { useRef, useState } from 'react';
 import photo from '/images/photo.svg';
-import { axiosInstance } from '../hooks/axiosInstance';
+import useAxiosInstance from '../hooks/useAxiosInstance';
 
-function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
-  const [showImages, setShowImages] = useState<string[]>([]);
+interface UploadImgProps {
+  onChange: (newPath: string[]) => void;
+  onDelete: (updatePath: string[]) => void;
+}
+
+interface ImgProps {
+  preview: string;
+  serverPath: string;
+}
+
+function ImageUpload({ onChange, onDelete }: UploadImgProps) {
+  const [showImages, setShowImages] = useState<ImgProps[]>([]);
   const [imageCount, setImageCount] = useState<number>(0);
+
+  // 이미지 스크롤
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isDrag, setIsDrag] = useState<boolean>(false);
   const [startX, setStartX] = useState<number | undefined>(undefined);
 
-  const onDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  const axiosInstance = useAxiosInstance();
+
+  // PointerEvent 사용
+  const onDragStart = (e: React.PointerEvent<HTMLDivElement>) => {
     if (scrollRef.current) {
       setIsDrag(true);
       setStartX(e.pageX + scrollRef.current.scrollLeft);
     }
   };
 
-  const onDragEnd = () => {
+  const onDragEnd = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
     setIsDrag(false);
   };
 
-  const onDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onDragMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isDrag && scrollRef.current) {
       const { scrollWidth, clientWidth, scrollLeft } = scrollRef.current;
 
@@ -35,13 +50,16 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
     }
   };
 
-  const throttle = (func: (...args: any[]) => void, ms: number) => {
+  const throttle = <T extends (e: React.PointerEvent<HTMLDivElement>) => void>(
+    func: T,
+    ms: number,
+  ) => {
     let throttled = false;
-    return (...args: any[]) => {
+    return (e: React.PointerEvent<HTMLDivElement>) => {
       if (!throttled) {
         throttled = true;
         setTimeout(() => {
-          func(...args);
+          func(e);
           throttled = false;
         }, ms);
       }
@@ -57,51 +75,57 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
   ) => {
     // 파일의 정보를 불러옴
     const imageLists = event.target.files;
-    // 파일의 정보를 react 상태 관리
-    const imageUrlLists: Array<string> = [...showImages];
-    // 서버에 보낼 이미지
-    const imageUpload: Array<string> = [];
 
-    if (imageLists) {
-      if (showImages.length + imageLists.length > 5) {
-        alert('5장까지 첨부가 가능합니다.');
-        return;
-      }
-      for (let i = 0; i < imageLists.length; i++) {
-        // 상대 경로만 반환 받아서 변수에 할당
-        const currentImageUrl = URL.createObjectURL(imageLists[i]);
-        imageUrlLists.push(currentImageUrl);
+    if (!imageLists) return;
 
-        // 서버 업로드
+    if (showImages.length + imageLists.length > 5) {
+      alert('5장까지 첨부가 가능합니다.');
+      return;
+    }
+
+    // 서버로 보낼 이미지 및 경로
+    const newImages = [...showImages];
+
+    // 부모에게 넘길 서버 경로
+    const newPath: string[] = [];
+
+    for (let i = 0; i < imageLists.length; i++) {
+      const image = imageLists[i];
+
+      // blob URL
+      const previewURL = URL.createObjectURL(image);
+
+      // 서버 업로드
+      try {
         const formData = new FormData();
         formData.append('attach', imageLists[i]);
 
-        try {
-          const res = await axiosInstance.post('/files', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
+        const res = await axiosInstance.post('/files', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
 
-          const imagePath = res.data.item[0].path;
+        const imagePath = res.data.item[0].path;
 
-          imageUpload.push(imagePath);
+        // 새로운 ImgProps 생성
+        newImages.push({
+          preview: previewURL,
+          serverPath: imagePath,
+        });
 
-          console.log(currentImageUrl); // 화면 출력용 경로
-          console.log(imagePath); // 서버 업로드되는 경로
-
-          // 상대 경로의 리스트를 저장
-          setShowImages(imageUrlLists);
-
-          setImageCount(imageUrlLists.length);
-
-          // 이미지 경로 전달
-          onChange(imageUpload);
-        } catch (error) {
-          console.error(error);
-        }
+        newPath.push(imagePath);
+      } catch (error) {
+        console.error(error);
       }
     }
+
+    // 상대 경로의 리스트를 저장
+    setShowImages(newImages);
+    setImageCount(newImages.length);
+
+    // 이미지 경로 전달
+    onChange(newPath);
   };
 
   // x 버튼 클릭 시 이미지 삭제
@@ -109,35 +133,46 @@ function ImageUpload({ onChange }: { onChange: (images: string[]) => void }) {
     event,
   ) => {
     const id = Number(event.currentTarget.dataset.id); // data-id 속성에서 ID를 가져옴
-    setShowImages(showImages.filter((_, index) => index !== id));
-    onChange(showImages.filter((_, index) => index !== id)); // 변경된 이미지 경로 전달
-    setImageCount(imageCount - 1);
+    const updateImg = showImages.filter((_, index) => index !== id);
+    setShowImages(updateImg);
+    setImageCount(updateImg.length);
+
+    const updatePath = updateImg.map((img) => img.serverPath);
+    onDelete(updatePath); // 변경된 이미지 경로 전달
   };
 
   return (
-    <div
-      className="flex gap-x-4 flex-nowrap overflow-x-hidden"
-      onMouseDown={onDragStart}
-      onMouseMove={isDrag ? onThrottleDragMove : undefined}
-      onMouseUp={onDragEnd}
-      onMouseLeave={onDragEnd}
-      ref={scrollRef}
-    >
-      {showImages.map((image, id) => (
-        <div key={id} className="relative">
-          <img src={image} className="w-[100px] h-[100px]" />
-          <button
-            data-id={id}
-            onClick={handleDeleteImage}
-            className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
-          >
-            {/* X 버튼 색 변경 필요! */}X
-          </button>
-        </div>
-      ))}
+    <div className="flex flex-row gap-x-4 flex-nowrap">
+      <div
+        className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden "
+        onPointerDown={onDragStart}
+        onPointerMove={isDrag ? onThrottleDragMove : undefined}
+        onPointerUp={onDragEnd}
+        onPointerLeave={onDragEnd}
+        ref={scrollRef}
+        style={{ touchAction: 'none' }}
+      >
+        {showImages.map((image, id) => (
+          <div key={id} className="relative shrink-0">
+            <img
+              src={image.preview}
+              draggable="false" // e.preventDefault() 대신 사용해서 이미지 드래그 막음
+              className="w-[100px] h-[100px] object-cover shrink-0"
+            />
+            <button
+              data-id={id}
+              onClick={handleDeleteImage}
+              className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
+            >
+              {/* X 버튼 색 변경 필요! */}X
+            </button>
+          </div>
+        ))}
+      </div>
+
       <label
         htmlFor="uploadFile1"
-        className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300  "
+        className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 shrink-0 "
       >
         <img src={photo} alt="사진첨부 이미지" className="mb-1.5" />
         <input

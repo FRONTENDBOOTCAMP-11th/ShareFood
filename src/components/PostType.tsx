@@ -10,14 +10,18 @@ interface props {
 <PostType type={typeBuy} /> */
 }
 function PostType({ type }: props) {
-  let buttonValue: string = '';
-  if (type == 'sell') buttonValue = '팔아요';
-  else if (type == 'buy') buttonValue = '같이 사요';
-
   return (
-      <p className="border h-fit bg-back2 text-sub border-transparent text-[12px] py-1 px-2 text-center rounded-[4px]">
-        {buttonValue}
-      </p>
+    <>
+      {type === 'sell' ? (
+        <p className="border h-fit text-back2 bg-sub border-transparent text-[12px] py-1 px-2 text-center rounded-[4px]">
+          팔아요
+        </p>
+      ) : (
+        <p className="border h-fit bg-back2 text-sub border-transparent text-[12px] py-1 px-2 text-center rounded-[4px]">
+          같이 사요
+        </p>
+      )}
+    </>
   );
 }
 

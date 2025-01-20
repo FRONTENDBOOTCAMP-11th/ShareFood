@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type User = {
   _id: number;
@@ -13,38 +14,24 @@ interface AuthState {
 }
 
 interface AuthActions {
-  setUser: (user: User | null) => void;
-  resetUser: (user: User | null) => void;
+  setUser: (user: User | null, active: string) => void;
+  resetUser: () => void;
 }
 
-export const useAuthStore = create<AuthState & AuthActions>((set) => ({
-  user: null,
-  setUser: (user: User | null) => {
-    set({ user });
-  },
-  resetUser: () => set({ user: null }),
-}));
-
-export const useSessionStorage = () => {
-  const setItem = (key: string, value: string | undefined) => {
-    sessionStorage.setItem(key, value ?? '');
-  };
-
-  const getItem = (key: string) => {
-    return sessionStorage.getItem(key);
-  };
-
-  return { setItem, getItem };
-};
-
-export const useLocalStorage = () => {
-  const setItem = (key: string, value: string | undefined) => {
-    localStorage.setItem(key, value ?? '');
-  };
-
-  const getItem = (key: string) => {
-    return sessionStorage.getItem(key);
-  };
-
-  return { setItem, getItem };
-};
+export const useAuthStore = create<AuthState & AuthActions>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user: User | null, active: string) => {
+        useAuthStore.persist.setOptions({
+          storage: createJSONStorage(() => active === 'active' ? localStorage : sessionStorage),
+        });
+        set({ user });
+      },
+      resetUser: () => set({ user: null }),
+    }),
+    {
+      name: 'user'
+    }
+  )
+);

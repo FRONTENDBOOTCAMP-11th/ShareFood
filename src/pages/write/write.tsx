@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance } from '../../hooks/axiosInstance';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 
 import dayjs, { Dayjs } from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import Button from '../../components/Button';
 import Header from '../../components/Layout/Header';
@@ -18,6 +17,7 @@ import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
 import KakaoAddressSearch from '../../components/kakaoAddr';
+import Picker from '../../components/Picker';
 
 interface FormData {
   price: number; // 상품 가격
@@ -35,6 +35,9 @@ interface FormData {
     type: string; // 판매글 타입
   };
 }
+interface AxiosErrorResponse {
+  errors: { msg: string }[];
+}
 
 const Write = () => {
   const {
@@ -46,7 +49,13 @@ const Write = () => {
     setError,
     clearErrors,
     reset,
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      extra: {
+        meetingTime: '',
+      },
+    },
+  });
 
   const navigate = useNavigate();
 
@@ -58,12 +67,16 @@ const Write = () => {
 
   const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
+  const [subLocation, setSubLocation] = useState('');
+
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
   );
 
   // Selector : 기본값 '전체지역'
   const location = watch('extra.location', '전체지역');
+
+  const axiosInstance = useAxiosInstance();
 
   // 상품 게시글 등록
   const addPost = useMutation({
@@ -86,9 +99,10 @@ const Write = () => {
       });
     },
     onError: (err) => {
-      const axiosError = err as AxiosError;
+      const axiosError = err as AxiosError<AxiosErrorResponse>;
       if (axiosError.response) {
         console.error('Error Response:', axiosError.response.data); // 서버에서 반환된 에러 메시지
+        toast.error(`${axiosError.response.data.errors[0].msg}`);
       } else {
         console.error('Unexpected Error:', err); // 기타 에러
       }
@@ -97,57 +111,71 @@ const Write = () => {
 
   // onSubmit용 함수
   const onSubmit = (data: FormData) => {
-    // 전체지역
+    // 전체지역 유효성 검증
     if (location === '전체지역') {
       setError('extra.location', {
         message: '* 지역을 선택해주세요',
       });
     }
 
+    // 날짜, 시간 유효성 검증
+    if (selectDate === null) {
+      setError('extra.meetingTime', {
+        message: '* 날짜, 시간을 선택해주세요',
+      });
+    }
+
     // 전송 값이 input이 아닌 경우 추가
     data.quantity = num;
     data.extra.location = location;
+    data.extra.subLocation = subLocation;
     data.extra.type = productsType;
+
+    // 가격 정수 형태로 변경 후 전송
+    const integerPrice = Number(data.price.toString().replace(/,/g, ''));
+    data.price = integerPrice;
 
     // 입력한 시간 값 가져옴
     const dateTime = dayjs(selectDate);
+    console.log(dateTime);
 
-    // 입력값이 날짜+시간 인지 날짜 인지 검증
-    if (dateTime.isValid()) {
-      const hour = dateTime.hour();
-      const minute = dateTime.minute();
-
-      // 날짜만 있는 경우 시간 추가
-      if (hour === 0 && minute === 0) {
-        data.extra.meetingTime = dateTime
-          .hour(23)
-          .minute(59)
-          .format('YYYY.MM.DD HH:mm');
-      }
-      // 날짜 + 시간의 경우 그대로 추가
-      else {
-        data.extra.meetingTime = dateTime.format('YYYY.MM.DD HH:mm');
-      }
-    }
-
+    // 랜덤 이미지 출력
     const randomNum = Math.floor(Math.random() * 4) + 1;
-    console.log(randomNum);
 
     // 서버에 저장된 이미지 경로 받아서 다시 저장
     data.mainImages =
       uploadImg.length > 0
         ? uploadImg.map((image) => ({
-          path: image.path,
-          name: image.path.split('/').pop() || '', // 파일명 추출
-        }))
+            path: image.path,
+            name: image.path.split('/').pop() || '', // 파일명 추출
+          }))
         : [
-          {
-            path: `/files/final07/default${randomNum}.png`,
-            name: `/default${randomNum}`,
-          },
-        ]; // 이미지 업로드 안되면 대체 이미지 추가
+            {
+              path: `/files/final07/default${randomNum}.png`,
+              name: `/default${randomNum}`,
+            },
+          ]; // 이미지 업로드 안되면 대체 이미지 추가
 
     addPost.mutate(data);
+  };
+
+  // 서버에서 이미지 경로 받아서 다시 저장
+  const updateImg = (images: string[]) => {
+    setUploadImg((prevState) => {
+      const existingPath = prevState.map((img) => img.path);
+      const newImg = images
+        .filter((path) => !existingPath.includes(path))
+        .map((path) => ({
+          path,
+          name: path.split('/').pop() || '',
+        }));
+      return [...prevState, ...newImg];
+    });
+  };
+
+  // 삭제하면 업로드된 경로도 삭제
+  const deleteImg = (updatePath: string[]) => {
+    setUploadImg((prev) => prev.filter((img) => updatePath.includes(img.path)));
   };
 
   return (
@@ -164,6 +192,7 @@ const Write = () => {
         pauseOnHover={false}
         theme="colored"
         transition={Slide}
+        toastClassName="mx-4"
       />
       <div className="min-h-screen bg-back1 pt-14 pb-[100px]">
         <Header>
@@ -181,15 +210,7 @@ const Write = () => {
         </Header>
 
         <div className="write-content bg-white mx-[16px] mt-[11px] px-[18px] py-[23px] rounded-md shadow-custom flex flex-col gap-[20px]">
-          <ImageUpload
-            onChange={(images) => {
-              const formattedImages = images.map((image) => ({
-                path: image,
-                name: image.split('/').pop() || '',
-              }));
-              setUploadImg(formattedImages);
-            }}
-          />
+          <ImageUpload onChange={updateImg} onDelete={deleteImg} />
           <TypeSelector
             productsType={productsType}
             setProductsType={setProductsType}
@@ -265,8 +286,11 @@ const Write = () => {
 
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">공구 상세 위치 </p>
-                  <KakaoAddressSearch />
+                  <p className="font-semibold w-[60px]">상세 위치 </p>
+                  <KakaoAddressSearch
+                    subLocation={subLocation}
+                    setSubLocation={(address) => setSubLocation(address)}
+                  />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
@@ -287,53 +311,26 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
-                  <DateTimePicker
-                    label={'마감 시간을 선택주세요'}
-                    value={selectDate}
-                    onChange={(value) => setSelectDate(value)}
-                    format="YYYY.MM.DD HH:mm"
-                    minDate={dayjs('2025.01.01')}
-                    ampm={false}
-                    slotProps={{
-                      textField: {
-                        sx: {
-                          '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#BDBDBD', // 테두리 색상
-                          },
-                          '& .MuiSvgIcon-root': {
-                            color: '#4CAF50', // 아이콘 색상
-                          },
-                          '& .MuiInputLabel-root': {
-                            color: '#757575', // 기본 라벨 색상
-                            '&.Mui-focused': {
-                              color: '#4CAF50', // 포커스 시 라벨 색상
-                            },
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          '& .Mui-selected': {
-                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
-                            color: '#fff',
-                          },
-                          '& .MuiPaper-root': {
-                            display: 'flex',
-                            width: 470, // 팝업(달력+시간 선택창) 너비
-                            height: 400, // 팝업 높이
-                          },
-                          '& .MuiMultiSectionDigitalClockSection-root': {
-                            width: 80,
-                          },
-                        },
-                      },
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={(date) => {
+                      setSelectDate(date);
+                      setValue(
+                        'extra.meetingTime',
+                        date ? dayjs(date).format('YYYY.MM.DD HH:mm') : '',
+                      );
+
+                      if (date) {
+                        clearErrors('extra.meetingTime');
+                      } else {
+                        setError('extra.meetingTime', {
+                          message: '* 날짜, 시간을 선택해주세요',
+                        });
+                      }
                     }}
+                    {...register('extra.meetingTime', {
+                      required: '* 날짜, 시간을 선택해주세요',
+                    })}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
@@ -432,8 +429,11 @@ const Write = () => {
 
               <div className="info-location-detail">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">판매 상세 위치 </p>
-                  <KakaoAddressSearch />
+                  <p className="font-semibold">상세 위치 </p>
+                  <KakaoAddressSearch
+                    subLocation={subLocation}
+                    setSubLocation={(address) => setSubLocation(address)}
+                  />
                 </div>
                 {errors.extra?.subLocation && (
                   <Error>{errors.extra.subLocation?.message}</Error>
@@ -454,53 +454,26 @@ const Write = () => {
               <div className="info-time">
                 <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
-                  <DateTimePicker
-                    label={'거래 시간을 선택해주세요'}
-                    value={selectDate}
-                    onChange={(value) => setSelectDate(value)}
-                    format="YYYY.MM.DD HH:mm"
-                    minDate={dayjs('2025.01.01')}
-                    ampm={false}
-                    slotProps={{
-                      textField: {
-                        sx: {
-                          '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#4CAF50', // 포커스 시 테두리 색상
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#BDBDBD', // 테두리 색상
-                          },
-                          '& .MuiSvgIcon-root': {
-                            color: '#4CAF50', // 아이콘 색상
-                          },
-                          '& .MuiInputLabel-root': {
-                            color: '#757575', // 기본 라벨 색상
-                            '&.Mui-focused': {
-                              color: '#4CAF50', // 포커스 시 라벨 색상
-                            },
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          '& .Mui-selected': {
-                            backgroundColor: '#4CAF50 !important', // 선택된 날짜 색상
-                            color: '#fff',
-                          },
-                          '& .MuiPaper-root': {
-                            display: 'flex',
-                            width: 470, // 팝업(달력+시간 선택창) 너비
-                            height: 400, // 팝업 높이
-                          },
-                          '& .MuiMultiSectionDigitalClockSection-root': {
-                            width: 80,
-                          },
-                        },
-                      },
+                  <Picker
+                    selectDate={selectDate}
+                    setSelectDate={(date) => {
+                      setSelectDate(date);
+                      setValue(
+                        'extra.meetingTime',
+                        date ? dayjs(date).format('YYYY.MM.DD HH:mm') : '',
+                      );
+
+                      if (date) {
+                        clearErrors('extra.meetingTime');
+                      } else {
+                        setError('extra.meetingTime', {
+                          message: '* 날짜, 시간을 선택해주세요',
+                        });
+                      }
                     }}
+                    {...register('extra.meetingTime', {
+                      required: '* 날짜, 시간을 선택해주세요',
+                    })}
                   />
                 </div>
                 {errors.extra?.meetingTime && (
