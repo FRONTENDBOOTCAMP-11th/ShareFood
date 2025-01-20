@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 const REFRESH_URL = '/auth/refresh';
 
 function useAxiosInstance() {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, resetUser } = useAuthStore();
 
   const navigate = useNavigate();
 
@@ -51,9 +51,10 @@ function useAxiosInstance() {
       if (response?.status === 401) {
         // 인증 실패
         if (config.url === REFRESH_URL) {
-
           // refresh token 만료
-          navigateLogin();
+          resetUser();
+          toast.error('로그인이 만료되었습니다.\n로그인 페이지로 이동합니다');
+          navigate('/login');
           return Promise.reject(error);
         } else if (user) {
           // 로그인 했으나 access token 만료된 경우
@@ -71,17 +72,13 @@ function useAxiosInstance() {
           return axios(config);
         } else {
           // 로그인 안한 경우
-          navigateLogin();
+          toast.error('로그인 후 이용 가능합니다.\n로그인 페이지로 이동합니다');
+          navigate('/login');
         }
       }
       return Promise.reject(error);
     },
   );
-
-  function navigateLogin() {
-    toast.error('로그인 후 이용 가능합니다.\n로그인 페이지로 이동합니다');
-    navigate('/login');
-  }
 
   return instance;
 }
