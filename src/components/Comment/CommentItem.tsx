@@ -71,7 +71,7 @@ function CommentItem({
   const checkDelComment = () => {
     if (window.confirm('댓글을 삭제 하시겠습니까?')) {
       delComment.mutate();
-    }
+    } else setViewPayment(false);
   };
 
   // 댓글 수정 기능
@@ -210,7 +210,7 @@ function CommentItem({
             <br />
             <br />
             <div className="flex flex-col">
-              <button className="text-error" onClick={() => checkDelComment}>
+              <button className="text-error" onClick={() => checkDelComment()}>
                 삭제
               </button>
               <hr className="my-4" />
