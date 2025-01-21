@@ -68,7 +68,6 @@ const SignUp: React.FC = () => {
       return res.data; // 응답 데이터 로그
     },
     onSuccess: (data) => {
-
       toast.success(
         `${data.item.name}님, 가입을 축하드립니다. 
         잠시 후 로그인 페이지로 이동합니다.`,
@@ -91,19 +90,19 @@ const SignUp: React.FC = () => {
 
   // onSubmit에 사용
   const onSubmit = (data: UserInfo) => {
-    // 아이디, 닉네임 중복 검증
-    if (isEmailUnique && isNameUnique) {
-      // 통과하면 가입
-      addUser.mutate(data);
-    } else {
-      // 통과하지 못하는 경우 에러메세지 출력
-      if (!isEmailUnique) {
-        setEmailDuplicationError('다른 아이디를 입력해 주세요.');
-      }
-      if (!isNameUnique) {
-        setNameDuplicationError('다른 닉네임을 입력해 주세요.');
-      }
+    // 아이디, 닉네임 중복 검사
+    // 통과하지 못하는 경우 or 중복검사 하지 않은 경우 에러메세지 출력
+    if (!isEmailUnique) {
+      setEmailDuplicationError('아이디 중복검사를 해주세요.');
     }
+    if (!isNameUnique) {
+      setNameDuplicationError('닉네임 중복검사를 해주세요.');
+    }
+    if (!isEmailUnique || !isNameUnique) {
+      return;
+    }
+    // 통과하면 가입
+    addUser.mutate(data);
   };
 
   // input창 공백 입력 제거
@@ -113,19 +112,23 @@ const SignUp: React.FC = () => {
 
     if (name === 'password') {
       clearErrors('password');
+      const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/;
 
       if (!value) {
         setPasswordError('');
+      } else if (!regex.test(value)) {
+        setPasswordError(
+          '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
+        );
       } else {
-        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/;
-        if (!regex.test(password)) {
-          setPasswordError(
-            '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
-          );
-        } else {
-          setConfirmPassword('');
-        }
+        setPasswordError('');
       }
+    }
+
+    if (confirmPassword && confirmPassword !== password) {
+      setConfirmPassword('비밀번호가 일치하지 않습니다.');
+    } else {
+      setConfirmPassword('');
     }
 
     if (name === 'confirmPassword') {
@@ -135,11 +138,13 @@ const SignUp: React.FC = () => {
     if (name === 'email') {
       if (!e.target.value) {
         setEmailDuplicationError('');
+        setIsEmailUnique(false);
       }
     }
     if (name === 'name') {
       if (!e.target.value) {
         setNameDuplicationError('');
+        setIsNameUnique(false);
       }
     }
   };
