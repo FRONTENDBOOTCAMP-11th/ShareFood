@@ -45,7 +45,7 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
   };
 
   return (
-    <div className="space-y-2 px-2 flex items-center">
+    <div className="space-y-2 flex flex-col">
       {/* 주소 검색 섹션 */}
       <div className="flex items-center">
         <div className="flex-1 flex items-center space-x-[8px]">
@@ -66,9 +66,8 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
           주소 검색
         </button>
       </div>
-
       {/* 사용자에게 선택 주소 보여줌 */}
-      <p className="subLocation">{subLocation}</p>
+      {subLocation && <p className="subLocation ml-0.5">{subLocation}</p>}
     </div>
   );
 };
