@@ -80,6 +80,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
     if (showImages.length + imageLists.length > 5) {
       alert('5장까지 첨부가 가능합니다.');
+      event.target.value = '';
       return;
     }
 
@@ -126,6 +127,8 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
     // 이미지 경로 전달
     onChange(newPath);
+
+    event.target.value = '';
   };
 
   // x 버튼 클릭 시 이미지 삭제
