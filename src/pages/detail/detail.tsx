@@ -222,7 +222,7 @@ const Detail = () => {
   useEffect(() => {
     if (data) {
       // data 로딩 시 실행
-      console.log(data)
+      console.log(data);
       let test = false;
       order?.forEach((value: OrderItem) => {
         if (value.products[0]._id == data?.item._id) {
@@ -241,8 +241,8 @@ const Detail = () => {
   };
 
   if (!data) {
-    refetch();
-    reCheckOrder();
+    // refetch();
+    // reCheckOrder();
     return (
       <div className="h-screen">
         <Loading />
@@ -290,7 +290,7 @@ const Detail = () => {
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
         <div className="flex gap-2">
-          <h1 className="grow font-bold text-l max-w-[342.5px]">
+          <h1 className="grow font-bold text-l max-w-[342.5px] ">
             {data?.item.name}
           </h1>
           <PostType type={productType} />
@@ -360,7 +360,12 @@ const Detail = () => {
           </div>
         )}
 
-        {data.item.extra.position && <KaKaoMap position={data.item.extra.position} subLocation={subLocation} />}
+        {data.item.extra.position && (
+          <KaKaoMap
+            position={data.item.extra.position}
+            subLocation={subLocation}
+          />
+        )}
 
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>
 
@@ -394,7 +399,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-              // onClick={() => handleModal(productType)}
+                // onClick={() => handleModal(productType)}
               >
                 공구 신청 완료
               </Button>
@@ -420,7 +425,7 @@ const Detail = () => {
                 text="text-sm"
                 bg="second"
                 color="white"
-              // onClick={() => handleModal(productType)}
+                // onClick={() => handleModal(productType)}
               >
                 구매 신청 완료
               </Button>
