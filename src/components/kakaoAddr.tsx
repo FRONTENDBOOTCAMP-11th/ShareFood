@@ -67,6 +67,7 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
         </button>
       </div>
 
+      {/* 사용자에게 선택 주소 보여줌 */}
       <p className="subLocation">{subLocation}</p>
     </div>
   );
