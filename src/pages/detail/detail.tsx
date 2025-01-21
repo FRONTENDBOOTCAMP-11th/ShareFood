@@ -241,8 +241,8 @@ const Detail = () => {
   };
 
   if (!data) {
-    refetch();
-    reCheckOrder();
+    // refetch();
+    // reCheckOrder();
     return (
       <div className="h-screen">
         <Loading />
