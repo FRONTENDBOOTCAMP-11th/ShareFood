@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import useAxiosInstance from '../../hooks/useAxiosInstance';
 import { AxiosError } from 'axios';
 import { Slide, toast, ToastContainer } from 'react-toastify';
+
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -16,8 +17,13 @@ import close from '/images/icons/close.svg';
 import TypeSelector from '../../components/TypeSelector';
 import Error from '../../components/Error';
 import Counter from '../../components/Counter';
-import KakaoAddressSearch from '../../components/kakaoAddr';
 import Picker from '../../components/Picker';
+import KakaoAddressSearch from '../../components/kakaoAddr.tsx';
+
+interface Position {
+  lat: number; // 위도
+  lng: number; // 경도
+}
 
 interface FormData {
   price: number; // 상품 가격
@@ -33,6 +39,7 @@ interface FormData {
     subLocation: string; // 공구, 판매 상세 지역
     meetingTime: string; // 공구 마감 시간 or 판매 시간
     type: string; // 판매글 타입
+    position: Position; // 위치 좌표
   };
 }
 interface AxiosErrorResponse {
@@ -65,10 +72,13 @@ const Write = () => {
   // TypeSelector : 기본값 'buy'
   const [productsType, setProductsType] = useState('buy');
 
+  // 날짜 선택
   const [selectDate, setSelectDate] = useState<Dayjs | null>(null);
 
+  // 상세 지역 선택
   const [subLocation, setSubLocation] = useState('');
 
+  // 이미지 업로드
   const [uploadImg, setUploadImg] = useState<{ path: string; name: string }[]>(
     [],
   );
@@ -109,8 +119,26 @@ const Write = () => {
     },
   });
 
+  // 주소로 좌표를 검색
+  const getPosition = (address: string): Promise<Position> => {
+    return new Promise((resolve) => {
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.addressSearch(address, (result, status) => {
+        console.log(status);
+        if (status === kakao.maps.services.Status.OK) {
+          const coords = {
+            lat: Number(result[0].y),
+            lng: Number(result[0].x),
+          };
+          console.log(coords);
+          resolve(coords);
+        }
+      });
+    });
+  };
+
   // onSubmit용 함수
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     // 전체지역 유효성 검증
     if (location === '전체지역') {
       setError('extra.location', {
@@ -125,11 +153,14 @@ const Write = () => {
       });
     }
 
-    // 전송 값이 input이 아닌 경우 추가
+    const position = await getPosition(subLocation);
+
+    // 서버에 전송될 추가 데이터
     data.quantity = num;
     data.extra.location = location;
     data.extra.subLocation = subLocation;
     data.extra.type = productsType;
+    data.extra.position = position;
 
     // 가격 정수 형태로 변경 후 전송
     const integerPrice = Number(data.price.toString().replace(/,/g, ''));
@@ -224,11 +255,11 @@ const Write = () => {
             >
               <div className="info-title">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">제목 </p>
+                  <p className="font-semibold">상품명 </p>
                   <input
                     type="text"
-                    className="outline-none grow"
-                    placeholder="제목을 입력해주세요."
+                    className="outline-none grow placeholder:text-[12px]"
+                    placeholder="함께 구매하고 싶은 상품명을 입력해주세요."
                     {...register('name', {
                       required: '* 제목은 필수입니다',
                     })}
@@ -242,8 +273,8 @@ const Write = () => {
                   <p className="font-semibold">가격</p>
                   <input
                     type="text"
-                    className="outline-none grow"
-                    placeholder="가격을 입력해주세요"
+                    className="outline-none grow placeholder:text-[12px]"
+                    placeholder="각자 내야하는 가격을 입력해주세요."
                     onInput={(e: React.FormEvent<HTMLInputElement>) => {
                       const input = e.currentTarget;
                       input.value = input.value
@@ -260,8 +291,8 @@ const Write = () => {
               </div>
 
               <div className="info-location">
-                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                  <p className="font-semibold">공구 위치 </p>
+                <div className="flex gap-[15px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">만남 지역 </p>
                   <Select
                     meetingLocation={location}
                     setMeetingLocation={(value) => {
@@ -270,12 +301,12 @@ const Write = () => {
                         clearErrors('extra.location');
                       } else {
                         setError('extra.location', {
-                          message: '* 공구 위치를 선택해주세요.',
+                          message: '* 만남 지역을 선택해주세요.',
                         });
                       }
                     }}
                     {...register('extra.location', {
-                      required: '*공구 위치를 선택해주세요',
+                      required: '* 만남 지역을 선택해주세요',
                     })}
                   />
                 </div>
@@ -285,8 +316,8 @@ const Write = () => {
               </div>
 
               <div className="info-location-detail">
-                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold w-[60px]">상세 위치 </p>
+                <div className="flex gap-[15px] py-[7px] mb-[7px] border-b leading-6">
+                  <p className="font-semibold shrink-0">상세 위치 </p>
                   <KakaoAddressSearch
                     subLocation={subLocation}
                     setSubLocation={(address) => setSubLocation(address)}
@@ -298,7 +329,7 @@ const Write = () => {
               </div>
 
               <div className="info-quantity">
-                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                <div className="flex gap-[15px] items-center py-[7px] mb-[7px]">
                   <p className="font-semibold">모집 인원</p>
                   <Counter
                     num={num}
@@ -309,10 +340,11 @@ const Write = () => {
               </div>
 
               <div className="info-time">
-                <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
+                <div className="flex flex-col gap-[10px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">마감시간 </p>
                   <Picker
                     selectDate={selectDate}
+                    placeholder="모집 마감시간을 입력해주세요."
                     setSelectDate={(date) => {
                       setSelectDate(date);
                       setValue(
@@ -338,11 +370,13 @@ const Write = () => {
                 )}
               </div>
 
-              <div className="info-content mt-[20px] mb-[10px]">
+              <div className="info-content my-[10px]">
                 <h1 className="font-semibold">내용</h1>
                 <textarea
                   className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                  placeholder="상품에 대한 설명을 적어주세요!"
+                  placeholder={
+                    '상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️'
+                  }
                   {...register('content', { required: '* 내용은 필수입니다' })}
                 />
                 <Error>{errors.content?.message}</Error>
@@ -354,7 +388,7 @@ const Write = () => {
                 height="40px"
                 text="text-sm"
               >
-                작성 완료
+                모집하기
               </Button>
             </form>
           )}
@@ -367,13 +401,13 @@ const Write = () => {
             >
               <div className="info-title">
                 <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">제목 </p>
+                  <p className="font-semibold">상품명 </p>
                   <input
                     type="text"
-                    className="outline-none grow"
-                    placeholder="제목을 입력해주세요."
+                    className="outline-none grow placeholder:text-[12px]"
+                    placeholder="판매할 상품명을 입력해주세요."
                     {...register('name', {
-                      required: '* 제목은 필수입니다',
+                      required: '* 상품명은 필수입니다',
                     })}
                   />
                 </div>
@@ -385,8 +419,8 @@ const Write = () => {
                   <p className="font-semibold">가격</p>
                   <input
                     type="text"
-                    className="outline-none grow"
-                    placeholder="가격을 입력해주세요"
+                    className="outline-none grow placeholder:text-[12px]"
+                    placeholder="상품의 가격을 입력해주세요."
                     onInput={(e: React.FormEvent<HTMLInputElement>) => {
                       const input = e.currentTarget;
                       input.value = input.value
@@ -403,8 +437,8 @@ const Write = () => {
               </div>
 
               <div className="info-location">
-                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
-                  <p className="font-semibold">판매 위치</p>
+                <div className="flex gap-[15px] items-center py-[7px] mb-[7px]">
+                  <p className="font-semibold">판매 지역</p>
                   <Select
                     meetingLocation={location}
                     setMeetingLocation={(value) => {
@@ -428,8 +462,8 @@ const Write = () => {
               </div>
 
               <div className="info-location-detail">
-                <div className="flex gap-[22px] py-[7px] mb-[7px] border-b">
-                  <p className="font-semibold">상세 위치 </p>
+                <div className="flex gap-[15px] py-[7px] mb-[7px] border-b leading-6">
+                  <p className="font-semibold shrink-0">상세 위치 </p>
                   <KakaoAddressSearch
                     subLocation={subLocation}
                     setSubLocation={(address) => setSubLocation(address)}
@@ -441,7 +475,7 @@ const Write = () => {
               </div>
 
               <div className="info-quantity">
-                <div className="flex gap-[22px] items-center py-[7px] mb-[7px]">
+                <div className="flex gap-[15px] items-center py-[7px] mb-[7px]">
                   <p className="font-semibold">판매 개수</p>
                   <Counter
                     num={num}
@@ -452,10 +486,11 @@ const Write = () => {
               </div>
 
               <div className="info-time">
-                <div className="flex flex-col gap-[22px] py-[7px] mb-[7px] ">
+                <div className="flex flex-col gap-[10px] py-[7px] mb-[7px] ">
                   <p className="font-semibold">거래 시간 </p>
                   <Picker
                     selectDate={selectDate}
+                    placeholder="거래할 시간을 입력해주세요."
                     setSelectDate={(date) => {
                       setSelectDate(date);
                       setValue(
@@ -481,11 +516,13 @@ const Write = () => {
                 )}
               </div>
 
-              <div className="info-content mt-[20px] mb-[10px]">
+              <div className="info-content my-[10px]">
                 <h1 className="font-semibold">내용</h1>
                 <textarea
                   className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                  placeholder="상품에 대한 설명을 적어주세요!"
+                  placeholder={
+                    '상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️'
+                  }
                   {...register('content', { required: '* 내용은 필수입니다' })}
                 />
                 <Error>{errors.content?.message}</Error>
@@ -497,7 +534,7 @@ const Write = () => {
                 height="40px"
                 text="text-sm"
               >
-                작성 완료
+                모집하기
               </Button>
             </form>
           )}

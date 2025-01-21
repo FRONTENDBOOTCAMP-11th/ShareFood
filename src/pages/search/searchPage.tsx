@@ -60,8 +60,16 @@ const SearchPage: React.FC = () => {
 
   // 검색어 전체 삭제
   const handleDeleteAll = () => {
-    setKeywords([]);
-    localStorage.removeItem('recentKeywords');
+
+    // confirm 창을 띄워서 결과값을 받음
+    const confirmed = window.confirm("검색기록을 전체 삭제하시겠습니까?");
+
+    // 확인 버튼 클릭 시에만 전체 삭제
+    if (confirmed) {
+      setKeywords([]);
+      localStorage.removeItem('recentKeywords');
+    }
+    // 취소 버튼 클릭 시, 아무 동작도 안 함
   };
 
   function handleSetKeyword(keyword: string) {

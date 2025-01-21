@@ -5,14 +5,15 @@ import { forwardRef } from 'react';
 interface PickerProps {
   selectDate: Dayjs | null;
   setSelectDate: (value: Dayjs | null) => void;
+  placeholder: string;
 }
 
 const Picker = forwardRef<HTMLDivElement, PickerProps>(
-  ({ selectDate, setSelectDate }: PickerProps, ref) => {
+  ({ selectDate, setSelectDate, placeholder }: PickerProps, ref) => {
     return (
       <div className="w-full" ref={ref}>
         <DateTimePicker
-          label={'마감 시간을 선택주세요'}
+          label={placeholder}
           value={selectDate}
           onChange={(value) => setSelectDate(value)}
           format="YYYY.MM.DD HH:mm"

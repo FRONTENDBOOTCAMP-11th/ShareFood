@@ -80,6 +80,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
     if (showImages.length + imageLists.length > 5) {
       alert('5장까지 첨부가 가능합니다.');
+      event.target.value = '';
       return;
     }
 
@@ -126,6 +127,8 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
 
     // 이미지 경로 전달
     onChange(newPath);
+
+    event.target.value = '';
   };
 
   // x 버튼 클릭 시 이미지 삭제
@@ -142,34 +145,7 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
   };
 
   return (
-    <div className="flex flex-row gap-x-4 flex-nowrap">
-      <div
-        className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden "
-        onPointerDown={onDragStart}
-        onPointerMove={isDrag ? onThrottleDragMove : undefined}
-        onPointerUp={onDragEnd}
-        onPointerLeave={onDragEnd}
-        ref={scrollRef}
-        style={{ touchAction: 'none' }}
-      >
-        {showImages.map((image, id) => (
-          <div key={id} className="relative shrink-0">
-            <img
-              src={image.preview}
-              draggable="false" // e.preventDefault() 대신 사용해서 이미지 드래그 막음
-              className="w-[100px] h-[100px] object-cover shrink-0"
-            />
-            <button
-              data-id={id}
-              onClick={handleDeleteImage}
-              className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
-            >
-              {/* X 버튼 색 변경 필요! */}X
-            </button>
-          </div>
-        ))}
-      </div>
-
+    <div className="flex flex-row gap-x-4 flex-nowrap py-1">
       <label
         htmlFor="uploadFile1"
         className="bg-white text-gray-500 font-normal text-xs rounded-md min-w-[100px] h-[100px] flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 shrink-0 "
@@ -185,6 +161,32 @@ function ImageUpload({ onChange, onDelete }: UploadImgProps) {
         />
         <p className="text-xs font-normal text-gray-400 mt-2">{imageCount}/5</p>
       </label>
+      <div
+        className="flex flex-row flex-nowrap gap-3 select-none overflow-x-hidden"
+        onPointerDown={onDragStart}
+        onPointerMove={isDrag ? onThrottleDragMove : undefined}
+        onPointerUp={onDragEnd}
+        onPointerLeave={onDragEnd}
+        ref={scrollRef}
+        style={{ touchAction: 'none' }}
+      >
+        {showImages.map((image, id) => (
+          <div key={id} className="relative shrink-0">
+            <img
+              src={image.preview}
+              draggable="false" // e.preventDefault() 대신 사용해서 이미지 드래그 막음
+              className="w-[100px] h-[100px] object-cover shrink-0 rounded-md"
+            />
+            <button
+              data-id={id}
+              onClick={handleDeleteImage}
+              className="absolute top-1 right-1 text-l text-gray-300 cursor-pointer"
+            >
+              {/* X 버튼 색 변경 필요! */}X
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

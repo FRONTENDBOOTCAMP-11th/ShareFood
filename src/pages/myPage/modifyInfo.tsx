@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer, Slide } from 'react-toastify';
 
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { uploadImg } from '../../hooks/useUploadImg';
@@ -20,6 +20,19 @@ type modifyInfoTypes = {
   name: string;
   profileImg: string | null;
   phone: string;
+};
+
+// 📌 전화번호 자동 하이픈 추가 함수
+const formatPhoneNumber = (value: string) => {
+  const numbersOnly = value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+
+  if (numbersOnly.length <= 3) {
+    return numbersOnly;
+  } else if (numbersOnly.length <= 7) {
+    return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3)}`;
+  } else {
+    return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, 7)}-${numbersOnly.slice(7, 11)}`;
+  }
 };
 
 const UserInfo = () => {
@@ -56,23 +69,29 @@ const UserInfo = () => {
 
   // 초기 값 설정
   useEffect(() => {
-    setImgUrl(userInfo.item.image);
-    setPhoneValue(userInfo.item.phone);
-    setNameValue(userInfo.item.name);
-    setIsChangeInfo(false);
-  }, [userInfo]);
+    if (userInfo?.item) {
+      setImgUrl(userInfo.item.image);
+      setNameValue(userInfo.item.name);
+      const formattedPhone = formatPhoneNumber(userInfo.item.phone); // 초기값 변환
+      setPhoneValue(formattedPhone);
+      setValue('phone', formattedPhone);
+      setIsChangeInfo(false);
+    }
+  }, [userInfo, setValue]);
 
   // 닉네임 및 전화번호 변경 여부 확인
   useEffect(() => {
-    const hasChanged =
-      nameValue !== userInfo.item.name || phoneValue !== userInfo.item.phone;
+    const nameChanged = nameValue !== userInfo?.item?.name;
+    const phoneChanged = phoneValue !== userInfo?.item?.phone;
 
-    if (hasChanged && !errors.phone && isNameChecked) {
-      setIsChangeInfo(true);
+    if (nameChanged && !isNameChecked) {
+      setIsChangeInfo(false); // 닉네임이 변경되었으나 중복 확인이 안 됨 → 비활성화
+    } else if (nameChanged || phoneChanged) {
+      setIsChangeInfo(true); // 하나라도 변경되었으면 활성화
     } else {
       setIsChangeInfo(false);
     }
-  }, [nameValue, phoneValue, isNameChecked, errors.phone, userInfo]);
+  }, [nameValue, phoneValue, isNameChecked, userInfo]);
 
   // 닉네임 중복 검사
   const handleCheckName = async () => {
@@ -80,7 +99,7 @@ const UserInfo = () => {
       toast.error('닉네임을 입력해주세요.');
       return;
     }
-  
+
     try {
       const result = await isDuplicate(axiosInstance, 'name', nameValue);
       if (!result) {
@@ -97,7 +116,6 @@ const UserInfo = () => {
       toast.error('닉네임 중복 검사 중 오류가 발생했습니다.');
     }
   };
-  
 
   // 이미지 업로드 핸들러
   const handleImgChange = async (
@@ -117,6 +135,10 @@ const UserInfo = () => {
 
   // 제출
   const onSubmit = async () => {
+    if (!isChangeInfo) {
+      toast.error ('수정에 실패했습니다. 수정사항을 확인해주세요')
+      return;
+    }
     try {
       // 변경된 데이터를 동적으로 병합
       const updatedData = {
@@ -126,7 +148,10 @@ const UserInfo = () => {
       };
 
       // 서버에 요청 보내기
-      const result = await axiosInstance.patch(`/users/${user?._id}`, updatedData);
+      const result = await axiosInstance.patch(
+        `/users/${user?._id}`,
+        updatedData,
+      );
       console.log('수정 완료:', result.data);
       toast.success('수정이 완료되었습니다.');
       navigate(`/mypage/${user?._id}`);
@@ -158,7 +183,7 @@ const UserInfo = () => {
             <img
               src={`${apiUrl}${imgUrl}`}
               alt="Profile"
-              className="rounded-full w-full h-full"
+              className="rounded-full w-full h-full object-cover"
             />
             <button
               type="button"
@@ -166,12 +191,12 @@ const UserInfo = () => {
                 e.preventDefault();
                 document.getElementById('fileInput')?.click();
               }}
-              className="absolute top-0 left-0 w-full h-full rounded-full bg-transparent flex items-center justify-center"
+              className="absolute top-0 left-0 w-full h-full rounded-full bg-transparent flex items-center justify-center object-cover"
             >
               <img
                 src={gallery}
                 alt="Upload Icon"
-                className="w-[30px] h-[30px] absolute bottom-0 right-0 bg-[#969696] rounded-full p-[6px]"
+                className="w-[30px] h-[30px] absolute bottom-0 right-0 bg-[#969696] rounded-full p-[6px] object-cover"
               />
             </button>
             <input
@@ -245,18 +270,8 @@ const UserInfo = () => {
               {...register('phone', {
                 required: '휴대전화 번호를 입력해주세요.',
                 pattern: {
-                  value: /^[0-9]{10,11}$/,
+                  value: /^\d{3}-\d{3,4}-\d{4}$/,
                   message: '유효한 전화번호를 입력해주세요.',
-                },
-                onChange: (e) => {
-                  setPhoneValue(e.target.value);
-                  if (!/^[0-9]{10,11}$/.test(e.target.value)) {
-                    setError('phone', {
-                      message: '유효한 전화번호를 입력해주세요.',
-                    });
-                  } else {
-                    clearErrors('phone');
-                  }
                 },
               })}
               type="text"
@@ -264,6 +279,19 @@ const UserInfo = () => {
               placeholder="휴대전화 번호"
               className="border-b text-[13px] py-[3px]"
               value={phoneValue}
+              onChange={(e) => {
+                const formatted = formatPhoneNumber(e.target.value);
+                setPhoneValue(formatted);
+                setValue('phone', formatted);
+                if (!/^\d{3}-\d{3,4}-\d{4}$/.test(formatted)) {
+                  setError('phone', {
+                    message: '유효한 전화번호를 입력해주세요.',
+                  });
+                } else {
+                  clearErrors('phone');
+                }
+              }}
+              maxLength={13}
             />
             {errors.phone && (
               <p className="text-error text-[10px]">{errors.phone.message}</p>
@@ -294,6 +322,20 @@ const UserInfo = () => {
           )}
         </form>
       </Layout>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={1000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="colored"
+        transition={Slide}
+        toastClassName="mx-4"
+      />
     </div>
   );
 };

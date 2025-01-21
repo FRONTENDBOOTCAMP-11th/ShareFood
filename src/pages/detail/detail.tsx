@@ -27,6 +27,7 @@ import ImageSlide from '../../components/ImageSlide';
 import close from '/images/icons/close.svg';
 import basicImage from '/images/chef/drawingChef.svg';
 import { useRegisterNotification } from '../../hooks/useRegisterNotification';
+import KaKaoMap from '../../components/KakaoMap';
 
 // 주문 상태 확인을 위한 타입 명시
 interface OrderItem {
@@ -221,6 +222,7 @@ const Detail = () => {
   useEffect(() => {
     if (data) {
       // data 로딩 시 실행
+      console.log(data);
       let test = false;
       order?.forEach((value: OrderItem) => {
         if (value.products[0]._id == data?.item._id) {
@@ -239,8 +241,8 @@ const Detail = () => {
   };
 
   if (!data) {
-    refetch();
-    reCheckOrder();
+    // refetch();
+    // reCheckOrder();
     return (
       <div className="h-screen">
         <Loading />
@@ -258,6 +260,8 @@ const Detail = () => {
     return `https://11.fesp.shop` + value.path;
   });
 
+  const subLocation: string = data.item.extra.subLocation;
+
   // 카카오 이미지 가공
   let profileImage = '';
   if (data?.item.seller.image != null) {
@@ -272,11 +276,11 @@ const Detail = () => {
     <div className="pt-14 pb-[100px] min-h-screen ">
       <Header>
         <div className="flex items-center max-w-[348px]">
-          <h1 className="text-5 font-bold ml-2 text-font1 truncate">
+          <h1 className="text-5 font-bold text-font1 truncate">
             {data?.item.name}
           </h1>
         </div>
-        <button onClick={() => navigate(-1)} className="fixed right-[17px]">
+        <button onClick={() => navigate(-1)} className="fixed right-[15px]">
           <img src={close} alt="Close Icon" className="w-5 h-5" />
         </button>
       </Header>
@@ -285,8 +289,8 @@ const Detail = () => {
       <ImageSlide imageList={imageList} autoSlide={false} />
 
       <div className="px-[28px] py-[15px] flex flex-col gap-[20px]">
-        <div className="flex">
-          <h1 className="grow font-bold text-xl truncate max-w-[342.5px]">
+        <div className="flex gap-2">
+          <h1 className="grow font-bold text-l max-w-[342.5px] ">
             {data?.item.name}
           </h1>
           <PostType type={productType} />
@@ -294,7 +298,7 @@ const Detail = () => {
 
         <div className="board-author flex items-center">
           <img
-            className="w-[38px] h-[38px] rounded-full"
+            className="w-[38px] h-[38px] rounded-full object-cover"
             src={profileImage}
             alt="기본 이미지"
           />
@@ -312,12 +316,6 @@ const Detail = () => {
         {productType === 'buy' && (
           <div className="board-transinfo flex flex-col gap-[10px]">
             <div className="border-l-2">
-              <Tag
-                children={data.item.extra.subLocation}
-                tagName={'location'}
-              />
-            </div>
-            <div className="border-l-2">
               <Tag children={data.item.extra.meetingTime} tagName={'time'} />
             </div>
             <div className="border-l-2">
@@ -326,31 +324,47 @@ const Detail = () => {
                 tagName={'member'}
               />
             </div>
+            <div className="border-l-2">
+              <Tag children={priceTrim} tagName={'price'} />
+            </div>
+            <div className="border-l-2">
+              <Tag
+                children={data.item.extra.subLocation}
+                tagName={'location'}
+              />
+            </div>
           </div>
         )}
 
         {/* 판매일 경우 아래 내용 출력 */}
         {productType === 'sell' && (
           <div className="board-transinfo flex flex-col gap-[10px]">
-            <div>
-              <Tag children={priceTrim} tagName={'cash'} />
+            <div className="border-l-2">
+              <Tag children={priceTrim} tagName={'price'} />
             </div>
-            <div>
-              <Tag
-                children={data.item.extra.subLocation}
-                tagName={'location'}
-              />
-            </div>
-            <div>
+            <div className="border-l-2">
               <Tag children={data.item.extra.meetingTime} tagName={'time'} />
             </div>
-            <div>
+            <div className="border-l-2">
               <Tag
                 children={`${data.item.buyQuantity} / ${data.item.quantity}`}
                 tagName={'item'}
               />
             </div>
+            <div className="border-l-2">
+              <Tag
+                children={data.item.extra.subLocation}
+                tagName={'location'}
+              />
+            </div>
           </div>
+        )}
+
+        {data.item.extra.position && (
+          <KaKaoMap
+            position={data.item.extra.position}
+            subLocation={subLocation}
+          />
         )}
 
         <p className="whitespace-pre-wrap text-[15px]">{data?.item.content}</p>

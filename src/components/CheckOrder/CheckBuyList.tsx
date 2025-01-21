@@ -31,6 +31,7 @@ interface Item {
 interface Order {
   _id: number;
   user: {
+    _id: number;
     name: string;
     image: string;
   };
@@ -56,33 +57,6 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
   let OrderList = [];
   let isOrder = false;
 
-  const closeModal = () => {
-    setViewPayment(false);
-  };
-
-  const handleSendMessage = () => {
-    if (!message.trim()) {
-      toast.error('메시지를 입력해주세요.');
-      return;
-    }
-    if (message.length > 300) {
-      toast.error('300글자를 넘으면 안됩니다.');
-      return;
-    }
-
-    registerNotification({
-      target_id: data.item.seller_id,
-      content: `${data.item.name}에서 보내는 메시지: ${message}`,
-      type: 'message',
-      extra: {
-        productId: data.item._id,
-      },
-    });
-    toast.success('마감되었습니다.');
-    setViewSendMessage(false);
-    setViewPayment(false);
-  };
-
   if (checkBuy) {
     OrderList = checkBuy.map((value: Order) => {
       return (
@@ -97,6 +71,37 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
     });
   }
 
+  const closeModal = () => {
+    setViewPayment(false);
+  };
+
+  // 메시지 검증 및 전달 함수
+  const handleSendMessage = () => {
+    if (!message.trim()) {
+      toast.error('메시지를 입력해주세요.');
+      return;
+    }
+    if (message.length > 300) {
+      toast.error('300글자를 넘으면 안됩니다.');
+      return;
+    }
+
+    for (let i = 0; i < OrderList.length; i++) {
+      registerNotification({
+        target_id: OrderList[i].props.id,
+        content: `${data.item.name}에서 보내는 메시지: ${message}`,
+        type: 'message',
+        extra: {
+          productId: data.item._id,
+        },
+      });
+    }
+    toast.success('메시지가 전송되었습니다!');
+    setViewSendMessage(false);
+    setViewPayment(false);
+  };
+
+  // 메시지 작성하기를 눌렀을 때 나타나는 마크업
   if (viewSendMessage) {
     return (
       <div>
@@ -132,6 +137,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
 
   if (OrderList.length > 0) isOrder = true;
 
+  // 주문자가 한 명이라도 있을 때 나타나는 마크업
   if (isOrder) {
     return (
       <div>
@@ -154,7 +160,8 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
         </div>
       </div>
     );
-  } else {
+  } // 신청자가 없을 때 나타날 마크업
+  else {
     return (
       <div>
         <h2 className="mb-3 font-semibold">신청자 목록</h2>

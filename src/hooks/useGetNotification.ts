@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import useAxiosInstance from './useAxiosInstance';
+import { useLocation } from 'react-router-dom';
 
 interface NotificationItem {
   _id: number;
@@ -24,6 +25,9 @@ interface NotificationItem {
 
 export const useGetNotification = () => {
   const axiosInstance = useAxiosInstance();
+  const location = useLocation();
+
+  const disabledPaths = ['/', '/login', '/sign-up'];
 
   return useQuery<NotificationItem[]>({
     queryKey: ['notification'],
@@ -33,5 +37,6 @@ export const useGetNotification = () => {
     },
     select: (data) => data,
     staleTime: 1000 * 10,
+    enabled: !disabledPaths.includes(location.pathname),
   });
 };
