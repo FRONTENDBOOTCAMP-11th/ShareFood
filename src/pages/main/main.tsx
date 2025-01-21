@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Product } from '../../types/productsTypes';
+
 import { useGetList } from '../../hooks/useGetList';
 import { useGetNotification } from '../../hooks/useGetNotification';
 
 //store
 import { useFilterStateStore } from '../../store/listStateStore';
-import { useListStateStore } from '../../store/listStateStore';
 import { viewPaymentStore } from '../../store/detailStore';
 import { useAuthStore } from '../../store/authStore';
 
@@ -15,9 +15,7 @@ import { useAuthStore } from '../../store/authStore';
 import Header from '../../components/Layout/Header';
 import ImageSlide from '../../components/ImageSlide';
 import Select from '../../components/Select';
-import List from '../../components/List';
 import TypeSelector from '../../components/TypeSelector';
-import { NoData } from '../../components/NoData';
 import Button from '../../components/Button';
 
 // constants
@@ -32,35 +30,30 @@ import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
 import noticeChef from '/images/chef/noticeChef.svg';
 import rightArrow from '/images/arrow/rightArrow.svg';
+import ProductList from './productList';
 
 const Main = () => {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_BASE_URL;
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState<Product[]>([]);
+
   const { user } = useAuthStore();
-  const prevFilters = useRef({
-    soldout: true,
-    type: 'buy',
-    location: '전체지역',
-  });
-  const resetCalled = useRef(false);
 
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
     useFilterStateStore();
-  const {
-    items,
-    setItems,
-    addItems,
-    page,
-    setPage,
-    totalItems,
-    setTotalItems,
-    resetList,
-  } = useListStateStore();
 
   // 게시글 불러오기
-  const { data } = useGetList(soldout, type, location, undefined, page ?? 1, 2);
+  const { data, isLoading } = useGetList(
+    soldout,
+    type,
+    location,
+    undefined,
+    page ?? 1,
+    2,
+  );
 
   // 알림 불러오기
   const { data: notification } = useGetNotification();
@@ -68,49 +61,30 @@ const Main = () => {
   // 모달 나타나는 여부, true일 경우 출력
   const { viewPayment, setViewPayment } = viewPaymentStore();
 
-  // 게시글 추가하기
   useEffect(() => {
     if (data) {
-      if (data.item.length > 0) {
-        if (page === 1) {
-          setItems(data.item);
-        } else {
-          addItems(data.item);
-        }
-        setTotalItems(data.pagination.total);
-        setIsLoading(false);
-      } else if (data.item.length === 0) {
-        resetList();
+      let newItems = data.item;
+      if (page > 1) {
+        newItems = [...items, ...data.item];
       }
+      setItems(newItems);
     }
-  }, [data, page]);
+  }, [data]);
 
-  // 필터 조건 변경 시 상태 초기화
-  useEffect(() => {
-    // 상태가 변경된 경우에만 resetList 호출
-    if (
-      !resetCalled.current &&
-      (prevFilters.current.soldout !== soldout ||
-        prevFilters.current.type !== type ||
-        prevFilters.current.location !== location)
-    ) {
-      resetList();
-      resetCalled.current = true;
-    }
-
-    // 이전 상태를 현재 상태로 업데이트
-    prevFilters.current = { soldout, type, location };
-
-    // 컴포넌트가 언마운트될 때 플래그 초기화
-    if (items.length === 0) {
-      resetCalled.current = false;
-    }
-  }, [soldout, type, location, resetList]);
+  const handleChangeLocation = (location: string) => {
+    setPage(1);
+    setLocation(location);
+  };
 
   // 게시글 더 불러오기
   const loadMore = () => {
-    setIsLoading(true);
-    setPage(page + 1);
+    setPage((prev) => prev + 1);
+  };
+
+  // 거래 완료된 상품 보기/숨기기
+  const viewSoldout = () => {
+    setPage(1);
+    setSoldout((prev) => !prev);
   };
 
   // 배너 클릭 이벤트
@@ -166,13 +140,13 @@ const Main = () => {
       {/* 게시글 목록 */}
       <div className="px-[17px] mt-[10px] flex flex-col gap-[10px]">
         <div className="flex flex-col gap-[10px]">
-          <h2 className="text-[15px] font-bold text-font1">우리 동네 셰푸들</h2>
+          <h2 className="text-[15px] font-bold text-font1">
+            우리 동네 셰푸들 {data && `(${data.pagination.total}건)`}
+          </h2>
           <div className="flex items-center justify-between">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                setSoldout((prev) => !prev);
-              }}
+              type="button"
+              onClick={viewSoldout}
               className="flex items-center gap-[5px]"
             >
               <img
@@ -190,52 +164,25 @@ const Main = () => {
             </button>
             <Select
               meetingLocation={location}
-              setMeetingLocation={setLocation}
+              setMeetingLocation={handleChangeLocation}
             />
           </div>
           <TypeSelector setProductsType={setType} productsType={type} />
         </div>
 
-        {items.length > 0 ? (
-          <div className="flex flex-col gap-[10px]">
-            {items.map((products: Product, index: number) => (
-              <List
-                id={products._id}
-                key={index}
-                title={products.name}
-                type={products.extra.type}
-                total={products.quantity}
-                remain={products.buyQuantity}
-                location={products.extra.subLocation}
-                due={products.extra.meetingTime}
-                price={products.price}
-                date={products.createdAt}
-                like={products.bookmarks}
-                comments={products.replies}
-                imageScr={products?.mainImages[0]?.path || ''}
-              />
-            ))}
-            {isLoading && (
-              <div className="pt-3">
-                <Loading />
-              </div>
-            )}
-            {/* 더보기 버튼 */}
-            {items.length < totalItems && ( // 모든 데이터를 불러온 경우 버튼 숨김
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  loadMore();
-                  resetCalled.current = false;
-                }}
-                className="mt-5 p-2 bg-main text-white rounded-md"
-              >
-                더보기
-              </button>
-            )}
-          </div>
-        ) : (
-          <NoData />
+        {isLoading && page === 1 ? <Loading /> : <ProductList items={items} />}
+
+        {isLoading && page !== 1 && <Loading />}
+
+        {page < data?.pagination.totalPages && ( // 모든 데이터를 불러온 경우 버튼 숨김
+          <button
+            onClick={() => {
+              loadMore();
+            }}
+            className="mt-5 p-2 bg-main text-white rounded-md"
+          >
+            더보기
+          </button>
         )}
       </div>
       {viewPayment && (
@@ -251,7 +198,9 @@ const Main = () => {
                   className="flex justify-between items-center pt-2"
                   key={key._id}
                 >
-                  <div className={`flex gap-[2px] ${key.content.length > 15 ? 'flex-col' : 'flex-row'}`}>
+                  <div
+                    className={`flex gap-[2px] ${key.content.length > 15 ? 'flex-col' : 'flex-row'}`}
+                  >
                     <p className="text-font1 text-[14px] font-semibold max-w-[200px]">
                       {key.user.name}님이
                     </p>
@@ -276,7 +225,7 @@ const Main = () => {
                         setViewPayment(false);
                       }}
                     >
-                      <img src={rightArrow} className='m-auto w-[20px]'/>
+                      <img src={rightArrow} className="m-auto w-[20px]" />
                     </Button>
                   )}
                 </div>
