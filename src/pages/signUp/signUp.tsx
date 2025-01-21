@@ -68,7 +68,6 @@ const SignUp: React.FC = () => {
       return res.data; // 응답 데이터 로그
     },
     onSuccess: (data) => {
-      console.log(data);
 
       toast.success(
         `${data.item.name}님, 가입을 축하드립니다. 

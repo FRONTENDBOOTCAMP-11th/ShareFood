@@ -47,7 +47,6 @@ function CommentAdd({ _id, onRefetch }: CommentAddProps) {
         product_id: Number(_id),
         content: formData.content,
       };
-      console.log(body);
       return axiosInstance.post('/replies', body);
     },
     onSuccess: () => {
