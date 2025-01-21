@@ -115,8 +115,8 @@ const SignUp: React.FC = () => {
       const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,32}$/;
 
       if (!value) {
-        setPasswordError('비밀번호를 입력해 주세요.');
-      } else if (!regex.test(password)) {
+        setPasswordError('');
+      } else if (!regex.test(value)) {
         setPasswordError(
           '영문 숫자 혼용하여 8자 이상 32자 이하 입력(공백 제외)',
         );
@@ -133,12 +133,6 @@ const SignUp: React.FC = () => {
 
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
-
-      if (value && value !== password) {
-        setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
-      } else {
-        setConfirmPasswordError('');
-      }
     }
 
     if (name === 'email') {
