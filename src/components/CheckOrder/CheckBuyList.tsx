@@ -62,6 +62,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
       return (
         <CheckBuyListItem
           key={value._id}
+          id={value.user._id}
           name={value.user.name}
           image={value.user.image}
           quantity={value.products[0].quantity}
@@ -87,6 +88,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
     }
 
     for (let i = 0; i < OrderList.length; i++) {
+      // console.log(OrderList[i].props.id);
       registerNotification({
         target_id: OrderList[i].props.id,
         content: `${data.item.name}에서 보내는 메시지: ${message}`,
