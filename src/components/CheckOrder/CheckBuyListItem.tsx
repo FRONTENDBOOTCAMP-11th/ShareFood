@@ -3,7 +3,6 @@ import basicImage from '/images/chef/drawingChef.svg';
 import Tag from '../Tag';
 
 interface CheckBuyListItemProps {
-  id: number;
   name: string;
   image: string;
   quantity: number;
@@ -11,7 +10,6 @@ interface CheckBuyListItemProps {
 }
 
 function CheckBuyListItem({
-  id,
   name,
   image,
   quantity,

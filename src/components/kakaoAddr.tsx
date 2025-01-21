@@ -10,7 +10,6 @@ const KakaoAddressSearch: React.FC<AddressProps> = ({
   setSubLocation,
 }) => {
   const [addr1, setAddr1] = useState(''); // 기본 주소 상태
-  const [position, setPosition] = useState();
 
   // 카카오 주소 검색 스크립트 로드
   useEffect(() => {
