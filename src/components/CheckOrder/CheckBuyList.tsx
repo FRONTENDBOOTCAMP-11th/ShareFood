@@ -62,7 +62,6 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
       return (
         <CheckBuyListItem
           key={value._id}
-          id={value.user._id}
           name={value.user.name}
           image={value.user.image}
           quantity={value.products[0].quantity}
