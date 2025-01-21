@@ -1,14 +1,22 @@
 interface TypeSelectorTypes {
   productsType: string;
   setProductsType: (type: string) => void;
+  onClick?: (page: number) => void;
 }
 
-const TypeSelector = ({ productsType, setProductsType }: TypeSelectorTypes) => {
+const TypeSelector = ({
+  productsType,
+  setProductsType,
+  onClick,
+}: TypeSelectorTypes) => {
   return (
     <div className="bg-white p-[2px] rounded-[5px] flex border">
       <button
-        onClick={(e) => {
-          e.preventDefault();
+        type="button"
+        onClick={() => {
+          if (onClick) {
+            onClick(1);
+          }
           setProductsType('buy');
         }}
         className={`text-[14px] w-[50%] py-3 rounded-[5px] font-medium ${
@@ -19,8 +27,11 @@ const TypeSelector = ({ productsType, setProductsType }: TypeSelectorTypes) => {
       </button>
 
       <button
-        onClick={(e) => {
-          e.preventDefault();
+        type="button"
+        onClick={() => {
+          if (onClick) {
+            onClick(1);
+          }
           setProductsType('sell');
         }}
         className={`text-[14px] w-[50%] py-3 rounded-[5px] font-medium ${

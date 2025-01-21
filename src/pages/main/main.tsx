@@ -31,6 +31,8 @@ import Modal from '../../components/Modal';
 import noticeChef from '/images/chef/noticeChef.svg';
 import rightArrow from '/images/arrow/rightArrow.svg';
 import ProductList from './productList';
+import { useGetUserInfo } from '../../hooks/useGetUserInfo';
+import useAxiosInstance from '../../hooks/useAxiosInstance';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -40,6 +42,8 @@ const Main = () => {
   const [items, setItems] = useState<Product[]>([]);
 
   const { user } = useAuthStore();
+
+  const axiosInstance = useAxiosInstance();
 
   // 필터링 상태
   const { soldout, setSoldout, location, setLocation, type, setType } =
@@ -63,6 +67,12 @@ const Main = () => {
 
   const [hasNotification, setHasNotification] = useState<boolean>(initialState);
 
+  // 회원정보 조회
+  const { data: userInfo } = useGetUserInfo(
+    axiosInstance,
+    user?._id ? String(user._id) : undefined,
+  );
+
   // 알림 데이터를 가져오면 초기 상태를 설정
   useEffect(() => {
     if (notification) {
@@ -71,10 +81,6 @@ const Main = () => {
       setHasNotification(newValue);
     }
   }, [notification]);
-
-  console.log(hasNotification);
-
-  useEffect(() => {});
 
   // 모달 나타나는 여부, true일 경우 출력
   const { viewPayment, setViewPayment } = viewPaymentStore();
@@ -123,6 +129,13 @@ const Main = () => {
     setViewPayment(true);
   };
 
+  if (!userInfo)
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
+
   return (
     <div className="pt-14 pb-[100px] bg-back1 min-h-screen">
       {/* 헤더 */}
@@ -130,7 +143,7 @@ const Main = () => {
         <div className="flex justify-between w-full">
           <div className="relative">
             <img
-              src={`${apiUrl}${user?.profile}`}
+              src={`${apiUrl}${userInfo.item.image}`}
               className="w-[35px] h-[35px] rounded-full object-cover"
               onClick={handleModal}
             />
@@ -187,7 +200,7 @@ const Main = () => {
               setMeetingLocation={handleChangeLocation}
             />
           </div>
-          <TypeSelector setProductsType={setType} productsType={type} />
+          <TypeSelector setProductsType={setType} productsType={type} onClick={setPage}/>
         </div>
 
         {isLoading && page === 1 ? <Loading /> : <ProductList items={items} />}

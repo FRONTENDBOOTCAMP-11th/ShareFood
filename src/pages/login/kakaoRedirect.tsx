@@ -38,7 +38,6 @@ const KakaoRedirect = () => {
             },
             active,
           );
-          console.log(res);
           toast.success(`${res.data.item.name}님, 환영합니다.`, {
             onClose: () => {
               navigate('/main');
