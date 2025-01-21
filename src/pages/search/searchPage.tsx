@@ -137,7 +137,7 @@ const SearchPage: React.FC = () => {
               </button>
               <Select meetingLocation={location} setMeetingLocation={setLocation} />
             </div>
-            <TypeSelector productsType={type} setProductsType={setType} />
+            <TypeSelector productsType={type} setProductsType={setType}/>
           </div>
 
           {/* 검색 결과 */}
