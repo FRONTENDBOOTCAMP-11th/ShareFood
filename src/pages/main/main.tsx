@@ -82,8 +82,6 @@ const Main = () => {
     }
   }, [notification]);
 
-  useEffect(() => {});
-
   // 모달 나타나는 여부, true일 경우 출력
   const { viewPayment, setViewPayment } = viewPaymentStore();
 
@@ -202,7 +200,7 @@ const Main = () => {
               setMeetingLocation={handleChangeLocation}
             />
           </div>
-          <TypeSelector setProductsType={setType} productsType={type} />
+          <TypeSelector setProductsType={setType} productsType={type} onClick={setPage}/>
         </div>
 
         {isLoading && page === 1 ? <Loading /> : <ProductList items={items} />}
