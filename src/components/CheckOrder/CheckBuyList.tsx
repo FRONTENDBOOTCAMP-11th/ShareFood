@@ -89,7 +89,7 @@ function CheckBuyList({ data, setViewPayment }: CheckBuyListProps) {
     for (let i = 0; i < OrderList.length; i++) {
       registerNotification({
         target_id: OrderList[i].props.id,
-        content: `${data.item.name}에서 보내는 메시지: ${message}`,
+        content: `${data.item.name}에서 ${message}`,
         type: 'message',
         extra: {
           productId: data.item._id,
