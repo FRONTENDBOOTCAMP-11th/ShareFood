@@ -57,6 +57,24 @@ const Main = () => {
 
   // 알림 불러오기
   const { data: notification } = useGetNotification();
+  const storedNoti = localStorage.getItem('checkNoti');
+  const initialState =
+    storedNoti !== null ? JSON.parse(storedNoti) : notification ? false : true;
+
+  const [hasNotification, setHasNotification] = useState<boolean>(initialState);
+
+  // 알림 데이터를 가져오면 초기 상태를 설정
+  useEffect(() => {
+    if (notification) {
+      const newValue = notification.length > 0 ? false : true;
+      localStorage.setItem('checkNoti', JSON.stringify(newValue));
+      setHasNotification(newValue);
+    }
+  }, [notification]);
+
+  console.log(hasNotification);
+
+  useEffect(() => {});
 
   // 모달 나타나는 여부, true일 경우 출력
   const { viewPayment, setViewPayment } = viewPaymentStore();
@@ -100,6 +118,8 @@ const Main = () => {
 
   // 알림 모달 오픈
   const handleModal = () => {
+    localStorage.setItem('checkNoti', JSON.stringify(true));
+    setHasNotification(true);
     setViewPayment(true);
   };
 
@@ -114,7 +134,7 @@ const Main = () => {
               className="w-[35px] h-[35px] rounded-full object-cover"
               onClick={handleModal}
             />
-            {notification && notification?.length > 0 && (
+            {!hasNotification && (
               <div className="w-[8px] h-[8px] rounded-full bg-sub absolute top-0 right-0"></div>
             )}
           </div>
