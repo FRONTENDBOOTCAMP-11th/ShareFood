@@ -222,7 +222,6 @@ const Detail = () => {
   useEffect(() => {
     if (data) {
       // data 로딩 시 실행
-      console.log(data);
       let test = false;
       order?.forEach((value: OrderItem) => {
         if (value.products[0]._id == data?.item._id) {

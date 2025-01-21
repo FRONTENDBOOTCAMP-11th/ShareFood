@@ -79,19 +79,20 @@ const UserInfo = () => {
     }
   }, [userInfo, setValue]);
 
-  // 닉네임 및 전화번호 변경 여부 확인
-  useEffect(() => {
-    const nameChanged = nameValue !== userInfo?.item?.name;
-    const phoneChanged = phoneValue !== userInfo?.item?.phone;
+  // 닉네임, 전화번호, 프로필 이미지 변경 여부 확인
+useEffect(() => {
+  const nameChanged = nameValue !== userInfo?.item?.name;
+  const phoneChanged = phoneValue !== userInfo?.item?.phone;
+  const imageChanged = imgUrl !== userInfo?.item?.image;
 
-    if (nameChanged && !isNameChecked) {
-      setIsChangeInfo(false); // 닉네임이 변경되었으나 중복 확인이 안 됨 → 비활성화
-    } else if (nameChanged || phoneChanged) {
-      setIsChangeInfo(true); // 하나라도 변경되었으면 활성화
-    } else {
-      setIsChangeInfo(false);
-    }
-  }, [nameValue, phoneValue, isNameChecked, userInfo]);
+  if (nameChanged && !isNameChecked) {
+    setIsChangeInfo(false); // 닉네임이 변경되었으나 중복 확인이 안 됨 → 비활성화
+  } else if (nameChanged || phoneChanged || imageChanged) {
+    setIsChangeInfo(true); // 하나라도 변경되었으면 활성화
+  } else {
+    setIsChangeInfo(false);
+  }
+}, [nameValue, phoneValue, imgUrl, isNameChecked, userInfo]);
 
   // 닉네임 중복 검사
   const handleCheckName = async () => {
