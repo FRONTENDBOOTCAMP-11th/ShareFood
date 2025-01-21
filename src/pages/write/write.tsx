@@ -95,7 +95,6 @@ const Write = () => {
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
 
       // 서버 전송 성공 시 입력값 초기화
       reset();
@@ -103,7 +102,6 @@ const Write = () => {
       toast.success('게시글이 등록되었습니다', {
         onClose: () => {
           // toast 닫히면 해당 페이지로 이동
-          console.log(data.item._id);
           navigate(`/detail/${data.item._id}`);
         },
       });
@@ -124,13 +122,11 @@ const Write = () => {
     return new Promise((resolve) => {
       const geocoder = new kakao.maps.services.Geocoder();
       geocoder.addressSearch(address, (result, status) => {
-        console.log(status);
         if (status === kakao.maps.services.Status.OK) {
           const coords = {
             lat: Number(result[0].y),
             lng: Number(result[0].x),
           };
-          console.log(coords);
           resolve(coords);
         }
       });
@@ -167,8 +163,7 @@ const Write = () => {
     data.price = integerPrice;
 
     // 입력한 시간 값 가져옴
-    const dateTime = dayjs(selectDate);
-    console.log(dateTime);
+    //const dateTime = dayjs(selectDate);
 
     // 랜덤 이미지 출력
     const randomNum = Math.floor(Math.random() * 4) + 1;
