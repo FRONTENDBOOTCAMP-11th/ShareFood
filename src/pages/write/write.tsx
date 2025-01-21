@@ -316,8 +316,8 @@ const Write = () => {
               </div>
 
               <div className="info-location-detail">
-                <div className="flex py-[7px] mb-[7px] border-b items-center">
-                  <p className="font-semibold w-[60px]">상세 위치 </p>
+                <div className="flex gap-[15px] py-[7px] mb-[7px] border-b leading-6">
+                  <p className="font-semibold shrink-0">상세 위치 </p>
                   <KakaoAddressSearch
                     subLocation={subLocation}
                     setSubLocation={(address) => setSubLocation(address)}
@@ -344,7 +344,7 @@ const Write = () => {
                   <p className="font-semibold">마감시간 </p>
                   <Picker
                     selectDate={selectDate}
-                    placeholder='모집 마감시간을 입력해주세요.'
+                    placeholder="모집 마감시간을 입력해주세요."
                     setSelectDate={(date) => {
                       setSelectDate(date);
                       setValue(
@@ -374,7 +374,9 @@ const Write = () => {
                 <h1 className="font-semibold">내용</h1>
                 <textarea
                   className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                  placeholder={"상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️"}
+                  placeholder={
+                    '상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️'
+                  }
                   {...register('content', { required: '* 내용은 필수입니다' })}
                 />
                 <Error>{errors.content?.message}</Error>
@@ -460,7 +462,7 @@ const Write = () => {
               </div>
 
               <div className="info-location-detail">
-                <div className="flex py-[7px] mb-[7px] border-b items-center">
+                <div className="flex gap-[15px] py-[7px] mb-[7px] border-b leading-6">
                   <p className="font-semibold shrink-0">상세 위치 </p>
                   <KakaoAddressSearch
                     subLocation={subLocation}
@@ -488,7 +490,7 @@ const Write = () => {
                   <p className="font-semibold">거래 시간 </p>
                   <Picker
                     selectDate={selectDate}
-                    placeholder='거래할 시간을 입력해주세요.'
+                    placeholder="거래할 시간을 입력해주세요."
                     setSelectDate={(date) => {
                       setSelectDate(date);
                       setValue(
@@ -518,7 +520,9 @@ const Write = () => {
                 <h1 className="font-semibold">내용</h1>
                 <textarea
                   className="border outline-none text-xs resize-none w-full h-52 py-[5px] px-[10px] mt-[3px] rounded"
-                  placeholder={"상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️"}
+                  placeholder={
+                    '상품에 대한 자세한 설명 및 만남 장소에 대한 \n자세한 설명을 적어주세요☺️'
+                  }
                   {...register('content', { required: '* 내용은 필수입니다' })}
                 />
                 <Error>{errors.content?.message}</Error>
